@@ -1,3 +1,68 @@
+/* Paragraph text styling */
+p {
+	font: 1.4em cambria;
+}
+
+.cambria {
+	font-family: cambria;
+}
+
+.profile_image {
+	width: 300px;
+	height: 300px;
+	border-radius: 35%;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.profile_name {
+	font: bold 2.2em cambria;
+}
+
+.ml-large {
+	margin-left: 8em !important;
+}
+
+.mr-large {
+	margin-right: 8em !important;
+}
+
+
+/* Text on the left of the timeline */
+.left-timeline-panel {
+	display: inline-block;
+	position: absolute;
+	left: -100px;
+	top: -12px;
+	width: 100px;
+	height: 20px;
+	z-index: 400;
+}
+
+/* Indicators between sections in contact me, and about */
+.contact_me_category:before {
+	content: ' ';
+	background: #d4d9df;
+	display: inline-block;
+	position: absolute;
+	left: 10px;
+	width: 2px;
+	height: 100%;
+	z-index: 400;
+}
+
+.about_category:before {
+	content: ' ';
+	background: #d4d9df;
+	display: inline-block;
+	position: absolute;
+	left: 0.5em;
+	width: 2px;
+	height: 100%;
+	z-index: 400;
+}
+
 /* Vertical timeline styling */
 ul.timeline {
 	list-style-type: none;
@@ -26,17 +91,6 @@ ul.timeline > li:before {
 	border: 3px solid #22c0e8;
 	left: 20px;
 	width: 20px;
-	height: 20px;
-	z-index: 400;
-}
-
-/* Text on the left of the timeline */
-.left-timeline-panel {
-	display: inline-block;
-	position: absolute;
-	left: -100px;
-	top: -12px;
-	width: 100px;
 	height: 20px;
 	z-index: 400;
 }

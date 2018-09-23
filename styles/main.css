@@ -35,6 +35,13 @@ p.about_details {
 	text-indent: 1.5em;
 }
 
+.vertical-center {
+	display: block;
+	top: 50%;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
 .ml-medium {
 	margin-left: 6vw !important;
 }

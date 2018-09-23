@@ -2,9 +2,9 @@ $(function(){
 	$("#nav-bar").load("nav.html");
 
 	var page_pathname = window.location.pathname;
-	var pages = { "index" 	: ".index-active",
+	var pages = { "portfolio" 	: ".portfolio-active",
 								"about" 	: ".about-active",
-								"work" 		: ".work-active",
+								"projects": ".projects-active",
 								"contact" : ".contact-active"};
 
 	for (var page_name in pages) {

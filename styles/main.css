@@ -20,12 +20,16 @@ p {
 	font: bold 2.2em cambria;
 }
 
-.ml-large {
-	margin-left: 8em !important;
+p.about_details {
+	text-indent: 1.5em;
 }
 
-.mr-large {
-	margin-right: 8em !important;
+.ml-medium {
+	margin-left: 6vw !important;
+}
+
+.mr-medium {
+	margin-right: 6vw !important;
 }
 
 
@@ -52,16 +56,6 @@ p {
 	z-index: 400;
 }
 
-.about_category:before {
-	content: ' ';
-	background: #d4d9df;
-	display: inline-block;
-	position: absolute;
-	left: 0.5em;
-	width: 2px;
-	height: 100%;
-	z-index: 400;
-}
 
 /* Vertical timeline styling */
 ul.timeline {

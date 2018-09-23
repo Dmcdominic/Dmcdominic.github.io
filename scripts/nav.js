@@ -1,5 +1,5 @@
 $(function(){
-	$("#nav-bar").load("nav.html");
+	$("#nav-bar").load("/nav.html");
 
 	var page_pathname = window.location.pathname;
 	var pages = { "portfolio" 	: ".portfolio-active",

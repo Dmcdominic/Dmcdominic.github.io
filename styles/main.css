@@ -6,6 +6,17 @@ p {
 .cambria {
 	font-family: cambria;
 }
+.italic {
+	font-style: italic;
+}
+.bold {
+	font-weight: bold;
+}
+
+.game-title {
+	font-family: cambria;
+	font-style: italic;
+}
 
 .profile_image {
 	width: 300px;
@@ -27,18 +38,33 @@ p.about_details {
 .ml-medium {
 	margin-left: 6vw !important;
 }
-
 .mr-medium {
 	margin-right: 6vw !important;
+}
+
+.mt-neg-medium {
+	margin-top: -5rem !important;
+}
+.mb-large {
+	margin-bottom: 7rem !important;
+}
+
+a.card-link-wrapper,
+a.card-link-wrapper:hover {
+	color: inherit;
+	text-decoration: none;
+}
+a.card-link-wrapper h1:hover {
+	text-decoration: underline;
 }
 
 
 /* Text on the left of the timeline */
 .left-timeline-panel {
 	display: inline-block;
-	position: absolute;
-	left: -100px;
-	top: -12px;
+	position: relative;
+	left: -140px;
+	top: -24px;
 	width: 100px;
 	height: 20px;
 	z-index: 400;

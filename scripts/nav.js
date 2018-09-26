@@ -2,10 +2,10 @@ $(function(){
 	$("#nav-bar").load("/nav.html");
 
 	var page_pathname = window.location.pathname;
-	var pages = { "portfolio" 	: ".portfolio-active",
+	var pages = { "Portfolio" 	: ".portfolio-active",
 								"about" 	: ".about-active",
-								"projects": ".projects-active",
-								"contact" : ".contact-active"};
+								"Projects": ".projects-active",
+								"Contact" : ".contact-active"};
 
 	for (var page_name in pages) {
 		if (page_pathname.includes(page_name)) {

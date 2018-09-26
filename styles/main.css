@@ -1,4 +1,4 @@
-/* Paragraph text styling */
+/* Text styling */
 p {
 	font: 1.4em cambria;
 }
@@ -13,11 +13,7 @@ p {
 	font-weight: bold;
 }
 
-.game-title {
-	font-family: cambria;
-	font-style: italic;
-}
-
+/* About page styling */
 .profile_image {
 	width: 300px;
 	height: 300px;
@@ -35,13 +31,41 @@ p.about_details {
 	text-indent: 1.5em;
 }
 
-.vertical-center {
-	display: block;
-	top: 50%;
-  margin-top: auto;
-  margin-bottom: auto;
+/* Game pages styling */
+.game-title {
+	font-family: cambria;
+	font-style: italic;
 }
 
+.game-logo {
+	width: 80%;
+	margin-left: 10%;
+}
+
+/* Vertical centering in Boostrap rows */
+html, body, .v-center-container {
+	height: 100%;
+}
+.v-center-col {
+	height: 75%;
+}
+.v-center-row {
+	height: 50%;
+}
+.v-center-content {
+	position: absolute;
+	top: 50%; left: 50%;
+	transform: translate(-50%,-50%);
+	/* height: 50%; */
+	width: 95%;
+}
+
+/* Rounded corners on images */
+.rounded-img {
+	border-radius: .4rem;
+}
+
+/* Custom margin alignments */
 .ml-medium {
 	margin-left: 6vw !important;
 }
@@ -56,6 +80,7 @@ p.about_details {
 	margin-bottom: 7rem !important;
 }
 
+/* Game Portfolio page styling */
 a.card-link-wrapper,
 a.card-link-wrapper:hover {
 	color: inherit;
@@ -77,7 +102,7 @@ a.card-link-wrapper h1:hover {
 	z-index: 400;
 }
 
-/* Indicators between sections in contact me, and about */
+/* Indicators between sections in Contact Me page */
 .contact_me_category:before {
 	content: ' ';
 	background: #d4d9df;

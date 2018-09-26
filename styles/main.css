@@ -90,18 +90,6 @@ a.card-link-wrapper h1:hover {
 	text-decoration: underline;
 }
 
-
-/* Text on the left of the timeline */
-.left-timeline-panel {
-	display: inline-block;
-	position: relative;
-	left: -140px;
-	top: -24px;
-	width: 100px;
-	height: 20px;
-	z-index: 400;
-}
-
 /* Indicators between sections in Contact Me page */
 .contact_me_category:before {
 	content: ' ';
@@ -112,6 +100,24 @@ a.card-link-wrapper h1:hover {
 	width: 2px;
 	height: 100%;
 	z-index: 400;
+}
+
+/* Contact Me icons */
+.icon {
+	position: absolute;
+	width: 26px;
+	height: 26px;
+	left: 1.5rem;
+}
+.icon-github {
+	left: 1.45rem;
+	width: 28px;
+	height: 28px;
+}
+.icon-fb {
+	left: 1.4rem;
+	width: 30px;
+	height: 30px;
 }
 
 
@@ -143,6 +149,17 @@ ul.timeline > li:before {
 	border: 3px solid #22c0e8;
 	left: 20px;
 	width: 20px;
+	height: 20px;
+	z-index: 400;
+}
+
+/* Text on the left of the timeline */
+.left-timeline-panel {
+	display: inline-block;
+	position: relative;
+	left: -140px;
+	top: -24px;
+	width: 100px;
 	height: 20px;
 	z-index: 400;
 }

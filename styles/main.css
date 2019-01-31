@@ -126,6 +126,10 @@ a.card-link-wrapper h1:hover {
 	height: 30px;
 }
 
+/* HS Design page styling */
+hr.break {
+	border-top-width: 10px !important;
+}
 
 /* Vertical timeline styling */
 ul.timeline {

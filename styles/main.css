@@ -13,6 +13,12 @@ p {
 	font-weight: bold;
 }
 
+/* Nav bar styling */
+.nav-item {
+	margin-right: 0.5em;
+	margin-left: 0.5em;
+}
+
 /* About page styling */
 .profile_image {
 	width: 300px;

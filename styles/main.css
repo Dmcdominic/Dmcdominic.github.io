@@ -51,6 +51,11 @@ p.about_details {
 	margin-left: 10%;
 }
 
+/* .game-video {
+	max-width: 80%;
+	max-height: 40em;
+} */
+
 /* Vertical centering in Boostrap rows */
 html, body, .v-center-container {
 	height: 100%;
@@ -176,7 +181,7 @@ ul.timeline > li:before {
 .left-timeline-panel {
 	display: inline-block;
 	position: relative;
-	left: -140px;
+	left: -150px;
 	top: -24px;
 	width: 100px;
 	height: 20px;

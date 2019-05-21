@@ -16,6 +16,10 @@ p {
 	font-weight: bold;
 }
 
+.indented {
+	text-indent: 1.5em;
+}
+
 /* Nav bar styling */
 .nav-item {
 	margin-right: 0.5em;
@@ -143,6 +147,12 @@ a.card-link-wrapper h1:hover {
 /* HS Design page styling */
 hr.break {
 	border-top-width: 10px !important;
+}
+
+/* Card Generator page styling */
+#card-gen-container {
+	padding-left: 3rem;
+	padding-right: 3rem;
 }
 
 /* Vertical timeline styling */

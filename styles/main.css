@@ -149,6 +149,11 @@ hr.break {
 	border-top-width: 10px !important;
 }
 
+/* HS Blizztern Set page styling */
+.full-width-img {
+	max-width: 90%;
+}
+
 /* Card Generator page styling */
 #card-gen-container {
 	padding-left: 3rem;

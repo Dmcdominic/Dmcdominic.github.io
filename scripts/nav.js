@@ -1,6 +1,4 @@
 $(function(){
-	$("#nav-bar").load("/nav.html");
-
 	var page_pathname = window.location.pathname;
 	var pages = { "Portfolio" 	: ".portfolio-active",
 								"about" 			: ".about-active",

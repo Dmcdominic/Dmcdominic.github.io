@@ -1,128 +1,90 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<!-- Global site tag (gtag.js) - Google Analytics -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-126294834-1"></script>
-	<script>
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'UA-126294834-1');
-	</script>
+---
+# Front Matter
+layout: game-page
+title: Verto Animo
+---
 
-	<!-- Title -->
-	<title>Dominic Calkosz - Verto Animo</title>
-	<!-- Favicon -->
-	<link rel="icon" type="image/png" sizes="192x192"  href="/favicon/android-icon-192x192.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="96x96" href="/favicon/favicon-96x96.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
-	<link rel="manifest" href="/favicon/manifest.json">
-	<meta name="msapplication-TileColor" content="#ffffff">
-	<meta name="msapplication-TileImage" content="/favicon/ms-icon-144x144.png">
-	<meta name="theme-color" content="#ffffff">
-	<!-- Stylesheet dependencies -->
-	<link rel="stylesheet" href="/styles/main.css">
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-</head>
-<body>
-	<div id="nav-bar"></div>
-
-	<div class="container v-center-container mt-4 mb-4">
-		<!-- Logo -->
-		<div class="col-sm-12 mb-5">
-			<img class="game-logo rounded-img" src="/images/Verto_Animo/Verto_Animo.png" alt="Game Logo">
-		</div>
-
-		<div class="row v-center-row mt-4">
-			<div class="v-center-col col-md-6 mb-5 text-center">
-				<div class="v-center-content">
-					<h4>Description</h4>
-					<p>
-						Verto Animo is a cooperative platformer with a twist - Each player controls the movement of one character and the jumping of the other.
-						Test your patience and your friendships as you work together to complete each challenge.
-					</p>
-					<h4 class="mt-4">Project Background</h4>
-					<p>
-						Game Creation Society - Fall 2017<br>
-						Silver Award Winner<br>
-						Created with Unity
-					</p>
-				</div>
-			</div>
-
-			<!-- Screenshot 1 -->
-			<div class="v-center-col col-md-6 mb-5">
-				<img class="v-center-img rounded-img" src="/images/Verto_Animo/Verto_Animo_Screenshot1.png" alt="Game Screenshot">
-			</div>
-
-			<!-- Screenshot 2 -->
-			<div class="v-center-col col-md-6 mb-5">
-				<img class="v-center-img rounded-img" src="/images/Verto_Animo/Verto_Animo_Screenshot2.png" alt="Game Screenshot">
-			</div>
-
-			<div class="v-center-col col-md-6 mb-5 text-center">
-				<div class="v-center-content">
-					<h4>Play It Now!</h4>
-					<p>
-						<a href="/files/Verto Animo.zip" download>Windows Download</a><br>
-						<a href="http://www.gamecreation.org/game/verto-animo" target="_blank">Game Creation Society Page</a><br>
-						<a href="https://github.com/gantar22/O/releases/tag/3" target="_blank">GitHub Release</a>
-					</p>
-					<h4 class="mt-4">Source Code</h4>
-					<p>
-						<a href="https://github.com/gantar22/O/tree/carerisbadatgit" target="_blank">GitHub Repository</a><br>
-					</p>
-				</div>
-			</div>
-
-			<div class="v-center-col col-md-6 mb-5 text-center">
-				<div class="v-center-content">
-					<h4>Team</h4>
-					<p>
-						<span class="italic">Carter Williams</span> - Team Lead and Programming<br>
-						<span class="italic">Dominic Calkosz</span> - Programming and Level Design<br>
-						<span class="italic">Edward Shin</span> - Art and Design<br>
-						<span class="italic">Adrian Mester</span> - Sound, Music and Level Design<br>
-						<span class="italic">Philip Lamkin</span> - Level Design<br>
-						<span class="italic">Matthew Bofenkamp</span> - Design, Programming, Technical Designer
-					</p>
-				</div>
-			</div>
-
-			<!-- Screenshot 3 -->
-			<div class="v-center-col col-md-6 mb-5">
-				<img class="v-center-img rounded-img" src="/images/Verto_Animo/Verto_Animo_Screenshot3.png" alt="Game Screenshot">
-			</div>
-
-
-			<!-- My Contributions -->
-			<div class="v-center-col col-md-12 mb-5 text-center">
-				<div class="v-center-content">
-					<h4>My Contributions</h4>
-					<p>
-						Verto Animo was my first GCS project, and my introduction to Unity.
-						Luckily, my team lead Carter was a willing mentor, and we have since become great friends.
-						My focus during this project was on building game mechanics such as moving platforms and walls, buttons to trigger those movements, and checkpoints to ease intra-level progression.
-						In addition, I took the opportunity to delve into Unity's canvas system by creating all of our menus and UI.
-						Finally, I wrote a persistent data saving structure in order to track the players' level progress.
-					</p>
-				</div>
-			</div>
-
-
-
-		</div>
-
-	</div>
+<!-- Logo -->
+<div class="col-sm-12 mb-5">
+	<img class="game-logo rounded-img" src="/images/Verto_Animo/Verto_Animo.png" alt="Game Logo">
 </div>
 
+<div class="row v-center-row mt-4">
+	<div class="v-center-col col-md-6 mb-5 text-center">
+		<div class="v-center-content">
+			<h4>Description</h4>
+			<p>
+				Verto Animo is a cooperative platformer with a twist - Each player controls the movement of one character and the jumping of the other.
+				Test your patience and your friendships as you work together to complete each challenge.
+			</p>
+			<h4 class="mt-4">Project Background</h4>
+			<p>
+				Game Creation Society - Fall 2017<br>
+				Silver Award Winner<br>
+				Created with Unity
+			</p>
+		</div>
+	</div>
+
+	<!-- Screenshot 1 -->
+	<div class="v-center-col col-md-6 mb-5">
+		<img class="v-center-img rounded-img" src="/images/Verto_Animo/Verto_Animo_Screenshot1.png" alt="Game Screenshot">
+	</div>
+
+	<!-- Screenshot 2 -->
+	<div class="v-center-col col-md-6 mb-5">
+		<img class="v-center-img rounded-img" src="/images/Verto_Animo/Verto_Animo_Screenshot2.png" alt="Game Screenshot">
+	</div>
+
+	<div class="v-center-col col-md-6 mb-5 text-center">
+		<div class="v-center-content">
+			<h4>Play It Now!</h4>
+			<p>
+				<a href="/files/Verto Animo.zip" download>Windows Download</a><br>
+				<a href="http://www.gamecreation.org/game/verto-animo" target="_blank">Game Creation Society Page</a><br>
+				<a href="https://github.com/gantar22/O/releases/tag/3" target="_blank">GitHub Release</a>
+			</p>
+			<h4 class="mt-4">Source Code</h4>
+			<p>
+				<a href="https://github.com/gantar22/O/tree/carerisbadatgit" target="_blank">GitHub Repository</a><br>
+			</p>
+		</div>
+	</div>
+
+	<div class="v-center-col col-md-6 mb-5 text-center">
+		<div class="v-center-content">
+			<h4>Team</h4>
+			<p>
+				<span class="italic">Carter Williams</span> - Team Lead and Programming<br>
+				<span class="italic">Dominic Calkosz</span> - Programming and Level Design<br>
+				<span class="italic">Edward Shin</span> - Art and Design<br>
+				<span class="italic">Adrian Mester</span> - Sound, Music and Level Design<br>
+				<span class="italic">Philip Lamkin</span> - Level Design<br>
+				<span class="italic">Matthew Bofenkamp</span> - Design, Programming, Technical Designer
+			</p>
+		</div>
+	</div>
+
+	<!-- Screenshot 3 -->
+	<div class="v-center-col col-md-6 mb-5">
+		<img class="v-center-img rounded-img" src="/images/Verto_Animo/Verto_Animo_Screenshot3.png" alt="Game Screenshot">
+	</div>
 
 
-<!-- Script dependencies -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-<script src="/scripts/nav.js"></script>
-</body>
-</html>
+	<!-- My Contributions -->
+	<div class="v-center-col col-md-12 mb-5 text-center">
+		<div class="v-center-content">
+			<h4>My Contributions</h4>
+			<p>
+				Verto Animo was my first GCS project, and my introduction to Unity.
+				Luckily, my team lead Carter was a willing mentor, and we have since become great friends.
+				My focus during this project was on building game mechanics such as moving platforms and walls, buttons to trigger those movements, and checkpoints to ease intra-level progression.
+				In addition, I took the opportunity to delve into Unity's canvas system by creating all of our menus and UI.
+				Finally, I wrote a persistent data saving structure in order to track the players' level progress.
+			</p>
+		</div>
+	</div>
+
+
+
+</div>

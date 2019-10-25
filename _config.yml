@@ -1,0 +1,9 @@
+permalink: /:title
+collections:
+    games:
+        output: true
+        permalink: /games/:title
+
+# Plugins
+plugins:
+  - jekyll-redirect-from

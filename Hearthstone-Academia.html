@@ -1,0 +1,77 @@
+---
+layout: default
+title: Hearthstone in Academia
+---
+
+<div class="container-fluid mt-4 mb-4">
+	<div class="row mb-4">
+		<div class="col-sm-12">
+			<h1 class="display-3 text-center">Hearthstone in Academia</h1>
+		</div>
+	</div>
+
+	<div id="tag-selector" class="row justify-content-center text-center">
+		<div class="checkbox-container">
+			<input type="checkbox" class="abstract_checkbox" data-toggle="toggle" data-on="Hide Abstracts" data-off="Show Abstracts" data-onstyle="success" data-offstyle="warning">
+		</div>
+	</div>
+
+	<div class="row mt-4 justify-content-center">
+		<!-- Div generated for each paper -->
+		{% assign papers-sorted = site.hs-academia | sort: "year" | reverse %}
+		{% for paper in papers-sorted %}
+		<div class="col-xl-4 col-md-6 col-12 mb-5">
+			<div class="card">
+				<a class="no-link-style" href="{{ paper.link }}" target="_blank">
+					<!-- Title, authors, and year -->
+					<h3 class="card-header text-center">{{ paper.title }}</h3>
+					<h5 class="card-header text-center">{{ paper.authors }} ({{ paper.year }})</h5>
+					<div class="card-body">
+						<!-- Keywords -->
+						<p class="card-text"><u>Keywords</u> - {{ paper.keywords }}</p>
+						<!-- Full paper link -->
+						<p class="card-text text-center mt-4"><a href="{{ paper.link }}" target="_blank">Full paper</a></p>
+						<!-- Abstract -->
+						<div class="abstract_section">
+							<p class="card-text"><u><b>Abstract</b></u></p>
+							<div class="card-text about_details">
+								<p>"{{ paper.abstract }}"</p>
+							</div>
+						</div>
+					</div>
+				</a>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+
+	<!-- Memes -->
+	<div class="row mb-4">
+		<div class="col-sm-12">
+			<h1 class="display-3 text-center">Academia in Hearthstone</h1>
+		</div>
+	</div>
+
+	<div class="row mt-4 justify-content-center">
+		<div class="col-xl-4 col-md-6 mb-5 text-center">
+			<a href="https://hearthstone.gamepedia.com/Academic_Espionage">
+				<img src="/images/HS_Academia/Academic Espionage.png" alt="(HS Card)" style="width: 60%">
+			</a>
+		</div>
+		<div class="col-xl-4 col-md-6 mb-5 text-center">
+			<a href="https://hearthstone.gamepedia.com/Research_Project">
+				<img src="/images/HS_Academia/Research Project.png" alt="(HS Card)" style="width: 60%">
+			</a>
+		</div>
+		<div class="col-xl-4 col-md-6 mb-5 text-center">
+			<a href="https://hearthstone.gamepedia.com/Academic_Research">
+				<img src="/images/HS_Academia/Academic Research.png" alt="(HS Card)" style="width: 60%">
+			</a>
+		</div>
+	</div>
+
+</div>
+
+<!-- Script Dependencies -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="/scripts/hs_academia_display.js"></script>

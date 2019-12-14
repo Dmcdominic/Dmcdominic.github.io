@@ -1,0 +1,9 @@
+---
+title: Improving Hearthstone AI by Combining MCTS and Supervised Learning Algorithms
+authors: "Maciej Świechowski, Tomasz Tajmajer, Andrzej Janusz"
+year: 2018
+link: "http://gamestudies.org/1802/articles/arjoranta_siitonen"
+keywords: "MCTS, Machine Learning, Neural Networks, Heuristic"
+
+abstract: "We investigate the impact of supervised prediction models on the strength and efficiency of artificial agents that use the Monte-Carlo Tree Search (MCTS) algorithm to play a popular video game Hearthstone: Heroes of Warcraft. We overview our custom implementation of the MCTS that is well-suited for games with partially hidden information and random effects. We also describe experiments which we designed to quantify the performance of our Hearthstone agent's decision making. We show that even simple neural networks can be trained and successfully used for the evaluation of game states. Moreover, we demonstrate that by providing a guidance to the game state search heuristic, it is possible to substantially improve the win rate, and at the same time reduce the required computations."
+---

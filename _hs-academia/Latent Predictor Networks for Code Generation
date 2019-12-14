@@ -3,6 +3,7 @@ title: "Latent Predictor Networks for Code Generation"
 authors: "Wang Ling, Phil Blunsom, Edward Grefenstette, Karl Moritz Hermann, Tomáš Kočiský, Fumin Wang, Andrew Senior"
 year: 2016
 link: "http://dx.doi.org/10.18653/v1/P16-1057"
+full-paper: "https://www.aclweb.org/anthology/P16-1057.pdf"
 keywords: "Computation and Language, Neural and Evolutionary Computing"
 
 abstract: "Many language generation tasks require

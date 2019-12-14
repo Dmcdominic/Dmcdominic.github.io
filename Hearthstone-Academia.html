@@ -22,7 +22,7 @@ title: Hearthstone in Academia
 		{% for paper in papers-sorted %}
 		<div class="col-xl-4 col-md-6 col-12 mb-5">
 			<div class="card">
-				<a class="no-link-style" href="{{ paper.link }}" target="_blank">
+				<a class="no-link-style" href="{{ paper.full-paper }}" target="_blank">
 					<!-- Title, authors, and year -->
 					<h3 class="card-header text-center">{{ paper.title }}</h3>
 					<h5 class="card-header text-center">{{ paper.authors }} ({{ paper.year }})</h5>
@@ -30,7 +30,7 @@ title: Hearthstone in Academia
 						<!-- Keywords -->
 						<p class="card-text"><u>Keywords</u> - {{ paper.keywords }}</p>
 						<!-- Full paper link -->
-						<p class="card-text text-center mt-4"><a href="{{ paper.link }}" target="_blank">Full paper</a></p>
+						<p class="card-text text-center mt-4"><a href="{{ paper.full-paper }}" target="_blank">Full paper</a></p>
 						<!-- Abstract -->
 						<div class="abstract_section">
 							<p class="card-text"><u><b>Abstract</b></u></p>

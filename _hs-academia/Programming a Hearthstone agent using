@@ -3,6 +3,7 @@ title: "Programming a Hearthstone Agent using Monte Carlo Tree Search"
 authors: "Markus Heikki Andersson, Håkon Helgesen Hesselberg"
 year: 2016
 link: "https://www.semanticscholar.org/paper/Programming-a-Hearthstone-agent-using-Monte-Carlo-Andersson-Hesselberg/7815dfed6cf222ff6bd3f80a7f88d26a58b8c28b"
+full-paper: "https://pdfs.semanticscholar.org/7815/dfed6cf222ff6bd3f80a7f88d26a58b8c28b.pdf?_ga=2.133498382.120264841.1576349742-1245705061.1576349742"
 keywords: "Monte Carlo Tree Search, Experiment, Simulation"
 
 abstract: "This thesis describes the effort of adapting Monte Carlo Tree Search (MCTS) to the game

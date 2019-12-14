@@ -3,6 +3,7 @@ title: Mapping Hearthstone Deck Spaces through MAP-Elites with Sliding Boundarie
 authors: "Matthew C. Fontaine, Scott Lee, L. B. Soros, Fernando De Mesentier Silva, Julian Togelius, Amy K. Hoover"
 year: 2019
 link: "https://doi.org/10.1145/3321707.3321794"
+full-paper: "https://arxiv.org/pdf/1904.10656.pdf"
 keywords: "Quality Diversity, Illumination Algorithms, Games, Card Games, Balancing"
 
 abstract: "Quality diversity (QD) algorithms such as MAP-Elites have emerged

@@ -157,6 +157,7 @@ function guessCard(guess) {
 	if (guess === undefined) {
 		guess = $("#guessField").val();
 	}
+	let fullCaseGuess = guess;
 	guess = guess.toLowerCase();
 
 	$("#answerTextContainer").show();
@@ -173,7 +174,7 @@ function guessCard(guess) {
 		if (bestSubstring.length >= SUBSTRING_MIN_LENGTH) {
 			$("#answerTextContainer").html("Almost! You got this part right: \"" + bestSubstring + "\"");
 		} else {
-			$("#answerTextContainer").html("Good try but nope.");
+			$("#answerTextContainer").html("You guessed: \"" + fullCaseGuess +  "\". Good try but nope.");
 		}
 		// console.log("[HINT: You had a similarity score of " + similarityScore + "]");
 	}
@@ -186,7 +187,7 @@ function giveUp() {
 
 // When you press enter in the guess input field, it should submit the guess
 var input = document.getElementById("guessField");
-input.addEventListener("keyup", function(event) {
+input.addEventListener("keydown", function(event) {
 	if (event.keyCode === 13) {
 		guessCard();
 	}

@@ -238,6 +238,30 @@ hr.break {
 	overflow: none;
 }
 
+/* Hearthstone Flavor Text Quiz page styling */
+#correctCardImg {
+  height: 20em;
+}
+
+#guessField {
+	/* width: 50%; */
+	border: 0.05em solid black;
+	border-radius: 0.4em;
+	outline: none;
+}
+
+#flavorText {
+	background-color: lightgray;
+}
+
+#HS_Flav_next {
+	display: flex;
+}
+#HS_Flav_input, #HS_Flav_next, #flavorText, #answerTextContainer {
+	display: none;
+}
+
+
 /* Vertical timeline styling */
 ul.timeline {
 	list-style-type: none;

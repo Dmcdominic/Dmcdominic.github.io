@@ -26,6 +26,7 @@ var Current_Card = null;
 var Current_Options = [];
 var Options_to_Buttons = {};
 var Current_Streak = 0;
+var Best_Streak = 0;
 var Total_Score = 0;
 
 // User Settings
@@ -143,10 +144,15 @@ function revealCard(correct, textToShow) {
 	if (correct) {
 		Current_Streak++;
 		Total_Score++;
+		if (Current_Streak > Best_Streak) {
+			Best_Streak = Current_Streak;
+		}
 	} else {
 		Current_Streak = 0;
 	}
+
 	$("#current_streak_display").text(Current_Streak);
+	$("#best_streak_display").text(Best_Streak);
 	$("#total_score_display").text(Total_Score);
 
 	$("#correctCardImg").attr("src", Current_Card.image);

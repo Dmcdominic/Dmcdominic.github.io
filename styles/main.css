@@ -53,6 +53,9 @@ a.no-link-style:hover {
 	color: inherit;
 	text-decoration: none;
 }
+a.no-link-style:hover h2 {
+	text-decoration: underline;
+}
 a.no-link-style:hover h3 {
 	text-decoration: underline;
 }

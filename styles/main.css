@@ -257,8 +257,17 @@ hr.break {
 #HS_Flav_next {
 	display: flex;
 }
-#HS_Flav_input, #HS_Flav_next, #flavorText, #answerTextContainer {
+#HS_Flav_free_response_input, #HS_Flav_multiple_choice_input, #HS_Flav_next, #flavorText, #answerTextContainer, #HS_Flav_opt_butt {
 	display: none;
+}
+
+#mc-size-input {
+	width: 7em;
+}
+
+.ispin-wrapper .ispin-button:before {
+	-webkit-transform: translateY(-170%) !important;
+	transform: translateY(-170%) !important;
 }
 
 

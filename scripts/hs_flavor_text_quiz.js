@@ -63,9 +63,18 @@ var All_Cards = [];
 var Cards_With_Flavor = [];
 var Current_Card = null;
 var Current_Options = [];
-var Current_Streak = 0;
-var Best_Streak = 0;
-var Total_Score = 0;
+var Current_Streak = getCookie("Current_Streak");
+var Best_Streak = getCookie("Best_Streak");
+var Total_Score = getCookie("Total_Score");
+if (!Current_Streak) {
+	Current_Streak = 0;
+}
+if (!Best_Streak) {
+	Best_Streak = 0;
+}
+if (!Total_Score) {
+	Total_Score = 0;
+}
 
 // User Settings
 var Mode = MODES.MULTIPLE_CHOICE;
@@ -177,6 +186,7 @@ function generateQuiz() {
 }
 
 
+
 // ===== Quiz Functionality =====
 
 function revealCard(correct, textToShow) {
@@ -189,10 +199,10 @@ function revealCard(correct, textToShow) {
 	} else {
 		Current_Streak = 0;
 	}
-
-	$("#current_streak_display").text(Current_Streak);
-	$("#best_streak_display").text(Best_Streak);
-	$("#total_score_display").text(Total_Score);
+	setCookie("Current_Streak", Current_Streak);
+	setCookie("Best_Streak", Best_Streak);
+	setCookie("Total_Score", Total_Score);
+	update_score_display();
 
 	$("#correctCardImg").attr("src", Current_Card.image);
 	$("#answerTextContainer").html(textToShow);
@@ -328,7 +338,7 @@ function guessCardSlug(slug) {
 		console.assert(guessed_card_list.length === 1);
 		let guessed_card = guessed_card_list[0];
 		revealCard(false, randOopsLine() + "<br><u>The answer is</u>: <i>" + Current_Card.name + "</i><br>The flavor text of <i>" + guessed_card.name
-		  + "</i> is:<br> <span style='background-color: yellow'>" + guessed_card.flavorText + "</span>");
+		+ "</i> is:<br> <span style='background-color: yellow'>" + guessed_card.flavorText + "</span>");
 	}
 }
 
@@ -380,6 +390,7 @@ function randSorryLineTxt() {
 }
 
 
+
 // ===== UI =====
 
 // When you press enter in the guess input field, it should submit the guess
@@ -414,29 +425,29 @@ $(function() {
 // Multiple choice size spinner initialization.
 // Source: https://www.cssscript.com/increment-decrement-number-ispinjs/
 let spinner = new ISpin(document.getElementById('mc-size-input'), {
-    // wrapper class
-    wrapperClass: 'ispin-wrapper',
-    // button class
-    // buttonsClass: String,
-    // step size
-    step: 1,
-    // page step
-    pageStep: 20,
-    // repeat interval
-    repeatInterval: 200,
-    // enable overflow
-    wrapOverflow: false,
-    // parse
-    // parse: String => Number,
-    // format
-    // format: Number => String,
-    // disable the input spinner
-    disabled: false,
-    // min/max values
-    max: MULTIPLE_CHOICE_MAX_SIZE,
-    min: MULTIPLE_CHOICE_MIN_SIZE,
-    // onChange callback
-    onChange: update_mc_size
+	// wrapper class
+	wrapperClass: 'ispin-wrapper',
+	// button class
+	// buttonsClass: String,
+	// step size
+	step: 1,
+	// page step
+	pageStep: 20,
+	// repeat interval
+	repeatInterval: 200,
+	// enable overflow
+	wrapOverflow: false,
+	// parse
+	// parse: String => Number,
+	// format
+	// format: Number => String,
+	// disable the input spinner
+	disabled: false,
+	// min/max values
+	max: MULTIPLE_CHOICE_MAX_SIZE,
+	min: MULTIPLE_CHOICE_MIN_SIZE,
+	// onChange callback
+	onChange: update_mc_size
 });
 
 // Updates the multiple choice option size based on the spinner value
@@ -448,16 +459,51 @@ function update_mc_size() {
 	$('#mc-size-input').val(Multiple_Choice_Size);
 }
 
+// Updates the score display
+function update_score_display() {
+	$("#current_streak_display").text(Current_Streak);
+	$("#best_streak_display").text(Best_Streak);
+	$("#total_score_display").text(Total_Score);
+}
+
 
 // Init UI
 // Initialize to multiple choice
 setMode(MODES.MULTIPLE_CHOICE);
 // Initialize multiple choice options
 $('#mc-size-input').val(MULTIPLE_CHOICE_DEFAULT_SIZE);
+// Init score UI
+update_score_display();
 
 
 // TODO - language options
 // See Bootstrap dropdown here - https://getbootstrap.com/docs/4.2/components/forms/?
+
+
+
+// ===== COOKIES =====
+// Permissions only applies to "tracking" cookies for EU users - https://javascript.info/cookie
+
+// Expiration date source - https://stackoverflow.com/questions/532635/javascript-cookie-with-no-expiration-date
+function setCookie(cname, value) {
+	document.cookie = cname + "=" + value + "; expires=2038-01-19, 01:00:00 UTC";
+}
+// Source - https://www.w3schools.com/js/js_cookies.asp
+function getCookie(cname) {
+	var name = cname + "=";
+	var decodedCookie = decodeURIComponent(document.cookie);
+	var ca = decodedCookie.split(';');
+	for(var i = 0; i <ca.length; i++) {
+		var c = ca[i];
+		while (c.charAt(0) == ' ') {
+			c = c.substring(1);
+		}
+		if (c.indexOf(name) == 0) {
+			return c.substring(name.length, c.length);
+		}
+	}
+	return "";
+}
 
 
 

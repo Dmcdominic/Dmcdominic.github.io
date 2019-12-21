@@ -3,8 +3,6 @@ layout: default
 title: Hearthstone Flavor Text Quiz
 ---
 
-<!-- Thank you to Drew Sangston for the inspiration -->
-
 <div class="container-fluid mt-4 mb-3">
 	<div class="row mb-3">
 		<div class="col-sm-12">
@@ -25,104 +23,116 @@ title: Hearthstone Flavor Text Quiz
 		</div>
 	</div>
 
-	<!-- Input (Multiple Choice) -->
-	<div id="HS_Flav_multiple_choice_input">
-		<div class="row mb-3 justify-content-center">
-			<!-- NOTE - The col size here is set by update_mc_size() in hs_flavor_text_quiz.js -->
-			<div id="mc_options_col" class="col-12 text-center">
-				<div id="mc_options_container" class="text-center">
-					<button type="button" id="sample_mc_option_btn" onclick="guessCard('option1')" class="btn btn-dark ml-1 mb-1" style="display:none">(Option 1)</button>
-				</div>
-			</div>
-		</div>
-	</div>
 
-	<!-- Input (Free Response) -->
-	<div id="HS_Flav_free_response_input">
-		<div class="row mb-3 justify-content-center">
-			<div class="col-md-3 col-sm-6 text-center">
-				<input id="guessField" class="text-center" contenteditable></input>
-			</div>
-		</div>
+	<!-- BOTTOM ROW STARTS -->
+	<div class="row justify-content-center">
 
-		<div class="row mb-3 justify-content-center">
-			<div class="col-md-6 text-center">
-				<div class="text-center">
-					<button type="button" onclick="guessCard()" class="btn btn-lg btn-success ml-1">Submit</button>
-					<button type="button" onclick="giveUp()" class="btn btn-lg btn-danger ml-1">Give Up</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Next button -->
-	<div id="HS_Flav_next">
-		<div class="row mb-3 justify-content-center">
-			<div class="col-md-6">
-				<div class="text-center">
-					<button id="HS_Flav_next_button" type="button" onclick="setNewCurrentCard()" class="btn btn-lg btn-primary">Next</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Streak display -->
-	<div id="HS_Flav_streak_display">
-		<div class="row mb-1 justify-content-center">
-			<div class="col-md-6">
+		<!-- Streak display -->
+		<div class="col-md-4 col-12">
+			<div id="HS_Flav_streak_display" class="mb-1">
 				<div class="text-center">
 					<p>Current Streak: <span id="current_streak_display">0</span><br>
 						Best Streak: <span id="best_streak_display">0</span><br>
-						Total Score: <span id="total_score_display">0</span></p>
-					</div>
+						Total Score: <span id="total_score_display">0</span>
+					</p>
 				</div>
 			</div>
 		</div>
 
-	<!-- Options button -->
-	<div id="HS_Flav_opt_butt" class="row mb-3 text-center">
-		<div class="col-12">
-				<button class="btn btn-sm btn-info" type="button" onclick="toggle_options_display()">
-					Options
-				</button>
-		</div>
-	</div>
+		<!-- Inputs -->
+		<div class="col-md-4 col-12">
+			<div class="container-fluid">
+				<!-- Input (Multiple Choice) -->
+				<div class="row justify-content-center">
+					<div id="mc_options_col" class="col-12 text-center">
+						<div id="HS_Flav_multiple_choice_input" class="mb-3">
+							<div id="mc_options_container" class="text-center">
+								<button type="button" id="sample_mc_option_btn" onclick="guessCard('option1')" class="btn btn-dark ml-1 mb-1" style="display:none">(Option 1)</button>
+							</div>
+						</div>
+					</div>
 
-	<!-- Options -->
-	<div id="optionsContainer" style="opacity: 0">
-		<div class="card card-body">
-			<div class="row mb-3 text-center justify-content-center">
-				<!-- Mode -->
-				<div class="col-lg-4 col-md-5 col-sm-7 col-12 mb-1">
-					<div class="btn-group btn-group-toggle" data-toggle="buttons">
-						<label class="btn btn-light active">
-							<input type="radio" name="options" id="multipleChoiceRadio" autocomplete="off" checked> Multiple Choice
-						</label>
-						<label class="btn btn-light">
-							<input type="radio" name="options" id="freeResponseRadio" autocomplete="off"> Free Response
-						</label>
+					<!-- Input (Free Response) -->
+					<!-- Free Response text field -->
+					<div class="col-12 text-center">
+						<div id="HS_Flav_free_response_input1" class="mb-3">
+							<input id="guessField" class="text-center" contenteditable></input>
+						</div>
+					</div>
+					<!-- Free Response buttons -->
+					<div class="col-12 text-center">
+						<div id="HS_Flav_free_response_input2" class="mb-3">
+							<div class="text-center">
+								<button type="button" onclick="guessCard()" class="btn btn-lg btn-success ml-1">Submit</button>
+								<button type="button" onclick="giveUp()" class="btn btn-lg btn-danger ml-1">Give Up</button>
+							</div>
+						</div>
+					</div>
+
+					<!-- Next button -->
+					<div class="col-12">
+						<div id="HS_Flav_next" class="mb-3">
+							<div class="text-center">
+								<button id="HS_Flav_next_button" type="button" onclick="setNewCurrentCard()" class="btn btn-lg btn-primary">Next</button>
+							</div>
+						</div>
 					</div>
 				</div>
-				<!-- Custom number of multiple choice options -->
-				<div id="mc_size_container" class="col-lg-3 col-md-4 col-sm-5 col-12">
-					# Options: <input id="mc-size-input" type="text" value="">
-				</div>
-				<!-- Enable/Disable hints -->
-				<div id="fr_hints_container" class="col-lg-3 col-md-4 col-sm-5 col-12">
-					<div class="custom-control custom-switch">
-						<input type="checkbox" checked class="custom-control-input" id="hintsSwitch">
-						<label class="custom-control-label" for="hintsSwitch">Partial-Correctness Hints</label>
-					</div>
-				</div>
+
 			</div>
-			<!-- Contact info -->
-			<div class="row text-center justify-content-center">
-				<div class="col-md-5 col-sm-7 col-12">
-					<p>Feature requests, bugs, or other feedback: <a href="mailto:dmcdominic@gmail.com">dmcdominic@gmail.com</a></p>
+		</div>
+
+		<!-- Options -->
+		<div class="col-md-4 col-12">
+			<div class="container-fluid">
+
+				<!-- Options button -->
+				<div id="HS_Flav_opt_butt" class="row mb-3 text-center">
+					<div class="col-12">
+						<button class="btn btn-sm btn-info" type="button" onclick="toggle_options_display()">
+							Options
+						</button>
+					</div>
 				</div>
+
+				<!-- Options container -->
+				<div id="optionsContainer" style="opacity: 0">
+					<div class="card card-body">
+						<div class="row text-center justify-content-center">
+							<!-- Mode -->
+							<div class="col-12 mb-2">
+								<div class="btn-group btn-group-toggle" data-toggle="buttons">
+									<label class="btn btn-light active">
+										<input type="radio" name="options" id="multipleChoiceRadio" autocomplete="off" checked> Multiple Choice
+									</label>
+									<label class="btn btn-light">
+										<input type="radio" name="options" id="freeResponseRadio" autocomplete="off"> Free Response
+									</label>
+								</div>
+							</div>
+							<!-- Custom number of multiple choice options -->
+							<div id="mc_size_container" class="col-12 mb-2">
+								# Options: <input id="mc-size-input" type="text" value="">
+							</div>
+							<!-- Enable/Disable hints -->
+							<div id="fr_hints_container" class="col-12 mb-2">
+								<div class="custom-control custom-switch">
+									<input type="checkbox" checked class="custom-control-input" id="hintsSwitch">
+									<label class="custom-control-label" for="hintsSwitch">Partial-Correctness Hints</label>
+								</div>
+							</div>
+							<!-- Contact info -->
+							<div class="col-12">
+								<p style="font-size: 1.2em" class="no-margin-bottom">Feature requests, bugs, or other feedback: <a href="mailto:dmcdominic@gmail.com">dmcdominic@gmail.com</a></p>
+							</div>
+						</div>
+					</div>
+				</div>
+
 			</div>
 		</div>
 	</div>
+	<!-- BOTTOM ROW ENDS -->
 
 </div>
 

@@ -162,7 +162,8 @@ function revealCard(correct, textToShow) {
 	$('#HS_Flav_opt_butt').show();
 	$("#flavorText").show();
 	$("#HS_Flav_multiple_choice_input").hide();
-	$("#HS_Flav_free_response_input").hide();
+	$("#HS_Flav_free_response_input1").hide();
+	$("#HS_Flav_free_response_input2").hide();
 	// $("#HS_Flav_next_button").focus();
 }
 
@@ -175,12 +176,14 @@ function setNewCurrentCard() {
 	// Current_Card.flavorText = Current_Card.flavorText.trim();
 
 	$("#HS_Flav_multiple_choice_input").hide();
-	$("#HS_Flav_free_response_input").hide();
+	$("#HS_Flav_free_response_input1").hide();
+	$("#HS_Flav_free_response_input2").hide();
 	if (Mode == MODES.MULTIPLE_CHOICE) {
 		setOptions();
 		$("#HS_Flav_multiple_choice_input").show();
 	} else if (Mode == MODES.FREE_REPONSE) {
-		$("#HS_Flav_free_response_input").show();
+		$("#HS_Flav_free_response_input1").show();
+		$("#HS_Flav_free_response_input2").show();
 	}
 
 	$("#flavorText").html(Current_Card.flavorText);
@@ -196,7 +199,6 @@ function setNewCurrentCard() {
 // Set options for Multiple Choice
 function setOptions() {
 	update_mc_size();
-	update_mc_display_width();
 	if (Cards_With_Flavor.length < Multiple_Choice_Size) {
 		throw "Not enough cards to generate that many choices";
 	}
@@ -301,12 +303,14 @@ function setMode(newMode) {
 	Mode = newMode;
 	if (Mode === MODES.MULTIPLE_CHOICE) {
 		$("#HS_Flav_multiple_choice_input").show();
-		$("#HS_Flav_free_response_input").hide();
+		$("#HS_Flav_free_response_input1").hide();
+		$("#HS_Flav_free_response_input2").hide();
 		$("#mc_size_container").show();
 		$("#fr_hints_container").hide();
 	} else if (Mode == MODES.FREE_REPONSE) {
 		$("#HS_Flav_multiple_choice_input").hide();
-		$("#HS_Flav_free_response_input").show();
+		$("#HS_Flav_free_response_input1").show();
+		$("#HS_Flav_free_response_input2").show();
 		$("#mc_size_container").hide();
 		$("#fr_hints_container").show();
 	}
@@ -397,16 +401,7 @@ function update_mc_size() {
 	}
 	$('#mc-size-input').val(Multiple_Choice_Size);
 }
-// Updates the multiple choice options column display width
-function update_mc_display_width() {
-	$('#mc_options_col').removeClass("col-lg-5 col-md-6 col-sm-9");
-	$('#mc_options_col').removeClass("col-lg-7 col-md-9");
-	if (Multiple_Choice_Size < 6) {
-		$('#mc_options_col').addClass("col-lg-5 col-md-6 col-sm-9");
-	} else if (Multiple_Choice_Size < 20) {
-		$('#mc_options_col').addClass("col-lg-7 col-md-9");
-	}
-}
+
 
 // Init UI
 // Set the options container to hide properly once Bootstrap does its thing

@@ -48,6 +48,10 @@ p {
 	text-indent: 1.5em;
 }
 
+.no-margin-bottom {
+	margin-bottom: 0;
+}
+
 a.no-link-style,
 a.no-link-style:hover {
 	color: inherit;
@@ -260,7 +264,7 @@ hr.break {
 #HS_Flav_next {
 	display: flex;
 }
-#HS_Flav_free_response_input, #HS_Flav_multiple_choice_input, #HS_Flav_next, #HS_Flav_streak_display, #flavorText, #answerTextContainer, #HS_Flav_opt_butt {
+#HS_Flav_free_response_input1, #HS_Flav_free_response_input2, #HS_Flav_multiple_choice_input, #HS_Flav_next, #HS_Flav_streak_display, #flavorText, #answerTextContainer, #HS_Flav_opt_butt {
 	display: none;
 }
 

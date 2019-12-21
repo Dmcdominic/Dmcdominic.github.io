@@ -16,6 +16,45 @@ const MODES = {
 	FREE_REPONSE: "Free Response"
 }
 
+// Emote lines for random responses.
+// Source - https://hearthstone.gamepedia.com/Hearthstone_Wiki
+const _WOW_LINES = [
+	"Wow....",
+	"Astonishing!",
+	"Amazing.",
+	"That's incredible!",
+	"By the Holy Light!",
+	"Astounding!",
+	"Extraordinary.",
+	"Incredible.",
+	"Spectacular!"
+]
+const _OOPS_LINES = [
+	"Not quite what was planned.",
+	"That was an error.",
+	"Whoops.",
+	"That was a mistake.",
+	"That was a mistake.",
+	"That didn't quite hit the mark.",
+	"That was a mistake.",
+	"Mistakes were made.",
+	"A natural mistake."
+]
+const _SORRY_LINES = [
+	"My apologies.",
+	"Sorry that happened.",
+	"I'm sorry.",
+	"Sorry that happened.",
+	"I am sorry.",
+	"My apologies.",
+	"Sorry.",
+	"Sorry about that.",
+	"Sorry about that."
+]
+const WOW_LINES = _WOW_LINES.filter((v,i) => _WOW_LINES.indexOf(v) === i);
+const OOPS_LINES = _OOPS_LINES.filter((v,i) => _OOPS_LINES.indexOf(v) === i);
+const SORRY_LINES = _SORRY_LINES.filter((v,i) => _SORRY_LINES.indexOf(v) === i);
+
 // Global Token data
 var Access_Token = null;
 
@@ -44,8 +83,7 @@ var Hints = true;
 // https://develop.battle.net/access/clients/details/b7777d5b2cf8467697f17db51270a714
 
 // First, get an access token
-// Reference:
-// https://github.com/search?q=%22.battle.net%2Foauth%2Ftoken%22+fetch&type=Code
+// Reference - https://github.com/search?q=%22.battle.net%2Foauth%2Ftoken%22+fetch&type=Code
 fetch("https://us.battle.net/oauth/token?grant_type=client_credentials&client_id=" + CLIENT_ID + "&client_secret=" + CLIENT_SECRET, {
 	"method": "POST"
 })
@@ -81,8 +119,7 @@ fetch("https://us.battle.net/oauth/token?grant_type=client_credentials&client_id
 
 
 // Now use the token to actually get card data
-// Reference:
-// https://github.com/search?q=%22.api.blizzard.com%2Fhearthstone%2F%22+fetch&type=Code
+// Reference - https://github.com/search?q=%22.api.blizzard.com%2Fhearthstone%2F%22+fetch&type=Code
 function getCardData(pageNum) {
 	fetch("https://us.api.blizzard.com/hearthstone/cards?locale=en_US&collectible=1&pageSize=" + PAGE_SIZE + "&page=" + pageNum + "&access_token=" + Access_Token, {
 		"method": "GET"
@@ -134,6 +171,9 @@ function generateQuiz() {
 	console.log("Cards_With_Flavor:");
 	console.log(Cards_With_Flavor);
 	setNewCurrentCard();
+
+	// Special search here
+	// console.log(Cards_With_Flavor.filter(card => card.text.includes("close")));
 }
 
 
@@ -263,9 +303,10 @@ function guessCard(guess) {
 	let currentCardNameLower = Current_Card.name.toLowerCase();
 	let similarityScore = similarity(guess, Current_Card.name);
 	if (guess === currentCardNameLower) {
-		revealCard(true, "That's right!<br><u>The answer is</u>: <i>" + Current_Card.name + "</i>");
+		revealCard(true, randWowLine() + "<br><u>The answer is</u>: <i>" + Current_Card.name + "</i>");
 	} else if (similarityScore >= SIMILARITY_THRESHOLD) {
-		revealCard(true, "Close enough!<br><u>The answer is</u>: <i>" + Current_Card.name + "</i>");
+		// TODO - close enough line?
+		revealCard(true, randWowLine() + " (Close enough!)<br><u>The answer is</u>: <i>" + Current_Card.name + "</i>");
 		// console.log("[You had a similarity score of " + similarityScore + "]");
 	} else {
 		let bestSubstring = bestSubstringMatch(guess, Current_Card.name);
@@ -281,18 +322,19 @@ function guessCard(guess) {
 function guessCardSlug(slug) {
 	console.assert(Mode === MODES.MULTIPLE_CHOICE);
 	if (slug === Current_Card.slug) {
-		revealCard(true, "You got it!<br><u>The answer is</u>: <i>" + Current_Card.name + "</i>");
+		revealCard(true, randWowLine() + "<br><u>The answer is</u>: <i>" + Current_Card.name + "</i>");
 	} else {
 		let guessed_card_list = Current_Options.filter(card => card.slug === slug);
 		console.assert(guessed_card_list.length === 1);
 		let guessed_card = guessed_card_list[0];
-		revealCard(false, "Sorry, <u>The answer is</u>: <i>" + Current_Card.name + "</i><br>The flavor text of " + guessed_card.name + " is: \"" + guessed_card.flavorText + "\"");
+		revealCard(false, randOopsLine() + "<br><u>The answer is</u>: <i>" + Current_Card.name + "</i><br>The flavor text of <i>" + guessed_card.name
+		  + "</i> is:<br> <span style='background-color: yellow'>" + guessed_card.flavorText + "</span>");
 	}
 }
 
 // Call this to give up and see the answer
 function giveUp() {
-	revealCard(false, "Okay, okay...<br><u>The answer is</u>: <i>" + Current_Card.name + "</i>");
+	revealCard(false, randSorryLine() + "<br><u>The answer is</u>: <i>" + Current_Card.name + "</i>");
 }
 
 // Toggle the mode to a new mode
@@ -316,6 +358,26 @@ function setMode(newMode) {
 	}
 }
 
+// Get a random emote line
+function randWowLine() {
+	return "<span style='background-color: green'>" + randWowLineTxt() + "</span>";
+}
+function randOopsLine() {
+	return "<span style='background-color: red'>" + randOopsLineTxt() + "</span>";
+}
+function randSorryLine() {
+	return "<span style='background-color: red'>" + randSorryLineTxt() + "</span>";
+}
+
+function randWowLineTxt() {
+	return WOW_LINES[Math.floor(Math.random() * WOW_LINES.length)];
+}
+function randOopsLineTxt() {
+	return OOPS_LINES[Math.floor(Math.random() * OOPS_LINES.length)];
+}
+function randSorryLineTxt() {
+	return SORRY_LINES[Math.floor(Math.random() * SORRY_LINES.length)];
+}
 
 
 // ===== UI =====

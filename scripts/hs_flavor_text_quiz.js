@@ -24,7 +24,6 @@ var All_Cards = [];
 var Cards_With_Flavor = [];
 var Current_Card = null;
 var Current_Options = [];
-var Options_to_Buttons = {};
 var Current_Streak = 0;
 var Best_Streak = 0;
 var Total_Score = 0;
@@ -159,7 +158,7 @@ function revealCard(correct, textToShow) {
 	$("#answerTextContainer").html(textToShow);
 	$("#answerTextContainer").show();
 	$("#HS_Flav_next").show();
-	$('#HS_Flav_opt_butt').show();
+	$('#HS_Flav_options_container').show();
 	$("#flavorText").show();
 	$("#HS_Flav_multiple_choice_input").hide();
 	$("#HS_Flav_free_response_input1").hide();
@@ -190,7 +189,7 @@ function setNewCurrentCard() {
 	$("#answerTextContainer").hide();
 	$("#HS_Flav_next").hide();
 	$("#HS_Flav_streak_display").show();
-	$('#HS_Flav_opt_butt').show();
+	$('#HS_Flav_options_container').show();
 	$("#flavorText").show();
 	$("#guessField").val("");
 	$("#guessField").focus();
@@ -216,14 +215,12 @@ function setOptions() {
 	clearMCOptionButtons();
 	let container = document.getElementById("mc_options_container");
 	let sample_btn = document.getElementById("sample_mc_option_btn");
-	Options_to_Buttons = {};
 
 	for (let i=0; i < Current_Options.length; i++) {
 		let card = Current_Options[i];
 		var new_btn = sample_btn.cloneNode(true);
 		new_btn.style.display = "inline-block";
 		new_btn.id = "real_mc_option_btn";
-		Options_to_Buttons[new_btn] =
 		$(new_btn).text(card.name);
 		$(new_btn).attr("onclick", "guessCardSlug('" + card.slug + "')");
 		container.appendChild(new_btn);
@@ -352,19 +349,6 @@ $(function() {
 	});
 });
 
-// Toggles the options card on/off
-function toggle_options_display() {
-	let optionsContainer = $('#optionsContainer');
-	optionsContainer.each(function(index, options_container) {
-		let element = $(options_container);
-		if (element.css("display") === "none") {
-			element.css("display", "block");
-		} else {
-			element.css("display", "none");
-		}
-	});
-}
-
 // Multiple choice size spinner initialization.
 // Source: https://www.cssscript.com/increment-decrement-number-ispinjs/
 let spinner = new ISpin(document.getElementById('mc-size-input'), {
@@ -404,11 +388,6 @@ function update_mc_size() {
 
 
 // Init UI
-// Set the options container to hide properly once Bootstrap does its thing
-setTimeout(function() {
-	$('#optionsContainer').css("display", "none");
-	$('#optionsContainer').css("opacity", "1");
-}, 50);
 // Initialize to multiple choice
 setMode(MODES.MULTIPLE_CHOICE);
 // Initialize multiple choice options

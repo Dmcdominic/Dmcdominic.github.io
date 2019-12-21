@@ -257,7 +257,7 @@ hr.break {
 #HS_Flav_next {
 	display: flex;
 }
-#HS_Flav_free_response_input, #HS_Flav_multiple_choice_input, #HS_Flav_next, #flavorText, #answerTextContainer, #HS_Flav_opt_butt {
+#HS_Flav_free_response_input, #HS_Flav_multiple_choice_input, #HS_Flav_next, #HS_Flav_streak_display, #flavorText, #answerTextContainer, #HS_Flav_opt_butt {
 	display: none;
 }
 

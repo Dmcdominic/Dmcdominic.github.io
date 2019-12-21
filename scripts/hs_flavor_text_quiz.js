@@ -2,7 +2,7 @@
 const SIMILARITY_THRESHOLD = 0.8; // From range [0, 1];
 const SUBSTRING_MIN_LENGTH = 4; // You get a hint if you get this many chars right
 const PAGE_SIZE = 500; // This seems to be the cap
-const MULTIPLE_CHOICE_DEFAULT_SIZE = 5;
+const MULTIPLE_CHOICE_DEFAULT_SIZE = 4;
 const MULTIPLE_CHOICE_MIN_SIZE = 2;
 const MULTIPLE_CHOICE_MAX_SIZE = 100;
 
@@ -25,6 +25,8 @@ var Cards_With_Flavor = [];
 var Current_Card = null;
 var Current_Options = [];
 var Options_to_Buttons = {};
+var Current_Streak = 0;
+var Total_Score = 0;
 
 // User Settings
 var Mode = MODES.MULTIPLE_CHOICE;
@@ -137,7 +139,16 @@ function generateQuiz() {
 
 // ===== Quiz Functionality =====
 
-function revealCard(textToShow) {
+function revealCard(correct, textToShow) {
+	if (correct) {
+		Current_Streak++;
+		Total_Score++;
+	} else {
+		Current_Streak = 0;
+	}
+	$("#current_streak_display").text(Current_Streak);
+	$("#total_score_display").text(Total_Score);
+
 	$("#correctCardImg").attr("src", Current_Card.image);
 	$("#answerTextContainer").html(textToShow);
 	$("#answerTextContainer").show();
@@ -169,6 +180,7 @@ function setNewCurrentCard() {
 	$("#flavorText").html(Current_Card.flavorText);
 	$("#answerTextContainer").hide();
 	$("#HS_Flav_next").hide();
+	$("#HS_Flav_streak_display").show();
 	$('#HS_Flav_opt_butt').show();
 	$("#flavorText").show();
 	$("#guessField").val("");
@@ -246,9 +258,9 @@ function guessCard(guess) {
 	let currentCardNameLower = Current_Card.name.toLowerCase();
 	let similarityScore = similarity(guess, Current_Card.name);
 	if (guess === currentCardNameLower) {
-		revealCard("That's right!<br><u>The answer is</u>: <i>" + Current_Card.name + "</i>");
+		revealCard(true, "That's right!<br><u>The answer is</u>: <i>" + Current_Card.name + "</i>");
 	} else if (similarityScore >= SIMILARITY_THRESHOLD) {
-		revealCard("Close enough!<br><u>The answer is</u>: <i>" + Current_Card.name + "</i>");
+		revealCard(true, "Close enough!<br><u>The answer is</u>: <i>" + Current_Card.name + "</i>");
 		// console.log("[You had a similarity score of " + similarityScore + "]");
 	} else {
 		let bestSubstring = bestSubstringMatch(guess, Current_Card.name);
@@ -264,18 +276,18 @@ function guessCard(guess) {
 function guessCardSlug(slug) {
 	console.assert(Mode === MODES.MULTIPLE_CHOICE);
 	if (slug === Current_Card.slug) {
-		revealCard("You got it!<br><u>The answer is</u>: <i>" + Current_Card.name + "</i>");
+		revealCard(true, "You got it!<br><u>The answer is</u>: <i>" + Current_Card.name + "</i>");
 	} else {
 		let guessed_card_list = Current_Options.filter(card => card.slug === slug);
 		console.assert(guessed_card_list.length === 1);
 		let guessed_card = guessed_card_list[0];
-		revealCard("Sorry, <u>The answer is</u>: <i>" + Current_Card.name + "</i><br>The flavor text of " + guessed_card.name + " is: \"" + guessed_card.flavorText + "\"");
+		revealCard(false, "Sorry, <u>The answer is</u>: <i>" + Current_Card.name + "</i><br>The flavor text of " + guessed_card.name + " is: \"" + guessed_card.flavorText + "\"");
 	}
 }
 
 // Call this to give up and see the answer
 function giveUp() {
-	revealCard("Okay, okay...<br><u>The answer is</u>: <i>" + Current_Card.name + "</i>");
+	revealCard(false, "Okay, okay...<br><u>The answer is</u>: <i>" + Current_Card.name + "</i>");
 }
 
 // Toggle the mode to a new mode
@@ -377,6 +389,7 @@ function update_mc_size() {
 	if (new_size) {
 		Multiple_Choice_Size = Math.max(MULTIPLE_CHOICE_MIN_SIZE, Math.min(new_size, MULTIPLE_CHOICE_MAX_SIZE));
 	}
+	$('#mc-size-input').val(Multiple_Choice_Size);
 }
 // Updates the multiple choice options column display width
 function update_mc_display_width() {
@@ -399,7 +412,6 @@ setTimeout(function() {
 setMode(MODES.MULTIPLE_CHOICE);
 // Initialize multiple choice options
 $('#mc-size-input').val(MULTIPLE_CHOICE_DEFAULT_SIZE);
-
 
 
 // TODO - language options

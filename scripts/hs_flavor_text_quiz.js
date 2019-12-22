@@ -61,8 +61,30 @@ var Access_Token = null;
 // Global variables to store card data
 var All_Cards = [];
 var Cards_With_Flavor = [];
-var Current_Card = null;
+var Current_Pool_Full = [];
+var Current_Pool_No_Obvious = [];
+var Current_Card_mc = null;
+var Current_Card_fr = null;
 var Current_Options = [];
+
+var Card_Revealed_mc = false;
+var Card_Revealed_fr = false;
+
+// User Settings
+var Mode = MODES.MULTIPLE_CHOICE;
+var Multiple_Choice_Size = MULTIPLE_CHOICE_DEFAULT_SIZE;
+var Hints = true;
+var No_Obvious_Prompts = true; // TODO - button to toggle this in options
+
+// Getters
+function getCurrentCard() {
+	return (Mode === MODES.MULTIPLE_CHOICE) ? Current_Card_mc : Current_Card_fr;
+}
+function getCurrentPool() {
+	return (No_Obvious_Prompts) ? Current_Pool_No_Obvious : Current_Pool_Full;
+}
+
+// Initialization from cookies
 var Current_Streak = getCookie("Current_Streak");
 var Best_Streak = getCookie("Best_Streak");
 var Total_Score = getCookie("Total_Score");
@@ -75,12 +97,6 @@ if (!Best_Streak) {
 if (!Total_Score) {
 	Total_Score = 0;
 }
-
-// User Settings
-var Mode = MODES.MULTIPLE_CHOICE;
-var Multiple_Choice_Size = MULTIPLE_CHOICE_DEFAULT_SIZE;
-var Hints = true;
-
 
 
 // ===== Fetching Data from the Hearthstone API =====
@@ -177,12 +193,31 @@ function appendCardData(json) {
 // Generate quiz questions, once all data has been loaded
 function generateQuiz() {
 	Cards_With_Flavor = All_Cards.filter(card => card.flavorText !== undefined && card.flavorText.trim());
+	resetPools();
+
 	console.log("Cards_With_Flavor:");
 	console.log(Cards_With_Flavor);
+	console.log("Current_Pool_Full:");
+	console.log(Current_Pool_Full);
+	console.log("Current_Pool_No_Obvious:");
+	console.log(Current_Pool_No_Obvious);
+
 	setNewCurrentCard();
 
 	// Special search here
 	// console.log(Cards_With_Flavor.filter(card => card.text.includes("close")));
+}
+
+// Returns true iff the card's flavor text is not "obvious"
+function obviousFilter(card) {
+	// TODO - return false when card flavor text is "obvious"
+	return true;
+}
+
+// Resets the pools to their complete versions
+function resetPools() {
+	Current_Pool_Full = All_Cards.filter(card => card.flavorText !== undefined && card.flavorText.trim());
+	Current_Pool_No_Obvious = Cards_With_Flavor.filter(card => obviousFilter(card));
 }
 
 
@@ -196,6 +231,8 @@ function revealCard(correct, textToShow) {
 		if (Current_Streak > Best_Streak) {
 			Best_Streak = Current_Streak;
 		}
+		// Update current pools
+		removeFromPools(getCurrentCard());
 	} else {
 		Current_Streak = 0;
 	}
@@ -204,7 +241,9 @@ function revealCard(correct, textToShow) {
 	setCookie("Total_Score", Total_Score);
 	update_score_display();
 
-	$("#correctCardImg").attr("src", Current_Card.image);
+	updateCurrentCardRevealed(true);
+
+	$("#correctCardImg").attr("src", getCurrentCard().image);
 	$("#answerTextContainer").html(textToShow);
 	$("#answerTextContainer").show();
 	$("#HS_Flav_next").show();
@@ -216,11 +255,22 @@ function revealCard(correct, textToShow) {
 	// $("#HS_Flav_next_button").focus();
 }
 
+// Returns true iff current card is revealed
+function isCurrentCardRevealed() {
+	return (Mode === MODES.MULTIPLE_CHOICE) ? Card_Revealed_mc : Card_Revealed_fr;
+}
+function updateCurrentCardRevealed(newVal) {
+	if (Mode === MODES.MULTIPLE_CHOICE) {
+		Card_Revealed_mc = newVal;
+	} else if (Mode === MODES.FREE_REPONSE) {
+		Card_Revealed_fr = newVal;
+	}
+}
+
 // Sets Current_Card to a new random card
-function setNewCurrentCard() {
+function setNewCurrentCard(justVisuals = false) {
 	$("#correctCardImg").attr("src", "/images/HS_Flavor_Text_Quiz/Mystery Card.png");
 
-	Current_Card = getRandomCard();
 	// Current_Card.name = Current_Card.name.trim();
 	// Current_Card.flavorText = Current_Card.flavorText.trim();
 
@@ -228,14 +278,21 @@ function setNewCurrentCard() {
 	$("#HS_Flav_free_response_input1").hide();
 	$("#HS_Flav_free_response_input2").hide();
 	if (Mode == MODES.MULTIPLE_CHOICE) {
-		setOptions();
+		if (!justVisuals) {
+			Current_Card_mc = getRandomCard();
+			setOptions();
+		}
 		$("#HS_Flav_multiple_choice_input").show();
 	} else if (Mode == MODES.FREE_REPONSE) {
+		if (!justVisuals) {
+			Current_Card_fr = getRandomCard();
+		}
 		$("#HS_Flav_free_response_input1").show();
 		$("#HS_Flav_free_response_input2").show();
 	}
+	updateCurrentCardRevealed(false);
 
-	$("#flavorText").html(Current_Card.flavorText);
+	$("#flavorText").html(getCurrentCard().flavorText);
 	$("#answerTextContainer").hide();
 	$("#HS_Flav_next").hide();
 	$("#HS_Flav_streak_display").show();
@@ -248,11 +305,14 @@ function setNewCurrentCard() {
 // Set options for Multiple Choice
 function setOptions() {
 	update_mc_size();
-	if (Cards_With_Flavor.length < Multiple_Choice_Size) {
-		throw "Not enough cards to generate that many choices";
+
+	const MIN_POOL_SIZE_FACTOR = 3;
+	if (getCurrentPool().length < Multiple_Choice_Size * MIN_POOL_SIZE_FACTOR) {
+		// throw "Not enough cards to generate that many choices";
+		resetPools();
 	}
 
-	Current_Options = [Current_Card];
+	Current_Options = [getCurrentCard()];
 	while (Current_Options.length < Multiple_Choice_Size) {
 		let nextCard = getRandomCard();
 		if (!Current_Options.includes(nextCard)) {
@@ -289,9 +349,11 @@ function clearMCOptionButtons() {
 	container.append(new_sample_btn);
 }
 
-// Returns a random card (from Cards_With_Flavor)
+// Returns a random card (from the current pool)
 function getRandomCard() {
-	return Cards_With_Flavor[Math.floor(Math.random() * Cards_With_Flavor.length)];
+	// TODO - update to use the current pool
+	var currentPool = getCurrentPool();
+	return currentPool[Math.floor(Math.random() * currentPool.length)];
 }
 
 // Call this to guess what the card is.
@@ -310,18 +372,17 @@ function guessCard(guess) {
 
 	$("#answerTextContainer").show();
 
-	let currentCardNameLower = Current_Card.name.toLowerCase();
-	let similarityScore = similarity(guess, Current_Card.name);
+	let currentCardNameLower = getCurrentCard().name.toLowerCase();
+	let similarityScore = similarity(guess, getCurrentCard().name);
 	if (guess === currentCardNameLower) {
-		revealCard(true, randWowLine() + "<br><u>The answer is</u>: <i>" + Current_Card.name + "</i>");
+		revealCard(true, randWowLine() + "<br><u>The answer is</u>: <i>" + getCurrentCard().name + "</i>");
 	} else if (similarityScore >= SIMILARITY_THRESHOLD) {
-		// TODO - close enough line?
-		revealCard(true, randWowLine() + " (Close enough!)<br><u>The answer is</u>: <i>" + Current_Card.name + "</i>");
+		revealCard(true, randWowLine() + " (Close enough!)<br><u>The answer is</u>: <i>" + getCurrentCard().name + "</i>");
 		// console.log("[You had a similarity score of " + similarityScore + "]");
 	} else {
-		let bestSubstring = bestSubstringMatch(guess, Current_Card.name);
+		let bestSubstring = bestSubstringMatch(guess, getCurrentCard().name);
 		if (Hints && bestSubstring.length >= SUBSTRING_MIN_LENGTH) {
-			$("#answerTextContainer").html("Almost! You got this part right: \"" + bestSubstring + "\"");
+			$("#answerTextContainer").html("Almost! You got this part right:<br>\"" + bestSubstring + "\"");
 		} else {
 			$("#answerTextContainer").html("You guessed: \"" + fullCaseGuess +  "\". Good try but nope.");
 		}
@@ -331,25 +392,38 @@ function guessCard(guess) {
 // "slug" is the card's slug
 function guessCardSlug(slug) {
 	console.assert(Mode === MODES.MULTIPLE_CHOICE);
-	if (slug === Current_Card.slug) {
-		revealCard(true, randWowLine() + "<br><u>The answer is</u>: <i>" + Current_Card.name + "</i>");
+	if (slug === getCurrentCard().slug) {
+		revealCard(true, randWowLine() + "<br><u>The answer is</u>: <i>" + getCurrentCard().name + "</i>");
 	} else {
 		let guessed_card_list = Current_Options.filter(card => card.slug === slug);
 		console.assert(guessed_card_list.length === 1);
 		let guessed_card = guessed_card_list[0];
-		revealCard(false, randOopsLine() + "<br><u>The answer is</u>: <i>" + Current_Card.name + "</i><br>The flavor text of <i>" + guessed_card.name
+		revealCard(false, randOopsLine() + "<br><u>The answer is</u>: <i>" + getCurrentCard().name + "</i><br>The flavor text of <i>" + guessed_card.name
 		+ "</i> is:<br> <span style='background-color: yellow'>" + guessed_card.flavorText + "</span>");
 	}
 }
 
 // Call this to give up and see the answer
 function giveUp() {
-	revealCard(false, randSorryLine() + "<br><u>The answer is</u>: <i>" + Current_Card.name + "</i>");
+	revealCard(false, randSorryLine() + "<br><u>The answer is</u>: <i>" + getCurrentCard().name + "</i>");
+}
+
+// Removes a certain card from each card pool
+function removeFromPools(card) {
+	let index_full = Current_Pool_Full.indexOf(card);
+	let index_no_obvious = Current_Pool_No_Obvious.indexOf(card);
+	if (index_full >= 0) {
+		Current_Pool_Full.splice(index_full, 1);
+	}
+	if (index_no_obvious >= 0) {
+		Current_Pool_No_Obvious.splice(index_no_obvious, 1);
+	}
 }
 
 // Toggle the mode to a new mode
 function setMode(newMode) {
 	Mode = newMode;
+
 	if (Mode === MODES.MULTIPLE_CHOICE) {
 		$("#HS_Flav_multiple_choice_input").show();
 		$("#HS_Flav_free_response_input1").hide();
@@ -363,8 +437,9 @@ function setMode(newMode) {
 		$("#mc_size_container").hide();
 		$("#fr_hints_container").show();
 	}
-	if (Cards_With_Flavor && Cards_With_Flavor.length > 0) {
-		setNewCurrentCard();
+	let currentPool = getCurrentPool();
+	if (currentPool && currentPool.length > 0) {
+		setNewCurrentCard(!!getCurrentCard() && !isCurrentCardRevealed());
 	}
 }
 

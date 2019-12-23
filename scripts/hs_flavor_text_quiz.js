@@ -1,12 +1,12 @@
 // Settings
-const OBVIOUS_WORD_MIN_LENGTH = 3;
-const OBVIOUS_SUBSTRING_MIN_LENGTH = 5;
-const CLOSE_ENOUGH_SIMILARITY_THRESHOLD = 0.8; // From range [0, 1];
-const HINT_SUBSTRING_MIN_LENGTH = 4; // You get a hint if you get this many chars right
-const PAGE_SIZE = 500; // This seems to be the cap
 const MULTIPLE_CHOICE_DEFAULT_SIZE = 4;
 const MULTIPLE_CHOICE_MIN_SIZE = 2;
 const MULTIPLE_CHOICE_MAX_SIZE = 100;
+const OBVIOUS_WORD_MIN_LENGTH = 3; // Filters for words from name that appear in flavorText of this length
+const OBVIOUS_SUBSTRING_MIN_LENGTH = 5; // Filters for common substrings of this length
+const CLOSE_ENOUGH_SIMILARITY_THRESHOLD = 0.8; // From range [0, 1];
+const HINT_SUBSTRING_MIN_LENGTH = 4; // You get a hint if you get this many chars right
+const PAGE_SIZE = 500; // API response size. This seems to be the cap
 
 // OAuth Data
 const CLIENT_ID = "b7777d5b2cf8467697f17db51270a714";
@@ -228,6 +228,8 @@ function obviousFilter(card) {
 function resetPools() {
 	Current_Pool_Full = All_Cards.filter(card => card.flavorText !== undefined && card.flavorText.trim());
 	Current_Pool_No_Obvious = Cards_With_Flavor.filter(card => obviousFilter(card));
+	// console.log("Current_Pool_No_Obvious:");
+	// console.log(Current_Pool_No_Obvious);
 }
 
 
@@ -366,10 +368,10 @@ function setOptions() {
 // Generates a pool based on 2 (randomly chosen) card features
 function generatePool(initialPool, focusCard, minSize) {
 	let newPool = [];
-	const MAX_LOOPS = 10;
+	const POOL_MAX_LOOPS = 10;
 	let loops = 0;
 	while (newPool.length < minSize) {
-		if (loops >= MAX_LOOPS) {
+		if (loops >= POOL_MAX_LOOPS) {
 			return initialPool;
 		}
 		loops++;

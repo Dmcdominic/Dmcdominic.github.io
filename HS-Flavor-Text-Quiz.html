@@ -1,159 +1,25 @@
 ---
-layout: default
-title: Hearthstone Flavor Text Quiz
+# Front Matter
 ---
 
-<div class="container-fluid mt-4 mb-3">
-	<div class="row mb-3">
-		<div class="col-sm-12">
-			<h1 class="display-3 text-center">Hearthstone Flavor Text Quiz</h1>
-		</div>
-	</div>
+<!DOCTYPE html>
+<html lang="en">
 
-	<div class="row justify-content-center mb-3">
-		<!-- Loading wheel / Card image -->
-		<div class="col-12 text-center mb-3">
-			<img id="correctCardImg" src="/images/HS_Flavor_Text_Quiz/HS_Loading.gif" alt="Card image not available :(">
-		</div>
-	</div>
+<head>
+	<!-- Title -->
+	<title>Dominic Calkosz</title>
 
+	<!-- Favicon -->
+	{% include favicon.html %}
+	<!-- Analytics -->
+	{% include analytics.html %}
 
-	<!-- BOTTOM ROW STARTS -->
-	<div class="row justify-content-center">
+	<!-- Redirect immediately to the homepage: Game Portfolio -->
+	<script>
+	window.location.href = "/HS-Flavor";
+	</script>
+</head>
 
-		<!-- Streak display -->
-		<div class="col-lg-4 order-lg-1 col-sm-6 order-6">
-			<div id="HS_Flav_streak_display" class="mb-3">
-				<div class="card text-center">
-					<h3 class="card-header display-5">Score</h3>
-					<div class="card-body">
-						<div class="container-fluid">
-							<div class="row justify-content-center">
-								<div class="col-md-6 col-12 mb-2">
-									<h5 class="display-6"><u>Multiple Choice</u></h5>
-									<p class="no-margin-bottom">Streak: <span id="current_streak_mc_display">0</span><br>
-										Best: <span id="best_streak_mc_display">0</span><br>
-										Total: <span id="total_score_mc_display">0</span>
-									</p>
-								</div>
-								<div class="col-md-6 col-12">
-									<h5 class="display-6"><u>Open Ended</u></h5>
-									<p class="no-margin-bottom">Streak: <span id="current_streak_fr_display">0</span><br>
-										Best: <span id="best_streak_fr_display">0</span><br>
-										Total: <span id="total_score_fr_display">0</span>
-									</p>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- Prompt, answer line, and inputs -->
-		<div class="col-lg-4 order-lg-6 col-12 order-1">
-			<div class="container-fluid">
-				<div class="row justify-content-center">
-					<!-- Prompt -->
-					<div class="col-lg-12 col-sm-10 text-center">
-						<p><span id="flavorText">(Loading...)</span></p>
-						<p id="answerTextContainer"></p>
-					</div>
-					<!-- Input (Multiple Choice) -->
-					<div id="mc_options_col" class="col-12 text-center">
-						<div id="HS_Flav_multiple_choice_input" class="mb-3">
-							<div id="mc_options_container">
-								<button type="button" id="sample_mc_option_btn" onclick="guessCard('option1')" class="btn btn-dark ml-1 mb-1" style="display:none">(Option 1)</button>
-							</div>
-						</div>
-					</div>
-
-					<!-- Input (Free Response) -->
-					<!-- Free Response text field -->
-					<div class="col-12 text-center">
-						<div id="HS_Flav_free_response_input1" class="mb-3">
-							<input id="guessField" class="text-center" contenteditable></input>
-						</div>
-					</div>
-					<!-- Free Response buttons -->
-					<div class="col-12 text-center">
-						<div id="HS_Flav_free_response_input2" class="mb-3">
-							<button type="button" onclick="guessCard()" class="btn btn-lg btn-success ml-1">Submit</button>
-							<button type="button" onclick="giveUp()" class="btn btn-lg btn-danger ml-1">Give Up</button>
-						</div>
-					</div>
-
-					<!-- Next button -->
-					<div class="col-12 text-center">
-						<div id="HS_Flav_next" class="mb-3">
-							<button id="HS_Flav_next_button" type="button" onclick="setNewCurrentCard()" class="btn btn-lg btn-primary">Next</button>
-						</div>
-					</div>
-				</div>
-
-			</div>
-		</div>
-
-		<!-- Options -->
-		<div class="col-lg-4 order-lg-12 col-sm-9 order-12">
-			<div id="HS_Flav_options_container" class="mb-1">
-				<div class="container-fluid">
-					<div class="card text-center">
-						<h3 class="card-header display-5">Options</h3>
-						<div class="card-body">
-							<!-- Options container -->
-							<div class="row justify-content-center">
-								<!-- Mode -->
-								<div class="col-12 mb-2">
-									<div class="btn-group btn-group-toggle" data-toggle="buttons">
-										<label class="btn btn-light active">
-											<input type="radio" name="options" id="multipleChoiceRadio" autocomplete="off" checked> Multiple Choice
-										</label>
-										<label class="btn btn-light">
-											<input type="radio" name="options" id="freeResponseRadio" autocomplete="off"> Open Ended
-										</label>
-									</div>
-								</div>
-								<!-- Custom number of multiple choice options -->
-								<div id="mc_size_container" class="col-12 mb-2">
-									# Options: <input id="mc-size-input" type="text" value="">
-								</div>
-								<!-- Enable/Disable hints -->
-								<div id="fr_hints_container" class="col-12 mb-2">
-									<div class="custom-control custom-switch">
-										<input type="checkbox" checked class="custom-control-input" id="hintsSwitch">
-										<label class="custom-control-label" for="hintsSwitch">Partial-Correctness Hints</label>
-									</div>
-								</div>
-								<!-- Enable/Disable "No Obvious Prompts" -->
-								<div class="col-12 mb-2">
-									<div class="custom-control custom-switch">
-										<input type="checkbox" checked class="custom-control-input" id="noObviousSwitch">
-										<label class="custom-control-label" for="noObviousSwitch">Exclude "Obvious" Flavor Text</label>
-									</div>
-								</div>
-								<!-- Contact info -->
-								<div class="col-12">
-									<!-- https://www.youtube.com/watch?v=uu7uBD8J9Iw -->
-									<p style="font-size: 1.2em" class="no-margin-bottom">Feature requests, bugs, or other feedback: <a href="mailto:dmcdominic@gmail.com">dmcdominic@gmail.com</a></p>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-
-			</div>
-		</div>
-	</div>
-	<!-- BOTTOM ROW ENDS -->
-
-</div>
-
-<!-- Number input spinner - https://www.cssscript.com/increment-decrement-number-ispinjs/ -->
-<link rel="stylesheet" href="https://unpkg.com/ispin/dist/ispin.css">
-<script src="https://unpkg.com/ispin"></script>
-
-<!-- Script Dependencies -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="/scripts/hs_flavor_text_quiz.js"></script>
+<body>
+</body>
+</html>

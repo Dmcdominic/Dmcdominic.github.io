@@ -6,8 +6,7 @@ title: Hearthstone Flavor Text Quiz
 <div class="container-fluid mt-4 mb-3">
 	<div class="row mb-3">
 		<div class="col-sm-12">
-			<!-- <h1 class="display-3 text-center">Hearthstone Flavor Text Quiz</h1> -->
-			<h1 class="display-3 text-center">Applebee's Bar And Grill menu</h1>
+			<h1 class="display-3 text-center">Hearthstone Flavor Text Quiz</h1>
 		</div>
 	</div>
 
@@ -25,14 +24,26 @@ title: Hearthstone Flavor Text Quiz
 		<!-- Streak display -->
 		<div class="col-lg-4 order-lg-1 col-sm-6 order-6">
 			<div id="HS_Flav_streak_display" class="mb-3">
-				<div class="card">
-					<h3 class="card-header display-5 text-center">Score</h3>
+				<div class="card text-center">
+					<h3 class="card-header display-5">Score</h3>
 					<div class="card-body">
-						<div class="text-center">
-							<p class="no-margin-bottom">Current Streak: <span id="current_streak_display">0</span><br>
-								Best Streak: <span id="best_streak_display">0</span><br>
-								Total Score: <span id="total_score_display">0</span>
-							</p>
+						<div class="container-fluid">
+							<div class="row justify-content-center">
+								<div class="col-md-6 col-12 mb-2">
+									<h5 class="display-6"><u>Multiple Choice</u></h5>
+									<p class="no-margin-bottom">Streak: <span id="current_streak_mc_display">0</span><br>
+										Best: <span id="best_streak_mc_display">0</span><br>
+										Total: <span id="total_score_mc_display">0</span>
+									</p>
+								</div>
+								<div class="col-md-6 col-12">
+									<h5 class="display-6"><u>Open Ended</u></h5>
+									<p class="no-margin-bottom">Streak: <span id="current_streak_fr_display">0</span><br>
+										Best: <span id="best_streak_fr_display">0</span><br>
+										Total: <span id="total_score_fr_display">0</span>
+									</p>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -51,7 +62,7 @@ title: Hearthstone Flavor Text Quiz
 					<!-- Input (Multiple Choice) -->
 					<div id="mc_options_col" class="col-12 text-center">
 						<div id="HS_Flav_multiple_choice_input" class="mb-3">
-							<div id="mc_options_container" class="text-center">
+							<div id="mc_options_container">
 								<button type="button" id="sample_mc_option_btn" onclick="guessCard('option1')" class="btn btn-dark ml-1 mb-1" style="display:none">(Option 1)</button>
 							</div>
 						</div>
@@ -67,19 +78,15 @@ title: Hearthstone Flavor Text Quiz
 					<!-- Free Response buttons -->
 					<div class="col-12 text-center">
 						<div id="HS_Flav_free_response_input2" class="mb-3">
-							<div class="text-center">
-								<button type="button" onclick="guessCard()" class="btn btn-lg btn-success ml-1">Submit</button>
-								<button type="button" onclick="giveUp()" class="btn btn-lg btn-danger ml-1">Give Up</button>
-							</div>
+							<button type="button" onclick="guessCard()" class="btn btn-lg btn-success ml-1">Submit</button>
+							<button type="button" onclick="giveUp()" class="btn btn-lg btn-danger ml-1">Give Up</button>
 						</div>
 					</div>
 
 					<!-- Next button -->
-					<div class="col-12">
+					<div class="col-12 text-center">
 						<div id="HS_Flav_next" class="mb-3">
-							<div class="text-center">
-								<button id="HS_Flav_next_button" type="button" onclick="setNewCurrentCard()" class="btn btn-lg btn-primary">Next</button>
-							</div>
+							<button id="HS_Flav_next_button" type="button" onclick="setNewCurrentCard()" class="btn btn-lg btn-primary">Next</button>
 						</div>
 					</div>
 				</div>
@@ -91,11 +98,11 @@ title: Hearthstone Flavor Text Quiz
 		<div class="col-lg-4 order-lg-12 col-sm-9 order-12">
 			<div id="HS_Flav_options_container" class="mb-1">
 				<div class="container-fluid">
-					<div class="card">
-						<h3 class="card-header display-5 text-center">Options</h3>
+					<div class="card text-center">
+						<h3 class="card-header display-5">Options</h3>
 						<div class="card-body">
 							<!-- Options container -->
-							<div class="row text-center justify-content-center">
+							<div class="row justify-content-center">
 								<!-- Mode -->
 								<div class="col-12 mb-2">
 									<div class="btn-group btn-group-toggle" data-toggle="buttons">
@@ -103,7 +110,7 @@ title: Hearthstone Flavor Text Quiz
 											<input type="radio" name="options" id="multipleChoiceRadio" autocomplete="off" checked> Multiple Choice
 										</label>
 										<label class="btn btn-light">
-											<input type="radio" name="options" id="freeResponseRadio" autocomplete="off"> Text Input
+											<input type="radio" name="options" id="freeResponseRadio" autocomplete="off"> Open Ended
 										</label>
 									</div>
 								</div>
@@ -116,6 +123,13 @@ title: Hearthstone Flavor Text Quiz
 									<div class="custom-control custom-switch">
 										<input type="checkbox" checked class="custom-control-input" id="hintsSwitch">
 										<label class="custom-control-label" for="hintsSwitch">Partial-Correctness Hints</label>
+									</div>
+								</div>
+								<!-- Enable/Disable "No Obvious Prompts" -->
+								<div class="col-12 mb-2">
+									<div class="custom-control custom-switch">
+										<input type="checkbox" checked class="custom-control-input" id="noObviousSwitch">
+										<label class="custom-control-label" for="noObviousSwitch">Exclude "Obvious" Flavor Text</label>
 									</div>
 								</div>
 								<!-- Contact info -->

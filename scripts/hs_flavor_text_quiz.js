@@ -1,6 +1,8 @@
 // Settings
-const SIMILARITY_THRESHOLD = 0.8; // From range [0, 1];
-const SUBSTRING_MIN_LENGTH = 4; // You get a hint if you get this many chars right
+const OBVIOUS_WORD_MIN_LENGTH = 3;
+const OBVIOUS_SUBSTRING_MIN_LENGTH = 5;
+const CLOSE_ENOUGH_SIMILARITY_THRESHOLD = 0.8; // From range [0, 1];
+const HINT_SUBSTRING_MIN_LENGTH = 4; // You get a hint if you get this many chars right
 const PAGE_SIZE = 500; // This seems to be the cap
 const MULTIPLE_CHOICE_DEFAULT_SIZE = 4;
 const MULTIPLE_CHOICE_MIN_SIZE = 2;
@@ -74,7 +76,7 @@ var Card_Revealed_fr = false;
 var Mode = MODES.MULTIPLE_CHOICE;
 var Multiple_Choice_Size = MULTIPLE_CHOICE_DEFAULT_SIZE;
 var Hints = true;
-var No_Obvious_Prompts = true; // TODO - button to toggle this in options
+var No_Obvious_Prompts = true;
 
 // Getters
 function getCurrentCard() {
@@ -85,18 +87,23 @@ function getCurrentPool() {
 }
 
 // Initialization from cookies
-var Current_Streak = getCookie("Current_Streak");
-var Best_Streak = getCookie("Best_Streak");
-var Total_Score = getCookie("Total_Score");
-if (!Current_Streak) {
-	Current_Streak = 0;
-}
-if (!Best_Streak) {
-	Best_Streak = 0;
-}
-if (!Total_Score) {
-	Total_Score = 0;
-}
+var Current_Streak_mc;
+var Best_Streak_mc;
+var Total_Score_mc;
+var Current_Streak_fr;
+var Best_Streak_fr;
+var Total_Score_fr;
+getScoreCookies();
+
+
+
+// ===== My favorites =====
+// Spirit of the Frog
+// Quick Shot
+// Blackwald Pixie
+// Nozdormu
+// Shatter
+
 
 
 // ===== Fetching Data from the Hearthstone API =====
@@ -180,9 +187,6 @@ function getCardData(pageNum) {
 // Takes in a page of card data and either requests the next page, or generates the quiz
 function appendCardData(json) {
 	All_Cards = All_Cards.concat(json.cards);
-	// console.log("All cards:");
-	// console.log(All_Cards);
-
 	if (json.page >= json.pageCount) {
 		generateQuiz();
 	} else {
@@ -197,10 +201,6 @@ function generateQuiz() {
 
 	console.log("Cards_With_Flavor:");
 	console.log(Cards_With_Flavor);
-	console.log("Current_Pool_Full:");
-	console.log(Current_Pool_Full);
-	console.log("Current_Pool_No_Obvious:");
-	console.log(Current_Pool_No_Obvious);
 
 	setNewCurrentCard();
 
@@ -210,7 +210,17 @@ function generateQuiz() {
 
 // Returns true iff the card's flavor text is not "obvious"
 function obviousFilter(card) {
-	// TODO - return false when card flavor text is "obvious"
+	// Word-by-word filter based on words in the name
+	let words = card.name.split(' ');
+	for (let i=0; i < words.length; i++) {
+		if (words[i].length >= OBVIOUS_WORD_MIN_LENGTH && card.flavorText.includes(words[i]) && words[i] !== words[i].toLowerCase()) {
+			return false;
+		}
+	}
+	// Any substring of a certain length
+	if (bestSubstringMatch(card.name, card.flavorText).length >= OBVIOUS_SUBSTRING_MIN_LENGTH) {
+		return false;
+	}
 	return true;
 }
 
@@ -226,19 +236,29 @@ function resetPools() {
 
 function revealCard(correct, textToShow) {
 	if (correct) {
-		Current_Streak++;
-		Total_Score++;
-		if (Current_Streak > Best_Streak) {
-			Best_Streak = Current_Streak;
+		if (Mode === MODES.MULTIPLE_CHOICE) {
+			Current_Streak_mc++;
+			Total_Score_mc++;
+			if (Current_Streak_mc > Best_Streak_mc) {
+				Best_Streak_mc = Current_Streak_mc;
+			}
+		} else {
+			Current_Streak_fr++;
+			Total_Score_fr++;
+			if (Current_Streak_fr > Best_Streak_fr) {
+				Best_Streak_fr = Current_Streak_fr;
+			}
 		}
 		// Update current pools
 		removeFromPools(getCurrentCard());
 	} else {
-		Current_Streak = 0;
+		if (Mode === MODES.MULTIPLE_CHOICE) {
+			Current_Streak_mc = 0;
+		} else {
+			Current_Streak_fr = 0;
+		}
 	}
-	setCookie("Current_Streak", Current_Streak);
-	setCookie("Best_Streak", Best_Streak);
-	setCookie("Total_Score", Total_Score);
+	setScoreCookies();
 	update_score_display();
 
 	updateCurrentCardRevealed(true);
@@ -306,15 +326,21 @@ function setNewCurrentCard(justVisuals = false) {
 function setOptions() {
 	update_mc_size();
 
+	let currentPool = getCurrentPool();
+	let currentCard = getCurrentCard();
+
 	const MIN_POOL_SIZE_FACTOR = 3;
-	if (getCurrentPool().length < Multiple_Choice_Size * MIN_POOL_SIZE_FACTOR) {
+	if (currentPool.length < Multiple_Choice_Size * MIN_POOL_SIZE_FACTOR) {
 		// throw "Not enough cards to generate that many choices";
 		resetPools();
 	}
 
-	Current_Options = [getCurrentCard()];
+	let newPool = generatePool(getCurrentPool(), currentCard, Multiple_Choice_Size * 1.1);
+
+	Current_Options = [currentCard];
 	while (Current_Options.length < Multiple_Choice_Size) {
-		let nextCard = getRandomCard();
+		let nextCard = getRandomFromArray(newPool);
+		// let nextCard = getRandomCard(); // Completely random selection
 		if (!Current_Options.includes(nextCard)) {
 			Current_Options.push(nextCard);
 		}
@@ -337,6 +363,29 @@ function setOptions() {
 	}
 }
 
+// Generates a pool based on 2 (randomly chosen) card features
+function generatePool(initialPool, focusCard, minSize) {
+	let newPool = [];
+	const MAX_LOOPS = 10;
+	let loops = 0;
+	while (newPool.length < minSize) {
+		if (loops >= MAX_LOOPS) {
+			return initialPool;
+		}
+		loops++;
+
+		let classOrSet = (Math.random() > 0.5) ? classFilter(focusCard) : setFilter(focusCard);
+		let anyFilter = (Math.random() > 0.5) ? rarityFilter(focusCard) : ((Math.random() > 0.5) ? classFilter(focusCard) : setFilter(focusCard));
+		newPool = initialPool.filter(card => typeFilter(focusCard)(card) && classOrSet(card) && anyFilter(card));
+	}
+	return newPool;
+}
+// HOF: Returns true iff [class/type/rarity/set] is the same as focusCard
+function classFilter(focusCard) { return (card => card.classId === focusCard.classId); }
+function setFilter(focusCard) { return (card => card.cardSetId === focusCard.cardSetId); }
+function typeFilter(focusCard) { return (card => card.cardTypeId === focusCard.cardTypeId); }
+function rarityFilter(focusCard) { return (card => card.rarityId === focusCard.rarityId); }
+
 // Clear all the multiple choice option buttons
 function clearMCOptionButtons() {
 	var sample_btn = document.getElementById("sample_mc_option_btn");
@@ -351,9 +400,7 @@ function clearMCOptionButtons() {
 
 // Returns a random card (from the current pool)
 function getRandomCard() {
-	// TODO - update to use the current pool
-	var currentPool = getCurrentPool();
-	return currentPool[Math.floor(Math.random() * currentPool.length)];
+	return getRandomFromArray(getCurrentPool());
 }
 
 // Call this to guess what the card is.
@@ -376,12 +423,12 @@ function guessCard(guess) {
 	let similarityScore = similarity(guess, getCurrentCard().name);
 	if (guess === currentCardNameLower) {
 		revealCard(true, randWowLine() + "<br><u>The answer is</u>: <i>" + getCurrentCard().name + "</i>");
-	} else if (similarityScore >= SIMILARITY_THRESHOLD) {
-		revealCard(true, randWowLine() + " (Close enough!)<br><u>The answer is</u>: <i>" + getCurrentCard().name + "</i>");
+	} else if (similarityScore >= CLOSE_ENOUGH_SIMILARITY_THRESHOLD) {
+		revealCard(true, randWowLine() + " (Close enough)<br><u>The answer is</u>: <i>" + getCurrentCard().name + "</i>");
 		// console.log("[You had a similarity score of " + similarityScore + "]");
 	} else {
 		let bestSubstring = bestSubstringMatch(guess, getCurrentCard().name);
-		if (Hints && bestSubstring.length >= SUBSTRING_MIN_LENGTH) {
+		if (Hints && bestSubstring.length >= HINT_SUBSTRING_MIN_LENGTH) {
 			$("#answerTextContainer").html("Almost! You got this part right:<br>\"" + bestSubstring + "\"");
 		} else {
 			$("#answerTextContainer").html("You guessed: \"" + fullCaseGuess +  "\". Good try but nope.");
@@ -398,7 +445,7 @@ function guessCardSlug(slug) {
 		let guessed_card_list = Current_Options.filter(card => card.slug === slug);
 		console.assert(guessed_card_list.length === 1);
 		let guessed_card = guessed_card_list[0];
-		revealCard(false, randOopsLine() + "<br><u>The answer is</u>: <i>" + getCurrentCard().name + "</i><br>The flavor text of <i>" + guessed_card.name
+		revealCard(false, randOopsLine() + "<br><u>The answer is</u>: <i>" + getCurrentCard().name + "</i><br><br>The flavor text of <i>" + guessed_card.name
 		+ "</i> is:<br> <span style='background-color: yellow'>" + guessed_card.flavorText + "</span>");
 	}
 }
@@ -479,9 +526,15 @@ document.getElementById("guessField").addEventListener("keydown", function(event
 $(function() {
 	let hint_checkbox = $('#hintsSwitch');
 	hint_checkbox.change(function() {
-		hint_checkbox.each(function(index, box) {
-			Hints = (box.checked || $(box).prop('checked'));
-		});
+		Hints = hint_checkbox.prop('checked');
+	});
+});
+
+// Add the update function as a listener of the "No Obious Prompts" checkbox
+$(function() {
+	let no_obvious_checkbox = $('#noObviousSwitch');
+	no_obvious_checkbox.change(function() {
+		No_Obvious_Prompts = no_obvious_checkbox.prop('checked');
 	});
 });
 
@@ -536,9 +589,12 @@ function update_mc_size() {
 
 // Updates the score display
 function update_score_display() {
-	$("#current_streak_display").text(Current_Streak);
-	$("#best_streak_display").text(Best_Streak);
-	$("#total_score_display").text(Total_Score);
+	$("#current_streak_mc_display").text(Current_Streak_mc);
+	$("#best_streak_mc_display").text(Best_Streak_mc);
+	$("#total_score_mc_display").text(Total_Score_mc);
+	$("#current_streak_fr_display").text(Current_Streak_fr);
+	$("#best_streak_fr_display").text(Best_Streak_fr);
+	$("#total_score_fr_display").text(Total_Score_fr);
 }
 
 
@@ -558,6 +614,33 @@ update_score_display();
 
 // ===== COOKIES =====
 // Permissions only applies to "tracking" cookies for EU users - https://javascript.info/cookie
+
+// Set the score/streak variables based on cookies
+function getScoreCookies() {
+	Current_Streak_mc = getCookie("Current_Streak_mc");
+	Best_Streak_mc = getCookie("Best_Streak_mc");
+	Total_Score_mc = getCookie("Total_Score_mc");
+	Current_Streak_fr = getCookie("Current_Streak_fr");
+	Best_Streak_fr = getCookie("Best_Streak_fr");
+	Total_Score_fr = getCookie("Total_Score_fr");
+	// Make sure they're well-typed
+	if (!Current_Streak_mc) { Current_Streak_mc = 0; }
+	if (!Best_Streak_mc) { Best_Streak_mc = 0; }
+	if (!Total_Score_mc) { Total_Score_mc = 0; }
+	if (!Current_Streak_fr) { Current_Streak_fr = 0; }
+	if (!Best_Streak_fr) { Best_Streak_fr = 0; }
+	if (!Total_Score_fr) { Total_Score_fr = 0; }
+}
+
+// Set the cookies based on current score/streak variables
+function setScoreCookies() {
+	setCookie("Current_Streak_mc", Current_Streak_mc);
+	setCookie("Best_Streak_mc", Best_Streak_mc);
+	setCookie("Total_Score_mc", Total_Score_mc);
+	setCookie("Current_Streak_fr", Current_Streak_fr);
+	setCookie("Best_Streak_fr", Best_Streak_fr);
+	setCookie("Total_Score_fr", Total_Score_fr);
+}
 
 // Expiration date source - https://stackoverflow.com/questions/532635/javascript-cookie-with-no-expiration-date
 function setCookie(cname, value) {
@@ -583,6 +666,11 @@ function getCookie(cname) {
 
 
 // ===== UTILITY =====
+
+// Returns a random element from an array
+function getRandomFromArray(arr) {
+	return arr[Math.floor(Math.random() * arr.length)];
+}
 
 // Shuffles an array in place.
 // Source: https://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array

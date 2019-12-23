@@ -44,7 +44,7 @@ p {
 	font-weight: bold;
 }
 .not-bold {
-    font-weight: normal;
+  font-weight: normal !important;
 }
 
 .indented {

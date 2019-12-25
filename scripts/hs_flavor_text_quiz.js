@@ -7,6 +7,8 @@ const OBVIOUS_SUBSTRING_MIN_LENGTH = 5; // Filters for common substrings of this
 const CLOSE_ENOUGH_SIMILARITY_THRESHOLD = 0.8; // From range [0, 1];
 const HINT_SUBSTRING_MIN_LENGTH = 4; // You get a hint if you get this many chars right
 const PAGE_SIZE = 500; // API response size. This seems to be the cap
+const API_RETRY_DELAY = 20; // Delay (in ms) between attempts to access the API if it fails
+const API_ATTEMPTS_BEFORE_MESSAGE = 3; // Number of API fetch attempts before a message is displayed
 
 // OAuth Data
 const CLIENT_ID = "b7777d5b2cf8467697f17db51270a714";
@@ -59,6 +61,7 @@ const SORRY_LINES = _SORRY_LINES.filter((v,i) => _SORRY_LINES.indexOf(v) === i);
 
 // Global Token data
 var Access_Token = null;
+var Fetch_Attempts = 0;
 
 // Global variables to store card data
 var All_Cards = [];
@@ -86,7 +89,7 @@ function getCurrentPool() {
 	return (No_Obvious_Prompts) ? Current_Pool_No_Obvious : Current_Pool_Full;
 }
 
-// Initialization from cookies
+// Score/streak variables, initialized according to cookies
 var Current_Streak_mc;
 var Best_Streak_mc;
 var Total_Score_mc;
@@ -94,6 +97,11 @@ var Current_Streak_fr;
 var Best_Streak_fr;
 var Total_Score_fr;
 getScoreCookies();
+
+// Audio Files
+// Source - https://www.reddit.com/r/hearthstone/comments/2zzvh0/the_sounds_of_hearthstone_all_sounds_from_the_game/
+// Howler Library - https://howlerjs.com/
+// TODO
 
 
 
@@ -116,43 +124,50 @@ getScoreCookies();
 
 // First, get an access token
 // Reference - https://github.com/search?q=%22.battle.net%2Foauth%2Ftoken%22+fetch&type=Code
-fetch("https://us.battle.net/oauth/token?grant_type=client_credentials&client_id=" + CLIENT_ID + "&client_secret=" + CLIENT_SECRET, {
-	"method": "POST"
-})
-.then(response => {
-	const reader = response.body.getReader();
-	return new ReadableStream({
-		start(controller) {
-			return pump();
-			function pump() {
-				return reader.read().then(({ done, value }) => {
-					// When no more data needs to be consumed, close the stream
-					if (done) {
-						controller.close();
-						return;
-					}
-					// Enqueue the next data chunk into our target stream
-					controller.enqueue(value);
-					return pump();
-				});
-			}
-		}
+fetchAccessToken();
+function fetchAccessToken() {
+	fetch("https://us.battle.net/oauth/token?grant_type=client_credentials&client_id=" + CLIENT_ID + "&client_secret=" + CLIENT_SECRET, {
+		"method": "POST"
 	})
-})
-.then(stream => new Response(stream))
-.then(response => response.json())
-.then(json => {
-	Access_Token = json.access_token;
-	getCardData(1);
-})
-.catch(err => {
-	console.log(err);
-});
+	.then(response => {
+		const reader = response.body.getReader();
+		return new ReadableStream({
+			start(controller) {
+				return pump();
+				function pump() {
+					return reader.read().then(({ done, value }) => {
+						// When no more data needs to be consumed, close the stream
+						if (done) {
+							controller.close();
+							return;
+						}
+						// Enqueue the next data chunk into our target stream
+						controller.enqueue(value);
+						return pump();
+					});
+				}
+			}
+		})
+	})
+	.then(stream => new Response(stream))
+	.then(response => response.json())
+	.then(json => {
+		Access_Token = json.access_token;
+		fetchCardData(1);
+	})
+	.catch(err => {
+		console.log(err);
+		console.log("Going to try again after " + API_RETRY_DELAY + "ms delay...");
+		incrFetchAttempts();
+		setTimeout(fetchAccessToken(), API_RETRY_DELAY);
+	});
+}
+
 
 
 // Now use the token to actually get card data
 // Reference - https://github.com/search?q=%22.api.blizzard.com%2Fhearthstone%2F%22+fetch&type=Code
-function getCardData(pageNum) {
+function fetchCardData(pageNum) {
 	fetch("https://us.api.blizzard.com/hearthstone/cards?locale=en_US&collectible=1&pageSize=" + PAGE_SIZE + "&page=" + pageNum + "&access_token=" + Access_Token, {
 		"method": "GET"
 	})
@@ -181,7 +196,17 @@ function getCardData(pageNum) {
 	.then(json => appendCardData(json))
 	.catch(err => {
 		console.log(err);
+		console.log("Going to try again after " + API_RETRY_DELAY + "ms delay...");
+		incrFetchAttempts();
+		setTimeout(fetchCardData(pageNum), API_RETRY_DELAY);
 	});
+}
+
+function incrFetchAttempts() {
+	Fetch_Attempts++;
+	if (Fetch_Attempts >= API_ATTEMPTS_BEFORE_MESSAGE) {
+		$("#notLoadingIndicator").show();
+	}
 }
 
 // Takes in a page of card data and either requests the next page, or generates the quiz
@@ -190,7 +215,7 @@ function appendCardData(json) {
 	if (json.page >= json.pageCount) {
 		generateQuiz();
 	} else {
-		getCardData(json.page + 1);
+		fetchCardData(json.page + 1);
 	}
 }
 
@@ -201,6 +226,8 @@ function generateQuiz() {
 
 	console.log("Cards_With_Flavor:");
 	console.log(Cards_With_Flavor);
+
+	$("#notLoadingIndicator").hide();
 
 	setNewCurrentCard();
 
@@ -314,6 +341,7 @@ function setNewCurrentCard(justVisuals = false) {
 	}
 	updateCurrentCardRevealed(false);
 
+	$("#preloadCardImg").attr("src", getCurrentCard().image);
 	$("#flavorText").html(getCurrentCard().flavorText);
 	$("#answerTextContainer").hide();
 	$("#HS_Flav_next").hide();

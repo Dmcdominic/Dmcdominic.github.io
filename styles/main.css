@@ -248,7 +248,7 @@ hr.break {
 	overflow: none;
 }
 
-/* Hearthstone Flavor Text Quiz page styling */
+/* Hearthstone Flavor Text Minigame page styling */
 #correctCardImg {
   height: 20em;
 }
@@ -273,6 +273,10 @@ hr.break {
 
 #mc-size-input {
 	width: 7em;
+}
+
+#preloadCardImg {
+	display: none;
 }
 
 .ispin-wrapper .ispin-button:before {

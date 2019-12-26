@@ -1,0 +1,82 @@
+/* Hearthstone Flavor Text Minigame page styling (HS-Flavor.html) */
+
+#correctCardImg {
+  height: 20em;
+}
+
+#guessField {
+	/* width: 50%; */
+	border: 0.05em solid black;
+	border-radius: 0.4em;
+	outline: none;
+}
+
+#flavorText {
+	background-color: lightgray;
+}
+
+#HS_Flav_next {
+	display: flex;
+}
+#HS_Flav_free_response_input1, #HS_Flav_free_response_input2, #HS_Flav_multiple_choice_input, #HS_Flav_next, #HS_Flav_streak_display, #flavorText, #answerTextContainer, #HS_Flav_options_container, #preloadCardImg {
+	display: none;
+}
+
+#mc-size-input {
+	width: 7em;
+}
+
+/* Number field spinner */
+.ispin-wrapper .ispin-button:before {
+	-webkit-transform: translateY(-170%) !important;
+	transform: translateY(-170%) !important;
+}
+
+/* Glowing card */
+/* TODO - get this to work */
+.glowing-card:before {
+    content: '';
+    background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+    position: absolute;
+    top: -2px;
+    left:-2px;
+    background-size: 400%;
+    z-index: -1;
+    filter: blur(5px);
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    animation: glowing 20s linear infinite;
+    opacity: 0;
+    transition: opacity .3s ease-in-out;
+    border-radius: 10px;
+}
+
+.glowing-card:active {
+    color: #000
+}
+
+.glowing-card:active:after {
+    background: transparent;
+}
+
+.glowing-card:hover:before {
+    opacity: 1;
+}
+
+.glowing-card:after {
+    z-index: -1;
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #111;
+    left: 0;
+    top: 0;
+    border-radius: 10px;
+}
+
+@keyframes glowing {
+    0% { background-position: 0 0; }
+    50% { background-position: 400% 0; }
+    100% { background-position: 0 0; }
+}

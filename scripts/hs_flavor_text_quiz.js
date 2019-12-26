@@ -111,6 +111,7 @@ getScoreCookies();
 // Blackwald Pixie
 // Nozdormu
 // Shatter
+// Crushing Walls
 
 
 
@@ -293,6 +294,8 @@ function revealCard(correct, textToShow) {
 	updateCurrentCardRevealed(true);
 
 	$("#correctCardImg").attr("src", getCurrentCard().image);
+	$("#correctCardImg").addClass("glowing-card");
+	$("#correctCardImgLink").attr("href", getCardLibraryURL(getCurrentCard()));
 	$("#answerTextContainer").html(textToShow);
 	$("#answerTextContainer").show();
 	$("#HS_Flav_next").show();
@@ -319,6 +322,8 @@ function updateCurrentCardRevealed(newVal) {
 // Sets Current_Card to a new random card
 function setNewCurrentCard(justVisuals = false) {
 	$("#correctCardImg").attr("src", "/images/HS_Flavor_Text_Quiz/Mystery Card.png");
+	$("#correctCardImg").removeClass("glowing-card");
+	$("#correctCardImgLink").removeAttr("href");
 
 	// Current_Card.name = Current_Card.name.trim();
 	// Current_Card.flavorText = Current_Card.flavorText.trim();
@@ -539,6 +544,25 @@ function randOopsLineTxt() {
 }
 function randSorryLineTxt() {
 	return SORRY_LINES[Math.floor(Math.random() * SORRY_LINES.length)];
+}
+
+// Get the official card library URL of a card
+function getCardLibraryURL(card) {
+	return "https://playhearthstone.com/en-us/cards/" + card.slug;
+}
+
+// Reset the score
+function tryReset() {
+	if (confirm("This will reset ALL of your score and streak data. Are you sure?")) {
+		Current_Streak_mc = 0;
+		Best_Streak_mc = 0;
+		Total_Score_mc = 0;
+		Current_Streak_fr = 0;
+		Best_Streak_fr = 0;
+		Total_Score_fr = 0;
+		setScoreCookies();
+		update_score_display();
+	}
 }
 
 

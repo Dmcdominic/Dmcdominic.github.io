@@ -3,6 +3,10 @@ layout: default
 title: HS Flavor
 ---
 
+<!-- Stylesheet dependencies -->
+<link rel="stylesheet" href="/styles/hs-flavor.css">
+
+<!-- Content -->
 <div class="container-fluid mt-4 mb-2">
 	<div class="row mb-2">
 		<div class="col-sm-12">
@@ -14,7 +18,7 @@ title: HS Flavor
 	<div class="row justify-content-center mb-3">
 		<!-- Loading wheel / Card image -->
 		<div class="col-12 text-center mb-3">
-			<img id="correctCardImg" src="/images/HS_Flavor_Text_Quiz/HS_Loading.gif" alt="Card image not available :(">
+			<a id="correctCardImgLink" target="_blank"><img id="correctCardImg" src="/images/HS_Flavor_Text_Quiz/HS_Loading.gif" alt="Card image not available :("></a>
 			<img id="preloadCardImg" src="/images/HS_Flavor_Text_Quiz/Mystery Card.png" alt="Card image not available :(">
 		</div>
 		<!-- Not loading? Contact me -->
@@ -42,12 +46,16 @@ title: HS Flavor
 										Total: <span id="total_score_mc_display">0</span>
 									</p>
 								</div>
-								<div class="col-md-6 col-12">
+								<div class="col-md-6 col-12 mb-2">
 									<h5 class="display-6"><u>Open Ended</u></h5>
 									<p class="no-margin-bottom">Streak: <span id="current_streak_fr_display">0</span><br>
 										Best: <span id="best_streak_fr_display">0</span><br>
 										Total: <span id="total_score_fr_display">0</span>
 									</p>
+								</div>
+								<!-- Next button -->
+								<div class="col-12 text-center">
+									<button type="button" onclick="tryReset()" class="btn btn-sm btn-danger">Reset</button>
 								</div>
 							</div>
 						</div>

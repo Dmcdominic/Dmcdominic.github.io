@@ -2,7 +2,8 @@
 
 /* Color values */
 :root {
-	--hearthstone-light-brown: #b8a79d;
+	/* --hearthstone-light-brown: #b8a79d; */
+		--hearthstone-light-brown: #c6b9b1;
 }
 
 /* Page background */
@@ -14,7 +15,9 @@ body {
   /* background-attachment: fixed; */
 }
 
-/* Text styling */
+.card-body {
+	background-color: var(--hearthstone-light-brown);
+}
 
 /* Styling by ID */
 #correctCardImg {

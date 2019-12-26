@@ -55,6 +55,10 @@ p {
 	margin-bottom: 0;
 }
 
+.white-text {
+	color: white;
+}
+
 a.no-link-style,
 a.no-link-style:hover {
 	color: inherit;

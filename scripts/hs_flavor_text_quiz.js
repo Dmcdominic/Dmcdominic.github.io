@@ -482,7 +482,7 @@ function guessCardSlug(slug) {
 		console.assert(guessed_card_list.length === 1);
 		let guessed_card = guessed_card_list[0];
 		revealCard(false, randOopsLine() + "<br><u>The answer is</u>: <i>" + getCurrentCard().name + "</i><br><br>The flavor text of <i>" + guessed_card.name
-		+ "</i> is:<br> <span style='background-color: yellow'>" + guessed_card.flavorText + "</span>");
+		+ "</i> is:<br> <span style='background-color: yellow; color: black'>" + guessed_card.flavorText + "</span>");
 	}
 }
 
@@ -731,6 +731,7 @@ function shuffleArray(a) {
 // Returns the longest matching substring between two strings
 function bestSubstringMatch(s1, s2) {
 	let s2_FullCase = s2;
+	s1 = s1.toLowerCase();
 	s2 = s2.toLowerCase();
 
 	let bestLength = 0;

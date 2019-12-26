@@ -7,8 +7,14 @@
 
 /* Page background */
 body {
-	background-color: var(--hearthstone-light-brown);
+	/* background-color: var(--hearthstone-light-brown); */
+  background-image: url('/images/HS_Flavor_Text_Quiz/HS background.png');
+  background-size: cover;
+  /* background-repeat: no-repeat; */
+  /* background-attachment: fixed; */
 }
+
+/* Text styling */
 
 /* Styling by ID */
 #correctCardImg {
@@ -23,8 +29,7 @@ body {
 }
 
 #flavorText {
-	/* background-color: lightgray; */
-	background-color: white;
+	background-color: black;
 }
 
 #HS_Flav_next {

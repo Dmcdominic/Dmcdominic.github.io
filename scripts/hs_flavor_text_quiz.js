@@ -112,6 +112,7 @@ getScoreCookies();
 // Nozdormu
 // Shatter
 // Crushing Walls
+// Lakkari Sacrifice
 
 
 
@@ -389,7 +390,7 @@ function setOptions() {
 
 	for (let i=0; i < Current_Options.length; i++) {
 		let card = Current_Options[i];
-		var new_btn = sample_btn.cloneNode(true);
+		let new_btn = sample_btn.cloneNode(true);
 		new_btn.style.display = "inline-block";
 		new_btn.id = "real_mc_option_btn";
 		$(new_btn).text(card.name);
@@ -423,12 +424,12 @@ function rarityFilter(focusCard) { return (card => card.rarityId === focusCard.r
 
 // Clear all the multiple choice option buttons
 function clearMCOptionButtons() {
-	var sample_btn = document.getElementById("sample_mc_option_btn");
-	var new_sample_btn = sample_btn.cloneNode(true);
+	let sample_btn = document.getElementById("sample_mc_option_btn");
+	let new_sample_btn = sample_btn.cloneNode(true);
 
-	var container = document.getElementById("mc_options_container");
+	let container = document.getElementById("mc_options_container");
 	while (container.hasChildNodes()) {
-		var last = container.removeChild(container.lastChild);
+		let last = container.removeChild(container.lastChild);
 	}
 	container.append(new_sample_btn);
 }
@@ -527,23 +528,13 @@ function setMode(newMode) {
 
 // Get a random emote line
 function randWowLine() {
-	return "<span style='background-color: green'>" + randWowLineTxt() + "</span>";
+	return "<span style='background-color: green'>" + getRandomFromArray(WOW_LINES) + "</span>";
 }
 function randOopsLine() {
-	return "<span style='background-color: red'>" + randOopsLineTxt() + "</span>";
+	return "<span style='background-color: red'>" + getRandomFromArray(OOPS_LINES) + "</span>";
 }
 function randSorryLine() {
-	return "<span style='background-color: red'>" + randSorryLineTxt() + "</span>";
-}
-
-function randWowLineTxt() {
-	return WOW_LINES[Math.floor(Math.random() * WOW_LINES.length)];
-}
-function randOopsLineTxt() {
-	return OOPS_LINES[Math.floor(Math.random() * OOPS_LINES.length)];
-}
-function randSorryLineTxt() {
-	return SORRY_LINES[Math.floor(Math.random() * SORRY_LINES.length)];
+	return "<span style='background-color: red'>" + getRandomFromArray(SORRY_LINES) + "</span>";
 }
 
 // Get the official card library URL of a card
@@ -702,11 +693,11 @@ function setCookie(cname, value) {
 }
 // Source - https://www.w3schools.com/js/js_cookies.asp
 function getCookie(cname) {
-	var name = cname + "=";
-	var decodedCookie = decodeURIComponent(document.cookie);
-	var ca = decodedCookie.split(';');
-	for(var i = 0; i <ca.length; i++) {
-		var c = ca[i];
+	let name = cname + "=";
+	let decodedCookie = decodeURIComponent(document.cookie);
+	let ca = decodedCookie.split(';');
+	for(let i = 0; i <ca.length; i++) {
+		let c = ca[i];
 		while (c.charAt(0) == ' ') {
 			c = c.substring(1);
 		}

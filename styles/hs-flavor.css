@@ -1,5 +1,16 @@
 /* Hearthstone Flavor Text Minigame page styling (HS-Flavor.html) */
 
+/* Color values */
+:root {
+	--hearthstone-light-brown: #b8a79d;
+}
+
+/* Page background */
+body {
+	background-color: var(--hearthstone-light-brown);
+}
+
+/* Styling by ID */
 #correctCardImg {
   height: 20em;
 }
@@ -12,7 +23,8 @@
 }
 
 #flavorText {
-	background-color: lightgray;
+	/* background-color: lightgray; */
+	background-color: white;
 }
 
 #HS_Flav_next {

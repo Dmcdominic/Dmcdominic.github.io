@@ -1,3 +1,4 @@
+// ===== GLOBAL CONSTANTS =====
 // Settings
 const MULTIPLE_CHOICE_DEFAULT_SIZE = 4;
 const MULTIPLE_CHOICE_MIN_SIZE = 2;
@@ -9,6 +10,9 @@ const HINT_SUBSTRING_MIN_LENGTH = 4; // You get a hint if you get this many char
 const PAGE_SIZE = 500; // API response size. This seems to be the cap
 const API_RETRY_DELAY = 20; // Delay (in ms) between attempts to access the API if it fails
 const API_ATTEMPTS_BEFORE_MESSAGE = 3; // Number of API fetch attempts before a message is displayed
+const DEFAULT_VOLUME = 0.25; // Default volume for sound effects
+const Q_POSITIVE_STREAK = 5;
+const V_POSITIVE_STREAK = 25;
 
 // OAuth Data
 const CLIENT_ID = "b7777d5b2cf8467697f17db51270a714";
@@ -59,6 +63,53 @@ const WOW_LINES = _WOW_LINES.filter((v,i) => _WOW_LINES.indexOf(v) === i);
 const OOPS_LINES = _OOPS_LINES.filter((v,i) => _OOPS_LINES.indexOf(v) === i);
 const SORRY_LINES = _SORRY_LINES.filter((v,i) => _SORRY_LINES.indexOf(v) === i);
 
+// Audio Files
+// Source - https://www.reddit.com/r/hearthstone/comments/2zzvh0/the_sounds_of_hearthstone_all_sounds_from_the_game/
+// Howler Library - https://howlerjs.com/
+const AUDIO_PATH = "/files/HS Flavor Sounds/";
+const REACTION_PATH = AUDIO_PATH + "Tavern Crowd/";
+const SOUNDS = {
+	LOADING_START: AUDIO_PATH + "Loading_start.ogg",
+	LOADING_LOOP: AUDIO_PATH + "Loading_loop.ogg",
+	LOADING_END: AUDIO_PATH + "Loading_end.ogg",
+	FATIGUE: AUDIO_PATH + "Fatigue.ogg",
+	GREETING: AUDIO_PATH + "Pull up a Chair by the Hearth.ogg",
+	BACKGROUND_CHATTER: AUDIO_PATH + "Tavern Background Chatter.ogg",
+	// Sound sets
+	RETURNING_SET: [
+		AUDIO_PATH + "Welcome Back.ogg",
+		AUDIO_PATH + "Good to see you again.ogg"
+	],
+	REACTION_POSITIVE_SET: [
+		REACTION_PATH + "tavern_crowd_play_reaction_positive_1.ogg",
+		REACTION_PATH + "tavern_crowd_play_reaction_positive_2.ogg",
+		REACTION_PATH + "tavern_crowd_play_reaction_positive_3.ogg",
+		REACTION_PATH + "tavern_crowd_play_reaction_positive_4.ogg",
+		REACTION_PATH + "tavern_crowd_play_reaction_positive_5.ogg"
+	],
+	REACTION_Q_POSITIVE_SET: [
+		REACTION_PATH + "tavern_crowd_play_reaction_quite_positive_1.ogg",
+		REACTION_PATH + "tavern_crowd_play_reaction_quite_positive_2.ogg",
+		REACTION_PATH + "tavern_crowd_play_reaction_quite_positive_3.ogg",
+		REACTION_PATH + "tavern_crowd_play_reaction_quite_positive_4.ogg",
+		REACTION_PATH + "tavern_crowd_play_reaction_quite_positive_5.ogg"
+	],
+	REACTION_V_POSITIVE_SET: [
+		REACTION_PATH + "tavern_crowd_play_reaction_very_positive_1.ogg",
+		REACTION_PATH + "tavern_crowd_play_reaction_very_positive_2.ogg",
+		REACTION_PATH + "tavern_crowd_play_reaction_very_positive_3.ogg",
+		REACTION_PATH + "tavern_crowd_play_reaction_very_positive_4.ogg",
+		REACTION_PATH + "tavern_crowd_play_reaction_very_positive_5.ogg"
+	]
+}
+
+// Init sound
+var Loading_Start_Howl = playOneShot(SOUNDS.LOADING_START);
+var Loading_Loop_Howl; // TODO
+
+
+// ===== GLOBAL VARIABLES =====
+
 // Global Token data
 var Access_Token = null;
 var Fetch_Attempts = 0;
@@ -98,14 +149,9 @@ var Best_Streak_fr;
 var Total_Score_fr;
 getScoreCookies();
 
-// Audio Files
-// Source - https://www.reddit.com/r/hearthstone/comments/2zzvh0/the_sounds_of_hearthstone_all_sounds_from_the_game/
-// Howler Library - https://howlerjs.com/
-// TODO
 
 
-
-// ===== My favorites =====
+// ===== MY FAVORITES =====
 // Spirit of the Frog
 // Quick Shot
 // Blackwald Pixie
@@ -113,10 +159,11 @@ getScoreCookies();
 // Shatter
 // Crushing Walls
 // Lakkari Sacrifice
+// Raid Leader, and Upgrade!
 
 
 
-// ===== Fetching Data from the Hearthstone API =====
+// ===== FETCHING DATA FROM THE HEARTHSTONE API =====
 
 // Reference:
 // https://develop.battle.net/documentation/hearthstone/game-data-apis
@@ -225,11 +272,17 @@ function appendCardData(json) {
 function generateQuiz() {
 	Cards_With_Flavor = All_Cards.filter(card => card.flavorText !== undefined && card.flavorText.trim());
 	resetPools();
-
 	console.log("Cards_With_Flavor:");
 	console.log(Cards_With_Flavor);
 
 	$("#notLoadingIndicator").hide();
+	// TODO
+	// Loading_Howl.stop();
+	if (Total_Score_mc > 0) {
+		playOneShot(getRandomFromArray(SOUNDS.RETURNING_SET));
+	} else {
+		playOneShot(SOUNDS.GREETING);
+	}
 
 	setNewCurrentCard();
 
@@ -263,7 +316,7 @@ function resetPools() {
 
 
 
-// ===== Quiz Functionality =====
+// ===== QUIZ FUNCTIONALITY =====
 
 function revealCard(correct, textToShow) {
 	if (correct) {
@@ -280,6 +333,10 @@ function revealCard(correct, textToShow) {
 				Best_Streak_fr = Current_Streak_fr;
 			}
 		}
+		// Play sound effect
+		let currentStreak = (Mode === MODES.MULTIPLE_CHOICE) ? Current_Streak_mc : Current_Streak_fr;
+		let soundSet = (currentStreak < Q_POSITIVE_STREAK) ? SOUNDS.REACTION_Q_POSITIVE_SET : ((currentStreak < V_POSITIVE_STREAK) ? SOUNDS.REACTION_POSITIVE_SET : SOUNDS.REACTION_V_POSITIVE_SET);
+		playOneShot(getRandomFromArray(soundSet));
 		// Update current pools
 		removeFromPools(getCurrentCard());
 	} else {
@@ -288,6 +345,8 @@ function revealCard(correct, textToShow) {
 		} else {
 			Current_Streak_fr = 0;
 		}
+		// Play sound effect
+		playOneShot(SOUNDS.FATIGUE);
 	}
 	setScoreCookies();
 	update_score_display();
@@ -558,6 +617,25 @@ function tryReset() {
 
 
 
+// ===== SOUND FUNCTIONS =====
+function playOneShot(sound, loop = false, autoplay = true) {
+	return new Howl({
+		src: [sound],
+		autoplay: autoplay,
+		loop: loop,
+		volume: DEFAULT_VOLUME
+	});
+}
+
+function playSoundWithFollowup(sound, nextSound) {
+	// TODO
+}
+
+// Init background tavern chatter
+playOneShot(SOUNDS.BACKGROUND_CHATTER, true);
+
+
+
 // ===== UI =====
 
 // When you press enter in the guess input field, it should submit the guess
@@ -580,6 +658,14 @@ $(function() {
 	let no_obvious_checkbox = $('#noObviousSwitch');
 	no_obvious_checkbox.change(function() {
 		No_Obvious_Prompts = no_obvious_checkbox.prop('checked');
+	});
+});
+
+// Add the update function as a listener of the mute checkbox
+$(function() {
+	let mute_checkbox = $('#muteSwitch');
+	mute_checkbox.change(function() {
+		Howler.mute(mute_checkbox.prop('checked'));
 	});
 });
 

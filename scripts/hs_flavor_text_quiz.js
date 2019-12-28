@@ -12,7 +12,7 @@ const API_RETRY_DELAY = 20; // Delay (in ms) between attempts to access the API 
 const API_ATTEMPTS_BEFORE_MESSAGE = 3; // Number of API fetch attempts before a message is displayed
 const DEFAULT_VOLUME = 0.25; // Default volume for sound effects
 const Q_POSITIVE_STREAK = 5;
-const V_POSITIVE_STREAK = 25;
+const V_POSITIVE_STREAK = 15;
 
 // OAuth Data
 const CLIENT_ID = "b7777d5b2cf8467697f17db51270a714";
@@ -81,18 +81,18 @@ const SOUNDS = {
 		AUDIO_PATH + "Good to see you again.ogg"
 	],
 	REACTION_POSITIVE_SET: [
-		REACTION_PATH + "tavern_crowd_play_reaction_positive_1.ogg",
-		REACTION_PATH + "tavern_crowd_play_reaction_positive_2.ogg",
-		REACTION_PATH + "tavern_crowd_play_reaction_positive_3.ogg",
-		REACTION_PATH + "tavern_crowd_play_reaction_positive_4.ogg",
-		REACTION_PATH + "tavern_crowd_play_reaction_positive_5.ogg"
-	],
-	REACTION_Q_POSITIVE_SET: [
 		REACTION_PATH + "tavern_crowd_play_reaction_quite_positive_1.ogg",
 		REACTION_PATH + "tavern_crowd_play_reaction_quite_positive_2.ogg",
 		REACTION_PATH + "tavern_crowd_play_reaction_quite_positive_3.ogg",
 		REACTION_PATH + "tavern_crowd_play_reaction_quite_positive_4.ogg",
 		REACTION_PATH + "tavern_crowd_play_reaction_quite_positive_5.ogg"
+	],
+	REACTION_Q_POSITIVE_SET: [
+		REACTION_PATH + "tavern_crowd_play_reaction_positive_1.ogg",
+		REACTION_PATH + "tavern_crowd_play_reaction_positive_2.ogg",
+		REACTION_PATH + "tavern_crowd_play_reaction_positive_3.ogg",
+		REACTION_PATH + "tavern_crowd_play_reaction_positive_4.ogg",
+		REACTION_PATH + "tavern_crowd_play_reaction_positive_5.ogg"
 	],
 	REACTION_V_POSITIVE_SET: [
 		REACTION_PATH + "tavern_crowd_play_reaction_very_positive_1.ogg",
@@ -100,12 +100,11 @@ const SOUNDS = {
 		REACTION_PATH + "tavern_crowd_play_reaction_very_positive_3.ogg",
 		REACTION_PATH + "tavern_crowd_play_reaction_very_positive_4.ogg",
 		REACTION_PATH + "tavern_crowd_play_reaction_very_positive_5.ogg"
+	],
+	THANKS: [
+		AUDIO_PATH + "Thanks_Malfurion.ogg"
 	]
 }
-
-// Init sound
-var Loading_Start_Howl = playOneShot(SOUNDS.LOADING_START);
-var Loading_Loop_Howl; // TODO
 
 
 // ===== GLOBAL VARIABLES =====
@@ -113,6 +112,7 @@ var Loading_Loop_Howl; // TODO
 // Global Token data
 var Access_Token = null;
 var Fetch_Attempts = 0;
+var Finished_Loading = false;
 
 // Global variables to store card data
 var All_Cards = [];
@@ -148,6 +148,12 @@ var Current_Streak_fr;
 var Best_Streak_fr;
 var Total_Score_fr;
 getScoreCookies();
+
+// Init sound variables
+var Loading_Start_Howl;
+var Loading_Loop_Howl;
+Howler.mute(getCookie("Muted") === "true");
+$('#muteSwitch').prop('checked', (getCookie("Muted") === "true"));
 
 
 
@@ -275,15 +281,14 @@ function generateQuiz() {
 	console.log("Cards_With_Flavor:");
 	console.log(Cards_With_Flavor);
 
+	// Hide visual spinner
 	$("#notLoadingIndicator").hide();
-	// TODO
-	// Loading_Howl.stop();
-	if (Total_Score_mc > 0) {
-		playOneShot(getRandomFromArray(SOUNDS.RETURNING_SET));
-	} else {
-		playOneShot(SOUNDS.GREETING);
-	}
+	Finished_Loading = true;
 
+	// Trigger audio
+	stopLoadingLoop();
+
+	// Choose the first card
 	setNewCurrentCard();
 
 	// Special search here
@@ -335,7 +340,7 @@ function revealCard(correct, textToShow) {
 		}
 		// Play sound effect
 		let currentStreak = (Mode === MODES.MULTIPLE_CHOICE) ? Current_Streak_mc : Current_Streak_fr;
-		let soundSet = (currentStreak < Q_POSITIVE_STREAK) ? SOUNDS.REACTION_Q_POSITIVE_SET : ((currentStreak < V_POSITIVE_STREAK) ? SOUNDS.REACTION_POSITIVE_SET : SOUNDS.REACTION_V_POSITIVE_SET);
+		let soundSet = (currentStreak < Q_POSITIVE_STREAK) ? SOUNDS.REACTION_POSITIVE_SET : ((currentStreak < V_POSITIVE_STREAK) ? SOUNDS.REACTION_Q_POSITIVE_SET : SOUNDS.REACTION_V_POSITIVE_SET);
 		playOneShot(getRandomFromArray(soundSet));
 		// Update current pools
 		removeFromPools(getCurrentCard());
@@ -618,21 +623,44 @@ function tryReset() {
 
 
 // ===== SOUND FUNCTIONS =====
-function playOneShot(sound, loop = false, autoplay = true) {
+function playOneShot(sound, volume = 1, loop = false, autoplay = true, onend = null, rate = 1.0) {
 	return new Howl({
 		src: [sound],
 		autoplay: autoplay,
 		loop: loop,
-		volume: DEFAULT_VOLUME
+		volume: DEFAULT_VOLUME * volume,
+		onend: onend,
+		rate: rate
 	});
 }
 
-function playSoundWithFollowup(sound, nextSound) {
-	// TODO
+// When the feedback link is clicked, say thanks
+function onFeedbackLink() {
+	playOneShot(getRandomFromArray(SOUNDS.THANKS));
 }
 
-// Init background tavern chatter
-playOneShot(SOUNDS.BACKGROUND_CHATTER, true);
+// Init spinner sound sequence
+Loading_Start_Howl = playOneShot(SOUNDS.LOADING_START, 0.8, false);
+Loading_Loop_Howl = playOneShot(SOUNDS.LOADING_LOOP, 0, true);
+Loading_Loop_Howl.fade(0, DEFAULT_VOLUME * 0.5, 600);
+
+// Triggered once everything has loaded and the spinner is done
+function stopLoadingLoop() {
+	Loading_Loop_Howl.stop();
+	playOneShot(SOUNDS.LOADING_END, 0.8, false, true, playGreeting, 1.5);
+}
+
+// Play an appropriate greeting clip
+function playGreeting() {
+	if (Total_Score_mc > 0) {
+		playOneShot(getRandomFromArray(SOUNDS.RETURNING_SET));
+	} else {
+		playOneShot(SOUNDS.GREETING);
+	}
+	// Start the background chatter
+	let backgroundChatter = playOneShot(SOUNDS.BACKGROUND_CHATTER, 0, true);
+	backgroundChatter.fade(0, DEFAULT_VOLUME * 0.8, 5000);
+}
 
 
 
@@ -666,6 +694,7 @@ $(function() {
 	let mute_checkbox = $('#muteSwitch');
 	mute_checkbox.change(function() {
 		Howler.mute(mute_checkbox.prop('checked'));
+		setCookie("Muted", mute_checkbox.prop('checked'));
 	});
 });
 
@@ -738,7 +767,7 @@ $('#mc-size-input').val(MULTIPLE_CHOICE_DEFAULT_SIZE);
 update_score_display();
 
 
-// TODO - language options
+// Language options (stretch goal)
 // See Bootstrap dropdown here - https://getbootstrap.com/docs/4.2/components/forms/?
 
 

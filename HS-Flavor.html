@@ -34,7 +34,7 @@ title: HS Flavor
 		<!-- Streak display -->
 		<div class="col-lg-4 order-lg-1 col-sm-6 order-6">
 			<div id="HS_Flav_streak_display" class="mb-3">
-				<div class="card text-center">
+				<div class="card rounded-0 text-center">
 					<h3 class="card-header display-5">Score</h3>
 					<div class="card-body">
 						<div class="container-fluid">
@@ -112,7 +112,7 @@ title: HS Flavor
 		<div class="col-lg-4 order-lg-12 col-sm-9 order-12">
 			<div id="HS_Flav_options_container" class="mb-1">
 				<div class="container-fluid">
-					<div class="card text-center">
+					<div class="card rounded-0 text-center">
 						<h3 class="card-header display-5">Options</h3>
 						<div class="card-body">
 							<!-- Options container -->
@@ -139,13 +139,6 @@ title: HS Flavor
 										<label class="custom-control-label" for="hintsSwitch">Partial-Correctness Hints</label>
 									</div>
 								</div>
-								<!-- Enable/Disable "No Obvious Prompts" -->
-								<div class="col-12 mb-2">
-									<div class="custom-control custom-switch">
-										<input type="checkbox" checked class="custom-control-input" id="noObviousSwitch">
-										<label class="custom-control-label" for="noObviousSwitch">Exclude "Obvious" Flavor Text</label>
-									</div>
-								</div>
 								<!-- Mute button -->
 								<div class="col-12 mb-2">
 									<div class="custom-control custom-switch">
@@ -153,10 +146,17 @@ title: HS Flavor
 										<label class="custom-control-label" for="muteSwitch">Mute</label>
 									</div>
 								</div>
+								<!-- Enable/Disable "No Obvious Prompts" -->
+								<div class="col-12 mb-2">
+									<div class="custom-control custom-switch">
+										<input type="checkbox" checked class="custom-control-input" id="noObviousSwitch">
+										<label class="custom-control-label" for="noObviousSwitch">Exclude "Obvious" Flavor Text</label>
+									</div>
+								</div>
 								<!-- Contact info -->
 								<div class="col-12">
 									<!-- https://www.youtube.com/watch?v=uu7uBD8J9Iw -->
-									<p style="font-size: 1.2em" class="no-margin-bottom">Feature requests, bugs, or other feedback: <a href="mailto:dmcdominic@gmail.com">dmcdominic@gmail.com</a></p>
+									<p style="font-size: 1.2em" class="no-margin-bottom">Feature requests, bugs, or other feedback: <a href="mailto:dmcdominic@gmail.com" target="_blank" onclick="onFeedbackLink()">dmcdominic@gmail.com</a></p>
 								</div>
 							</div>
 						</div>

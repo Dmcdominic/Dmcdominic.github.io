@@ -37,14 +37,19 @@ body {
 	outline: none;
 }
 
-#flavorText {
-	background-color: black;
+#flavorTextP, #wrongFlavorTextP {
+	font-family: cursive, Verdana, cambria;
+	padding: 0.5em 3.5% 0.5em 3.5%;
+	background-image: url('/images/HS_Flavor_Text_Quiz/flavor text box plain.png');
+	background-size: cover;
+	background-position: center top;
+	background-repeat: no-repeat;
 }
 
 #HS_Flav_next {
 	display: flex;
 }
-#HS_Flav_free_response_input1, #HS_Flav_free_response_input2, #HS_Flav_multiple_choice_input, #HS_Flav_next, #HS_Flav_streak_display, #flavorText, #answerTextContainer, #HS_Flav_options_container, #preloadCardImg {
+#HS_Flav_free_response_input1, #HS_Flav_free_response_input2, #HS_Flav_multiple_choice_input, #HS_Flav_next, #HS_Flav_streak_display, #flavorTextP, #answerTextContainer, #wrongFlavorTextP, #HS_Flav_options_container, #preloadCardImg {
 	display: none;
 }
 

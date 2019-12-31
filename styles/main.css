@@ -54,6 +54,10 @@ p {
 .no-margin-bottom {
 	margin-bottom: 0;
 }
+.no-padding-sides {
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+}
 
 .white-text {
 	color: white;

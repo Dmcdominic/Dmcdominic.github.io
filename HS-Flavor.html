@@ -32,23 +32,25 @@ title: HS Flavor
 	<div class="row justify-content-center">
 
 		<!-- Streak display -->
-		<div class="col-lg-4 order-lg-1 col-sm-6 order-6">
+		<div class="col-lg-4 order-lg-1 col-sm-6 col-12 order-6">
 			<div id="HS_Flav_streak_display" class="mb-3">
 				<div class="card rounded-0 text-center">
 					<h3 class="card-header display-5">Score</h3>
 					<div class="card-body">
-						<div class="container-fluid">
+						<div class="container-fluid no-padding-sides">
 							<div class="row justify-content-center">
 								<div class="col-md-6 col-12 mb-2">
 									<h5 class="display-6"><u>Multiple Choice</u></h5>
-									<p class="no-margin-bottom">Streak: <span id="current_streak_mc_display">0</span><br>
+									<p class="no-margin-bottom">
+										Streak: <span id="current_streak_mc_display">0</span><br>
 										Best: <span id="best_streak_mc_display">0</span><br>
 										Total: <span id="total_score_mc_display">0</span>
 									</p>
 								</div>
 								<div class="col-md-6 col-12 mb-2">
 									<h5 class="display-6"><u>Open Ended</u></h5>
-									<p class="no-margin-bottom">Streak: <span id="current_streak_fr_display">0</span><br>
+									<p class="no-margin-bottom">
+										Streak: <span id="current_streak_fr_display">0</span><br>
 										Best: <span id="best_streak_fr_display">0</span><br>
 										Total: <span id="total_score_fr_display">0</span>
 									</p>
@@ -70,8 +72,9 @@ title: HS Flavor
 				<div class="row justify-content-center white-text">
 					<!-- Prompt -->
 					<div class="col-lg-12 col-sm-10 text-center">
-						<p><span id="flavorText">(Loading...)</span></p>
+						<p id="flavorTextP">(Loading...)</p>
 						<p id="answerTextContainer"></p>
+						<p id="wrongFlavorTextP"></p>
 					</div>
 					<!-- Input (Multiple Choice) -->
 					<div id="mc_options_col" class="col-12 text-center">
@@ -109,9 +112,9 @@ title: HS Flavor
 		</div>
 
 		<!-- Options -->
-		<div class="col-lg-4 order-lg-12 col-sm-9 order-12">
+		<div class="col-lg-4 order-lg-12 col-sm-6 col-12 order-12">
 			<div id="HS_Flav_options_container" class="mb-1">
-				<div class="container-fluid">
+				<div class="container-fluid no-padding-sides">
 					<div class="card rounded-0 text-center">
 						<h3 class="card-header display-5">Options</h3>
 						<div class="card-body">

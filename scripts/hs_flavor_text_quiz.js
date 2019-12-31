@@ -1,8 +1,8 @@
 // ===== GLOBAL CONSTANTS =====
 // Settings
-const MULTIPLE_CHOICE_DEFAULT_SIZE = 4;
-const MULTIPLE_CHOICE_MIN_SIZE = 2;
-const MULTIPLE_CHOICE_MAX_SIZE = 100;
+const MULTIPLE_CHOICE_DEFAULT_SIZE = 4; // Default number of options in multiple choice
+const MULTIPLE_CHOICE_MIN_SIZE = 2; // Minimum number of options in multiple choice
+const MULTIPLE_CHOICE_MAX_SIZE = 100; // Maximum number of options in multiple choice
 const OBVIOUS_WORD_MIN_LENGTH = 3; // Filters for words from name that appear in flavorText of this length
 const OBVIOUS_SUBSTRING_MIN_LENGTH = 5; // Filters for common substrings of this length
 const CLOSE_ENOUGH_SIMILARITY_THRESHOLD = 0.8; // From range [0, 1];
@@ -11,8 +11,8 @@ const PAGE_SIZE = 500; // API response size. This seems to be the cap
 const API_RETRY_DELAY = 20; // Delay (in ms) between attempts to access the API if it fails
 const API_ATTEMPTS_BEFORE_MESSAGE = 3; // Number of API fetch attempts before a message is displayed
 const DEFAULT_VOLUME = 0.25; // Default volume for sound effects
-const Q_POSITIVE_STREAK = 5;
-const V_POSITIVE_STREAK = 15;
+const Q_POSITIVE_STREAK = 5; // Threshold for a "quite positive" streak
+const V_POSITIVE_STREAK = 15; // Threshold for a "very positive" streak
 
 // OAuth Data
 const CLIENT_ID = "b7777d5b2cf8467697f17db51270a714";
@@ -136,6 +136,9 @@ var No_Obvious_Prompts = true;
 function getCurrentCard() {
 	return (Mode === MODES.MULTIPLE_CHOICE) ? Current_Card_mc : Current_Card_fr;
 }
+function getCurrentStreak() {
+	return (Mode === MODES.MULTIPLE_CHOICE) ? Current_Streak_mc : Current_Streak_fr
+}
 function getCurrentPool() {
 	return (No_Obvious_Prompts) ? Current_Pool_No_Obvious : Current_Pool_Full;
 }
@@ -166,6 +169,7 @@ $('#muteSwitch').prop('checked', (getCookie("Muted") === "true"));
 // Crushing Walls
 // Lakkari Sacrifice
 // Raid Leader, and Upgrade!
+// Prismatic Lens
 
 
 
@@ -339,7 +343,7 @@ function revealCard(correct, textToShow) {
 			}
 		}
 		// Play sound effect
-		let currentStreak = (Mode === MODES.MULTIPLE_CHOICE) ? Current_Streak_mc : Current_Streak_fr;
+		let currentStreak = getCurrentStreak();
 		let soundSet = (currentStreak < Q_POSITIVE_STREAK) ? SOUNDS.REACTION_POSITIVE_SET : ((currentStreak < V_POSITIVE_STREAK) ? SOUNDS.REACTION_Q_POSITIVE_SET : SOUNDS.REACTION_V_POSITIVE_SET);
 		playOneShot(getRandomFromArray(soundSet));
 		// Update current pools
@@ -365,7 +369,6 @@ function revealCard(correct, textToShow) {
 	$("#answerTextContainer").show();
 	$("#HS_Flav_next").show();
 	$('#HS_Flav_options_container').show();
-	$("#flavorText").show();
 	$("#HS_Flav_multiple_choice_input").hide();
 	$("#HS_Flav_free_response_input1").hide();
 	$("#HS_Flav_free_response_input2").hide();
@@ -412,12 +415,13 @@ function setNewCurrentCard(justVisuals = false) {
 	updateCurrentCardRevealed(false);
 
 	$("#preloadCardImg").attr("src", getCurrentCard().image);
-	$("#flavorText").html(getCurrentCard().flavorText);
+	$("#flavorTextP").html(getCurrentCard().flavorText);
+	$("#flavorTextP").show();
 	$("#answerTextContainer").hide();
+	$("#wrongFlavorTextP").hide();
 	$("#HS_Flav_next").hide();
 	$("#HS_Flav_streak_display").show();
 	$('#HS_Flav_options_container').show();
-	$("#flavorText").show();
 	$("#guessField").val("");
 	$("#guessField").focus();
 }
@@ -466,6 +470,7 @@ function setOptions() {
 // Generates a pool based on 2 (randomly chosen) card features
 function generatePool(initialPool, focusCard, minSize) {
 	let newPool = [];
+	let currentStreak = getCurrentStreak();
 	const POOL_MAX_LOOPS = 10;
 	let loops = 0;
 	while (newPool.length < minSize) {
@@ -474,9 +479,23 @@ function generatePool(initialPool, focusCard, minSize) {
 		}
 		loops++;
 
-		let classOrSet = (Math.random() > 0.5) ? classFilter(focusCard) : setFilter(focusCard);
-		let anyFilter = (Math.random() > 0.5) ? rarityFilter(focusCard) : ((Math.random() > 0.5) ? classFilter(focusCard) : setFilter(focusCard));
-		newPool = initialPool.filter(card => typeFilter(focusCard)(card) && classOrSet(card) && anyFilter(card));
+		// Pool similarity strength is scaled based on current streak
+		if (currentStreak < Q_POSITIVE_STREAK) {
+			let anyFilter = (Math.random() > 0.5) ? classFilter(focusCard) : ((Math.random() > 0.5) ? typeFilter(focusCard) : setFilter(focusCard));
+			newPool = initialPool.filter(card => anyFilter(card));
+		} else if (currentStreak < V_POSITIVE_STREAK) {
+			let classOrSet = (Math.random() > 0.5) ? classFilter(focusCard) : setFilter(focusCard);
+			let anyFilter = (Math.random() > 0.5) ? rarityFilter(focusCard) : ((Math.random() > 0.5) ? classFilter(focusCard) : setFilter(focusCard));
+			newPool = initialPool.filter(card => typeFilter(focusCard)(card) && classOrSet(card) && anyFilter(card));
+		} else {
+			if (Math.random() > 0.5) {
+				newPool = initialPool.filter(card => classFilter(focusCard)(card) && setFilter(focusCard)(card));
+			} else {
+				let classOrSet = (Math.random() > 0.5) ? classFilter(focusCard) : setFilter(focusCard);
+				let anyFilter = (Math.random() > 0.5) ? rarityFilter(focusCard) : ((Math.random() > 0.5) ? classFilter(focusCard) : setFilter(focusCard));
+				newPool = initialPool.filter(card => typeFilter(focusCard)(card) && classOrSet(card) && anyFilter(card));
+			}
+		}
 	}
 	return newPool;
 }
@@ -522,9 +541,11 @@ function guessCard(guess) {
 	let currentCardNameLower = getCurrentCard().name.toLowerCase();
 	let similarityScore = similarity(guess, getCurrentCard().name);
 	if (guess === currentCardNameLower) {
-		revealCard(true, randWowLine() + "<br><u>The answer is</u>: <i>" + getCurrentCard().name + "</i>");
+		// revealCard(true, randWowLine() + "<br><u>The answer is</u>: <i>" + getCurrentCard().name + "</i>");
+		revealCard(true, randWowLine());
 	} else if (similarityScore >= CLOSE_ENOUGH_SIMILARITY_THRESHOLD) {
-		revealCard(true, randWowLine() + " (Close enough)<br><u>The answer is</u>: <i>" + getCurrentCard().name + "</i>");
+		// revealCard(true, randWowLine() + " (Close enough)<br><u>The answer is</u>: <i>" + getCurrentCard().name + "</i>");
+		revealCard(true, randWowLine() + " (Close enough)");
 		// console.log("[You had a similarity score of " + similarityScore + "]");
 	} else {
 		let bestSubstring = bestSubstringMatch(guess, getCurrentCard().name);
@@ -540,13 +561,17 @@ function guessCard(guess) {
 function guessCardSlug(slug) {
 	console.assert(Mode === MODES.MULTIPLE_CHOICE);
 	if (slug === getCurrentCard().slug) {
-		revealCard(true, randWowLine() + "<br><u>The answer is</u>: <i>" + getCurrentCard().name + "</i>");
+		// revealCard(true, randWowLine() + "<br><u>The answer is</u>: <i>" + getCurrentCard().name + "</i>");
+		revealCard(true, randWowLine());
 	} else {
 		let guessed_card_list = Current_Options.filter(card => card.slug === slug);
 		console.assert(guessed_card_list.length === 1);
 		let guessed_card = guessed_card_list[0];
-		revealCard(false, randOopsLine() + "<br><u>The answer is</u>: <i>" + getCurrentCard().name + "</i><br><br>The flavor text of <i>" + guessed_card.name
-		+ "</i> is:<br> <span style='background-color: yellow; color: black'>" + guessed_card.flavorText + "</span>");
+
+		// revealCard(false, randOopsLine() + "<br><u>The answer is</u>: <i>" + getCurrentCard().name + "</i><br><br>The flavor text of <i>" + guessed_card.name+ "</i> is:");
+		revealCard(false, randOopsLine() + "<br>The flavor text of <i>" + guessed_card.name+ "</i> is:");
+		$("#wrongFlavorTextP").html(guessed_card.flavorText);
+		$("#wrongFlavorTextP").show();
 	}
 }
 
@@ -652,7 +677,8 @@ function stopLoadingLoop() {
 
 // Play an appropriate greeting clip
 function playGreeting() {
-	if (Total_Score_mc > 0) {
+	const RETURNING_MIN_TOTAL = 5;
+	if ((Total_Score_mc + Total_Score_fr) >= RETURNING_MIN_TOTAL) {
 		playOneShot(getRandomFromArray(SOUNDS.RETURNING_SET));
 	} else {
 		playOneShot(SOUNDS.GREETING);

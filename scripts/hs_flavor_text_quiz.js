@@ -346,6 +346,7 @@ function revealCard(correct, textToShow) {
 		let currentStreak = getCurrentStreak();
 		let soundSet = (currentStreak < Q_POSITIVE_STREAK) ? SOUNDS.REACTION_POSITIVE_SET : ((currentStreak < V_POSITIVE_STREAK) ? SOUNDS.REACTION_Q_POSITIVE_SET : SOUNDS.REACTION_V_POSITIVE_SET);
 		playOneShot(getRandomFromArray(soundSet));
+		$("#glowCardImgGreen").show();
 		// Update current pools
 		removeFromPools(getCurrentCard());
 	} else {
@@ -356,6 +357,7 @@ function revealCard(correct, textToShow) {
 		}
 		// Play sound effect
 		playOneShot(SOUNDS.FATIGUE);
+		$("#glowCardImgRed").show();
 	}
 	setScoreCookies();
 	update_score_display();
@@ -363,7 +365,6 @@ function revealCard(correct, textToShow) {
 	updateCurrentCardRevealed(true);
 
 	$("#correctCardImg").attr("src", getCurrentCard().image);
-	$("#correctCardImg").addClass("glowing-card");
 	$("#correctCardImgLink").attr("href", getCardLibraryURL(getCurrentCard()));
 	$("#answerTextContainer").html(textToShow);
 	$("#answerTextContainer").show();
@@ -390,7 +391,8 @@ function updateCurrentCardRevealed(newVal) {
 // Sets Current_Card to a new random card
 function setNewCurrentCard(justVisuals = false) {
 	$("#correctCardImg").attr("src", "/images/HS_Flavor_Text_Quiz/Mystery Card.png");
-	$("#correctCardImg").removeClass("glowing-card");
+	$("#glowCardImgGreen").hide();
+	$("#glowCardImgRed").hide();
 	$("#correctCardImgLink").removeAttr("href");
 
 	// Current_Card.name = Current_Card.name.trim();

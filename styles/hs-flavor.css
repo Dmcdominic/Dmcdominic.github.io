@@ -63,6 +63,14 @@ body {
 	background-repeat: no-repeat;
 }
 
+#answerTextContainer {
+	padding: 0.3em 8% 0.6em 8%;
+	background-image: url('/images/HS_Flavor_Text_Quiz/blue banner cropped.png');
+	background-size: cover;
+	background-position: center top;
+	background-repeat: no-repeat;
+}
+
 #HS_Flav_next {
 	display: flex;
 }

@@ -19,6 +19,9 @@ const V_POSITIVE_STREAK = 15; // Threshold for a "very positive" streak
 const CLIENT_ID = "b7777d5b2cf8467697f17db51270a714";
 const CLIENT_SECRET = "AgbO2QvwGDaFrtUdQstKCRJNZlBQ6vTZ";
 
+// Meta Metadata Data
+const METADATA_CATEGORIES = [ "sets", "types", "rarities", "classes", "minionTypes", "keywords" ]
+
 // Modes
 const MODES = {
 	MULTIPLE_CHOICE: "Multiple Choice",
@@ -116,7 +119,8 @@ var Fetch_Attempts = 0;
 var Finished_Loading = false;
 
 // Global variables to store card data
-var Metadata = null;
+var Metadata_Raw = null;
+var Metadata = {};
 var All_Cards = [];
 var Cards_With_Flavor = [];
 var Current_Pool_Full = [];
@@ -216,12 +220,9 @@ function fetchAccessToken() {
 	.then(json => {
 		Access_Token = json.access_token;
 		fetchMetadata();
-		fetchCardData(1);
 	})
 	.catch(err => {
-		console.log(err);
-		console.log("Going to try again after " + API_RETRY_DELAY + "ms delay...");
-		incrFetchAttempts();
+		incrFetchAttempts(err);
 		setTimeout(fetchAccessToken(), API_RETRY_DELAY);
 	});
 }
@@ -231,6 +232,7 @@ function fetchAccessToken() {
 // Now use the token to actually get card data
 // Reference - https://github.com/search?q=%22.api.blizzard.com%2Fhearthstone%2F%22+fetch&type=Code
 function fetchCardData(pageNum) {
+	$("#loadingTextP").text("Fetching card data...");
 	fetch("https://us.api.blizzard.com/hearthstone/cards?region=us&locale=en_US&collectible=1&pageSize=" + PAGE_SIZE + "&page=" + pageNum + "&access_token=" + Access_Token, {
 		"method": "GET"
 	})
@@ -258,16 +260,14 @@ function fetchCardData(pageNum) {
 	.then(response => response.json())
 	.then(json => appendCardData(json))
 	.catch(err => {
-		console.log(err);
-		console.log("Going to try again after " + API_RETRY_DELAY + "ms delay...");
-		incrFetchAttempts();
+		incrFetchAttempts(err);
 		setTimeout(fetchCardData(pageNum), API_RETRY_DELAY);
 	});
 }
 
 // Use the token get the metadata
-// TODO
 function fetchMetadata() {
+	$("#loadingTextP").text("Fetching metadata...");
 	fetch("https://us.api.blizzard.com/hearthstone/metadata?region=us&locale=en_US&access_token=" + Access_Token, {
 		"method": "GET"
 	})
@@ -295,15 +295,15 @@ function fetchMetadata() {
 	.then(response => response.json())
 	.then(json => parseMetadata(json))
 	.catch(err => {
-		console.log(err);
-		console.log("Going to try again after " + API_RETRY_DELAY + "ms delay...");
-		incrFetchAttempts();
+		incrFetchAttempts(err);
 		setTimeout(fetchMetadata(), API_RETRY_DELAY);
 	});
 }
 
 // Called when an API request fails
-function incrFetchAttempts() {
+function incrFetchAttempts(err) {
+	console.log(err);
+	console.log("Going to try again after " + API_RETRY_DELAY + "ms delay...");
 	Fetch_Attempts++;
 	if (Fetch_Attempts >= API_ATTEMPTS_BEFORE_MESSAGE) {
 		$("#notLoadingIndicator").show();
@@ -322,19 +322,36 @@ function appendCardData(json) {
 
 // Parses the metadata json
 function parseMetadata(json) {
-	Metadata = json;
-	console.log("Metadata:");
-	console.log(json);
+	Metadata_Raw = json;
+	console.log("Metadata (Raw):");
+	console.log(Metadata_Raw);
+
+	// Populate the Metadata object
+	METADATA_CATEGORIES.forEach((item) => Metadata_Raw[item].forEach(addMetadataCategoryById(item)));
+	console.log("Metadata (Parsed):");
+	console.log(Metadata);
+
+	// Now fetch the card data
+	fetchCardData(1);
+}
+// Parses a certain (raw) metadata "item" into the Metadata object
+function addMetadataCategoryById(category) {
+	Metadata[category] = {};
+	return ((item, index) => {
+		Metadata[category][item.id] = item;
+	});
 }
 
 // Generate quiz questions, once all data has been loaded
 function generateQuiz() {
+	$("#loadingTextP").text("Generating flavor text pools");
 	Cards_With_Flavor = All_Cards.filter(card => card.flavorText !== undefined && card.flavorText.trim());
 	resetPools();
 	console.log("Cards_With_Flavor:");
 	console.log(Cards_With_Flavor);
 
 	// Hide visual spinner
+	$("#loadingText").hide();
 	$("#notLoadingIndicator").hide();
 	Finished_Loading = true;
 
@@ -602,12 +619,12 @@ function guessCard(guess) {
 		revealCard(true, randWowLine() + " (Close enough)");
 		// console.log("[You had a similarity score of " + similarityScore + "]");
 	} else if (Guesses_Remaining > 0) {
+		let postfix = Hints ? ("<br>" + getHint()) : "";
 		let bestSubstring = bestSubstringMatch(guess, getCurrentCard().name);
-		if (Hints && bestSubstring.length >= HINT_SUBSTRING_MIN_LENGTH) {
-			$("#answerTextContainer").html("Almost! You got this part right:<br>\"" + bestSubstring + "\"");
+		if (bestSubstring.length >= HINT_SUBSTRING_MIN_LENGTH) {
+			$("#answerTextContainer").html("Almost! You got this part right: \"" + bestSubstring + "\"" + postfix);
 		} else {
-			$("#answerTextContainer").html("You guessed: \"" + fullCaseGuess +  "\". Good try but nope.");
-			// TODO - add hint here
+			$("#answerTextContainer").html("You guessed: \"" + fullCaseGuess +  "\". Good try but nope." + postfix);
 		}
 		// console.log("[HINT: You had a similarity score of " + similarityScore + "]");
 	} else {
@@ -641,11 +658,14 @@ function giveUp() {
 // Returns a hint for the card according to the number of guesses remaining
 function getHint() {
 	let card = getCurrentCard();
+	let className = Metadata["classes"][card.classId].name;
+	let typeName = Metadata["types"][card.cardTypeId].name;
+	let setName = Metadata["sets"][card.cardSetId].name;
+	let rarityName = Metadata["rarities"][card.rarityId].name;
 	if (Guesses_Remaining > FREE_RESPONSE_MAX_GUESSES / 3) {
-		return "<b>HINT</b> - This is a " + card;
-		// TODO
+		return "<b>HINT</b> - This is a " + className + " " + typeName + ".";
 	} else {
-		// TODO
+		return "<b>HINT</b> - This is a " + rarityName + " " + className + " " + typeName + " from " + setName + ".";
 	}
 }
 
@@ -686,13 +706,16 @@ function setMode(newMode) {
 
 // Get a random emote line
 function randWowLine() {
-	return "<span style='background-color: green'>" + getRandomFromArray(WOW_LINES) + "</span>";
+	return getRandomFromArray(WOW_LINES);
+	// return "<span style='background-color: green'>" + getRandomFromArray(WOW_LINES) + "</span>";
 }
 function randOopsLine() {
-	return "<span style='background-color: red'>" + getRandomFromArray(OOPS_LINES) + "</span>";
+	return getRandomFromArray(OOPS_LINES);
+	// return "<span style='background-color: red'>" + getRandomFromArray(OOPS_LINES) + "</span>";
 }
 function randSorryLine() {
-	return "<span style='background-color: red'>" + getRandomFromArray(SORRY_LINES) + "</span>";
+	return getRandomFromArray(SORRY_LINES);
+	// return "<span style='background-color: red'>" + getRandomFromArray(SORRY_LINES) + "</span>";
 }
 
 // Get the official card library URL of a card
@@ -808,28 +831,14 @@ $(function() {
 // Multiple choice size spinner initialization.
 // Source: https://www.cssscript.com/increment-decrement-number-ispinjs/
 let spinner = new ISpin(document.getElementById('mc-size-input'), {
-	// wrapper class
 	wrapperClass: 'ispin-wrapper',
-	// button class
-	// buttonsClass: String,
-	// step size
 	step: 1,
-	// page step
 	pageStep: 20,
-	// repeat interval
 	repeatInterval: 200,
-	// enable overflow
 	wrapOverflow: false,
-	// parse
-	// parse: String => Number,
-	// format
-	// format: Number => String,
-	// disable the input spinner
 	disabled: false,
-	// min/max values
 	max: MULTIPLE_CHOICE_MAX_SIZE,
 	min: MULTIPLE_CHOICE_MIN_SIZE,
-	// onChange callback
 	onChange: update_mc_size
 });
 

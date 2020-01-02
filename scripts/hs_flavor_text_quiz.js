@@ -3,6 +3,7 @@
 const MULTIPLE_CHOICE_DEFAULT_SIZE = 4; // Default number of options in multiple choice
 const MULTIPLE_CHOICE_MIN_SIZE = 2; // Minimum number of options in multiple choice
 const MULTIPLE_CHOICE_MAX_SIZE = 100; // Maximum number of options in multiple choice
+const FREE_RESPONSE_MAX_GUESSES = 3; // Maximum guesses allowed in free response
 const OBVIOUS_WORD_MIN_LENGTH = 3; // Filters for words from name that appear in flavorText of this length
 const OBVIOUS_SUBSTRING_MIN_LENGTH = 5; // Filters for common substrings of this length
 const CLOSE_ENOUGH_SIMILARITY_THRESHOLD = 0.8; // From range [0, 1];
@@ -115,6 +116,7 @@ var Fetch_Attempts = 0;
 var Finished_Loading = false;
 
 // Global variables to store card data
+var Metadata = null;
 var All_Cards = [];
 var Cards_With_Flavor = [];
 var Current_Pool_Full = [];
@@ -122,6 +124,7 @@ var Current_Pool_No_Obvious = [];
 var Current_Card_mc = null;
 var Current_Card_fr = null;
 var Current_Options = [];
+var Guesses_Remaining = FREE_RESPONSE_MAX_GUESSES;
 
 var Card_Revealed_mc = false;
 var Card_Revealed_fr = false;
@@ -212,6 +215,7 @@ function fetchAccessToken() {
 	.then(response => response.json())
 	.then(json => {
 		Access_Token = json.access_token;
+		fetchMetadata();
 		fetchCardData(1);
 	})
 	.catch(err => {
@@ -227,7 +231,7 @@ function fetchAccessToken() {
 // Now use the token to actually get card data
 // Reference - https://github.com/search?q=%22.api.blizzard.com%2Fhearthstone%2F%22+fetch&type=Code
 function fetchCardData(pageNum) {
-	fetch("https://us.api.blizzard.com/hearthstone/cards?locale=en_US&collectible=1&pageSize=" + PAGE_SIZE + "&page=" + pageNum + "&access_token=" + Access_Token, {
+	fetch("https://us.api.blizzard.com/hearthstone/cards?region=us&locale=en_US&collectible=1&pageSize=" + PAGE_SIZE + "&page=" + pageNum + "&access_token=" + Access_Token, {
 		"method": "GET"
 	})
 	.then(response => {
@@ -261,6 +265,44 @@ function fetchCardData(pageNum) {
 	});
 }
 
+// Use the token get the metadata
+// TODO
+function fetchMetadata() {
+	fetch("https://us.api.blizzard.com/hearthstone/metadata?region=us&locale=en_US&access_token=" + Access_Token, {
+		"method": "GET"
+	})
+	.then(response => {
+		const reader = response.body.getReader();
+		return new ReadableStream({
+			start(controller) {
+				return pump();
+				function pump() {
+					return reader.read().then(({ done, value }) => {
+						// When no more data needs to be consumed, close the stream
+						if (done) {
+							controller.close();
+							return;
+						}
+						// Enqueue the next data chunk into our target stream
+						controller.enqueue(value);
+						return pump();
+					});
+				}
+			}
+		})
+	})
+	.then(stream => new Response(stream))
+	.then(response => response.json())
+	.then(json => parseMetadata(json))
+	.catch(err => {
+		console.log(err);
+		console.log("Going to try again after " + API_RETRY_DELAY + "ms delay...");
+		incrFetchAttempts();
+		setTimeout(fetchMetadata(), API_RETRY_DELAY);
+	});
+}
+
+// Called when an API request fails
 function incrFetchAttempts() {
 	Fetch_Attempts++;
 	if (Fetch_Attempts >= API_ATTEMPTS_BEFORE_MESSAGE) {
@@ -276,6 +318,13 @@ function appendCardData(json) {
 	} else {
 		fetchCardData(json.page + 1);
 	}
+}
+
+// Parses the metadata json
+function parseMetadata(json) {
+	Metadata = json;
+	console.log("Metadata:");
+	console.log(json);
 }
 
 // Generate quiz questions, once all data has been loaded
@@ -410,10 +459,12 @@ function setNewCurrentCard(justVisuals = false) {
 	} else if (Mode == MODES.FREE_REPONSE) {
 		if (!justVisuals) {
 			Current_Card_fr = getRandomCard();
+			updateGuessesDisplay(FREE_RESPONSE_MAX_GUESSES);
 		}
 		$("#HS_Flav_free_response_input1").show();
 		$("#HS_Flav_free_response_input2").show();
 	}
+	updateGuessesDisplay();
 	updateCurrentCardRevealed(false);
 
 	$("#preloadCardImg").attr("src", getCurrentCard().image);
@@ -524,7 +575,7 @@ function getRandomCard() {
 	return getRandomFromArray(getCurrentPool());
 }
 
-// Call this to guess what the card is.
+// Call this to guess what the card is *for Free Reponse mode*
 // "guess" is a string for the card's name.
 function guessCard(guess) {
 	console.assert(Mode !== MODES.MULTIPLE_CHOICE);
@@ -538,6 +589,7 @@ function guessCard(guess) {
 		return;
 	}
 
+	updateGuessesDisplay(Guesses_Remaining - 1);
 	$("#answerTextContainer").show();
 
 	let currentCardNameLower = getCurrentCard().name.toLowerCase();
@@ -549,16 +601,20 @@ function guessCard(guess) {
 		// revealCard(true, randWowLine() + " (Close enough)<br><u>The answer is</u>: <i>" + getCurrentCard().name + "</i>");
 		revealCard(true, randWowLine() + " (Close enough)");
 		// console.log("[You had a similarity score of " + similarityScore + "]");
-	} else {
+	} else if (Guesses_Remaining > 0) {
 		let bestSubstring = bestSubstringMatch(guess, getCurrentCard().name);
 		if (Hints && bestSubstring.length >= HINT_SUBSTRING_MIN_LENGTH) {
 			$("#answerTextContainer").html("Almost! You got this part right:<br>\"" + bestSubstring + "\"");
 		} else {
 			$("#answerTextContainer").html("You guessed: \"" + fullCaseGuess +  "\". Good try but nope.");
+			// TODO - add hint here
 		}
 		// console.log("[HINT: You had a similarity score of " + similarityScore + "]");
+	} else {
+		revealCard(false, randOopsLine() + "<br><u>The answer is</u>: <i>" + getCurrentCard().name + "</i>");
 	}
 }
+// Call this to guess what the card is *for Multiple Choice mode*
 // "slug" is the card's slug
 function guessCardSlug(slug) {
 	console.assert(Mode === MODES.MULTIPLE_CHOICE);
@@ -580,6 +636,17 @@ function guessCardSlug(slug) {
 // Call this to give up and see the answer
 function giveUp() {
 	revealCard(false, randSorryLine() + "<br><u>The answer is</u>: <i>" + getCurrentCard().name + "</i>");
+}
+
+// Returns a hint for the card according to the number of guesses remaining
+function getHint() {
+	let card = getCurrentCard();
+	if (Guesses_Remaining > FREE_RESPONSE_MAX_GUESSES / 3) {
+		return "<b>HINT</b> - This is a " + card;
+		// TODO
+	} else {
+		// TODO
+	}
 }
 
 // Removes a certain card from each card pool
@@ -783,6 +850,21 @@ function update_score_display() {
 	$("#current_streak_fr_display").text(Current_Streak_fr);
 	$("#best_streak_fr_display").text(Best_Streak_fr);
 	$("#total_score_fr_display").text(Total_Score_fr);
+}
+
+// Updates the display for number of guesses remaining
+function updateGuessesDisplay(newGuessesLeft) {
+	if (newGuessesLeft !== undefined) {
+		Guesses_Remaining = newGuessesLeft;
+	}
+	if (Mode !== MODES.FREE_REPONSE || Guesses_Remaining <= 0) {
+		$("#guessesRemainingP").hide();
+		return;
+	}
+
+	let postfix = (Guesses_Remaining === 1) ? " Guess Remaining" : " Guesses Remaining";
+	$("#guessesRemainingP").text(Guesses_Remaining + postfix);
+	$("#guessesRemainingP").show();
 }
 
 

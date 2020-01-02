@@ -74,6 +74,10 @@ body {
 	width: 7em;
 }
 
+#guessesRemainingP {
+	margin-top: 1rem;
+}
+
 /* Number field spinner */
 .ispin-wrapper .ispin-button:before {
 	-webkit-transform: translateY(-170%) !important;

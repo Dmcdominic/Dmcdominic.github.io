@@ -153,10 +153,12 @@ function getCurrentPool() {
 // Score/streak variables, initialized according to cookies
 var Current_Streak_mc;
 var Best_Streak_mc;
-var Total_Score_mc;
+var Total_Correct_mc;
+var Total_Answered_mc;
 var Current_Streak_fr;
 var Best_Streak_fr;
-var Total_Score_fr;
+var Total_Correct_fr;
+var Total_Answered_fr;
 getScoreCookies();
 
 // Init sound variables
@@ -177,6 +179,7 @@ $('#muteSwitch').prop('checked', (getCookie("Muted") === "true"));
 // Lakkari Sacrifice
 // Raid Leader, and Upgrade!
 // Prismatic Lens
+// Skaterbot
 
 
 
@@ -370,7 +373,7 @@ function obviousFilter(card) {
 	// Word-by-word filter based on words in the name
 	let words = card.name.split(' ');
 	for (let i=0; i < words.length; i++) {
-		if (words[i].length >= OBVIOUS_WORD_MIN_LENGTH && card.flavorText.includes(words[i]) && words[i] !== words[i].toLowerCase()) {
+		if (words[i].length >= OBVIOUS_WORD_MIN_LENGTH && includesAnyCase(card.flavorText, words[i]) && words[i] !== words[i].toLowerCase()) {
 			return false;
 		}
 	}
@@ -397,13 +400,15 @@ function revealCard(correct, textToShow) {
 	if (correct) {
 		if (Mode === MODES.MULTIPLE_CHOICE) {
 			Current_Streak_mc++;
-			Total_Score_mc++;
+			Total_Correct_mc++;
+			Total_Answered_mc++;
 			if (Current_Streak_mc > Best_Streak_mc) {
 				Best_Streak_mc = Current_Streak_mc;
 			}
 		} else {
 			Current_Streak_fr++;
-			Total_Score_fr++;
+			Total_Correct_fr++;
+			Total_Answered_fr++;
 			if (Current_Streak_fr > Best_Streak_fr) {
 				Best_Streak_fr = Current_Streak_fr;
 			}
@@ -418,8 +423,10 @@ function revealCard(correct, textToShow) {
 	} else {
 		if (Mode === MODES.MULTIPLE_CHOICE) {
 			Current_Streak_mc = 0;
+			Total_Answered_mc++;
 		} else {
 			Current_Streak_fr = 0;
+			Total_Answered_fr++;
 		}
 		// Play sound effect
 		playOneShot(SOUNDS.FATIGUE);
@@ -724,17 +731,22 @@ function getCardLibraryURL(card) {
 }
 
 // Reset the score
-function tryReset() {
+function tryResetScores() {
 	if (confirm("This will reset ALL of your score and streak data. Are you sure?")) {
-		Current_Streak_mc = 0;
-		Best_Streak_mc = 0;
-		Total_Score_mc = 0;
-		Current_Streak_fr = 0;
-		Best_Streak_fr = 0;
-		Total_Score_fr = 0;
-		setScoreCookies();
-		update_score_display();
+		resetScores();
 	}
+}
+function resetScores() {
+	Current_Streak_mc = 0;
+	Best_Streak_mc = 0;
+	Total_Correct_mc = 0;
+	Total_Answered_mc = 0;
+	Current_Streak_fr = 0;
+	Best_Streak_fr = 0;
+	Total_Correct_fr = 0;
+	Total_Answered_fr = 0;
+	setScoreCookies();
+	update_score_display();
 }
 
 
@@ -770,7 +782,7 @@ function stopLoadingLoop() {
 // Play an appropriate greeting clip
 function playGreeting() {
 	const RETURNING_MIN_TOTAL = 5;
-	if ((Total_Score_mc + Total_Score_fr) >= RETURNING_MIN_TOTAL) {
+	if ((Total_Correct_mc + Total_Correct_fr) >= RETURNING_MIN_TOTAL) {
 		playOneShot(getRandomFromArray(SOUNDS.RETURNING_SET));
 	} else {
 		playOneShot(SOUNDS.GREETING);
@@ -853,12 +865,16 @@ function update_mc_size() {
 
 // Updates the score display
 function update_score_display() {
+	let mc_percent = Math.round(100 * Total_Correct_mc / Total_Answered_mc);
+	let fr_percent = Math.round(100 * Total_Correct_fr / Total_Answered_fr);
+	mc_percent = (mc_percent ? mc_percent : 0);
+	fr_percent = (fr_percent ? fr_percent : 0);
 	$("#current_streak_mc_display").text(Current_Streak_mc);
 	$("#best_streak_mc_display").text(Best_Streak_mc);
-	$("#total_score_mc_display").text(Total_Score_mc);
+	$("#total_score_mc_display").text(Total_Correct_mc + "/" + Total_Answered_mc + " (" +  mc_percent + "%)");
 	$("#current_streak_fr_display").text(Current_Streak_fr);
 	$("#best_streak_fr_display").text(Best_Streak_fr);
-	$("#total_score_fr_display").text(Total_Score_fr);
+	$("#total_score_fr_display").text(Total_Correct_fr + "/" + Total_Answered_fr + " (" +  fr_percent + "%)");
 }
 
 // Updates the display for number of guesses remaining
@@ -898,32 +914,40 @@ update_score_display();
 function getScoreCookies() {
 	Current_Streak_mc = getCookie("Current_Streak_mc");
 	Best_Streak_mc = getCookie("Best_Streak_mc");
-	Total_Score_mc = getCookie("Total_Score_mc");
+	Total_Correct_mc = getCookie("Total_Correct_mc");
+	Total_Answered_mc = getCookie("Total_Answered_mc");
 	Current_Streak_fr = getCookie("Current_Streak_fr");
 	Best_Streak_fr = getCookie("Best_Streak_fr");
-	Total_Score_fr = getCookie("Total_Score_fr");
+	Total_Correct_fr = getCookie("Total_Correct_fr");
+	Total_Answered_fr = getCookie("Total_Answered_fr");
 	// Make sure they're well-typed
 	if (!Current_Streak_mc) { Current_Streak_mc = 0; }
 	if (!Best_Streak_mc) { Best_Streak_mc = 0; }
-	if (!Total_Score_mc) { Total_Score_mc = 0; }
+	if (!Total_Correct_mc) { Total_Correct_mc = 0; }
+	if (!Total_Answered_mc) { Total_Answered_mc = 0; }
 	if (!Current_Streak_fr) { Current_Streak_fr = 0; }
 	if (!Best_Streak_fr) { Best_Streak_fr = 0; }
-	if (!Total_Score_fr) { Total_Score_fr = 0; }
+	if (!Total_Correct_fr) { Total_Correct_fr = 0; }
+	if (!Total_Answered_fr) { Total_Answered_fr = 0; }
 }
 
 // Set the cookies based on current score/streak variables
 function setScoreCookies() {
 	setCookie("Current_Streak_mc", Current_Streak_mc);
 	setCookie("Best_Streak_mc", Best_Streak_mc);
-	setCookie("Total_Score_mc", Total_Score_mc);
+	setCookie("Total_Correct_mc", Total_Correct_mc);
+	setCookie("Total_Answered_mc", Total_Answered_mc);
 	setCookie("Current_Streak_fr", Current_Streak_fr);
 	setCookie("Best_Streak_fr", Best_Streak_fr);
-	setCookie("Total_Score_fr", Total_Score_fr);
+	setCookie("Total_Correct_fr", Total_Correct_fr);
+	setCookie("Total_Answered_fr", Total_Answered_fr);
 }
 
 // Expiration date source - https://stackoverflow.com/questions/532635/javascript-cookie-with-no-expiration-date
-function setCookie(cname, value) {
-	document.cookie = cname + "=" + value + "; expires=2038-01-19, 01:00:00 UTC";
+function setCookie(cname, value, expired = false) {
+	let date = new Date();
+	date.setFullYear(expired ? 2000 : 2037);
+	document.cookie = cname + "=" + value + "; expires=" + date.toUTCString();
 }
 // Source - https://www.w3schools.com/js/js_cookies.asp
 function getCookie(cname) {
@@ -960,6 +984,11 @@ function shuffleArray(a) {
 		a[i] = a[j];
 		a[j] = x;
 	}
+}
+
+// Case insensitive string includes
+function includesAnyCase(s1, s2) {
+	return s1.toLowerCase().includes(s2.toLowerCase());
 }
 
 // Returns the longest matching substring between two strings

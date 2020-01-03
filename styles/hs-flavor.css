@@ -23,6 +23,15 @@ body {
 
 .card-body {
 	background-color: var(--hearthstone-light-brown);
+	padding: 1rem !important;
+}
+
+/* Line break between options */
+hr.thin-break {
+	border-top-width: 5px !important;
+	width: 90%;
+	margin-top: 0.5rem;
+	margin-bottom: 0.3rem;
 }
 
 /* Styling by ID */
@@ -64,7 +73,7 @@ body {
 }
 
 #answerTextContainer {
-	padding: 0.3em 8% 0.6em 8%;
+	padding: 0.3em 8% 0.3em 8%;
 	background-image: url('/images/HS_Flavor_Text_Quiz/blue banner cropped.png');
 	background-size: cover;
 	background-position: center top;

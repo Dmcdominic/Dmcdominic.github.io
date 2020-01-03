@@ -65,7 +65,7 @@ title: HS Flavor
 								</div>
 								<!-- Next button -->
 								<div class="col-12 text-center">
-									<button type="button" onclick="tryReset()" class="btn btn-sm btn-danger">Reset</button>
+									<button type="button" onclick="tryResetScores()" class="btn btn-sm btn-danger">Reset</button>
 								</div>
 							</div>
 						</div>
@@ -141,25 +141,28 @@ title: HS Flavor
 									</div>
 								</div>
 								<!-- Custom number of multiple choice options -->
-								<div id="mc_size_container" class="col-12 mb-2">
+								<div id="mc_size_container" class="col-12">
 									# Options: <input id="mc-size-input" type="text" value="">
 								</div>
 								<!-- Enable/Disable hints -->
-								<div id="fr_hints_container" class="col-12 mb-2">
+								<div id="fr_hints_container" class="col-12">
 									<div class="custom-control custom-switch">
 										<input type="checkbox" checked class="custom-control-input" id="hintsSwitch">
 										<label class="custom-control-label" for="hintsSwitch">Hints</label>
 									</div>
 								</div>
+								<!-- Visible break -->
+								<hr class="thin-break">
+								<br>
 								<!-- Mute button -->
-								<div class="col-12 mb-2">
+								<div class="col-12 mb-1">
 									<div class="custom-control custom-switch">
 										<input type="checkbox" class="custom-control-input" id="muteSwitch">
 										<label class="custom-control-label" for="muteSwitch">Mute</label>
 									</div>
 								</div>
 								<!-- Enable/Disable "No Obvious Prompts" -->
-								<div class="col-12 mb-2">
+								<div class="col-12 mb-1">
 									<div class="custom-control custom-switch">
 										<input type="checkbox" checked class="custom-control-input" id="noObviousSwitch">
 										<label class="custom-control-label" for="noObviousSwitch">Exclude "Obvious" Flavor Text</label>

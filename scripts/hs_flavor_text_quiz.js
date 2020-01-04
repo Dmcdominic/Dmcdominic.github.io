@@ -11,9 +11,9 @@ const HINT_SUBSTRING_MIN_LENGTH = 4; // You get a hint if you get this many char
 const PAGE_SIZE = 500; // API response size. This seems to be the cap
 const API_RETRY_DELAY = 20; // Delay (in ms) between attempts to access the API if it fails
 const API_ATTEMPTS_BEFORE_MESSAGE = 3; // Number of API fetch attempts before a message is displayed
-const DEFAULT_VOLUME = 0.25; // Default volume for sound effects
+const DEFAULT_VOLUME = 0.2; // Default volume for sound effects
 const Q_POSITIVE_STREAK = 5; // Threshold for a "quite positive" streak
-const V_POSITIVE_STREAK = 15; // Threshold for a "very positive" streak
+const V_POSITIVE_STREAK = 10; // Threshold for a "very positive" streak
 
 // OAuth Data
 const CLIENT_ID = "b7777d5b2cf8467697f17db51270a714";

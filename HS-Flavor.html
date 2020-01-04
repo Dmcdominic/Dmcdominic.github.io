@@ -7,11 +7,11 @@ title: HS Flavor
 <link rel="stylesheet" href="/styles/hs-flavor.css">
 
 <!-- Content -->
-<div id="HS_Flav_full_container" class="container-fluid mt-3 mb-2">
+<div id="HS_Flav_full_container" class="container-fluid mt-3 mb-2 belweMedium">
 	<div class="row mb-1">
 		<div class="col-sm-12 white-text">
-			<h1 class="display-3 text-center"><b>HS Flavor</b></h1>
-			<h3 class="display-5 text-center not-bold">A Hearthstone Flavor Text Minigame</h3>
+			<h1 id="HS_Flav_header" class="display-3 text-center"><b>HS Flavor</b></h1>
+			<h3 id="HS_Flav_subheader" class="text-center not-bold">A Hearthstone Flavor Text Minigame</h3>
 		</div>
 	</div>
 
@@ -43,21 +43,21 @@ title: HS Flavor
 		<div class="col-lg-4 order-lg-1 col-sm-6 col-12 order-6">
 			<div id="HS_Flav_streak_display" class="mb-3">
 				<div class="card rounded-0 text-center">
-					<h3 class="card-header display-5">Score</h3>
+					<h3 class="card-header belweMedium">Score</h3>
 					<div class="card-body">
-						<div class="container-fluid no-padding-sides">
+						<div class="container-fluid no-padding-sides belweMedium">
 							<div class="row justify-content-center">
 								<div class="col-md-6 col-12 mb-2">
-									<h5 class="display-6"><u>Multiple Choice</u></h5>
-									<p class="no-margin-bottom">
+									<h4><u>Multiple Choice</u></h4>
+									<p class="no-margin-bottom belweMedium">
 										Streak: <span id="current_streak_mc_display">0</span><br>
 										Best: <span id="best_streak_mc_display">0</span><br>
 										Total: <span id="total_score_mc_display">0</span>
 									</p>
 								</div>
 								<div class="col-md-6 col-12 mb-2">
-									<h5 class="display-6"><u>Open Ended</u></h5>
-									<p class="no-margin-bottom">
+									<h4><u>Open Ended</u></h4>
+									<p class="no-margin-bottom belweMedium">
 										Streak: <span id="current_streak_fr_display">0</span><br>
 										Best: <span id="best_streak_fr_display">0</span><br>
 										Total: <span id="total_score_fr_display">0</span>
@@ -125,10 +125,10 @@ title: HS Flavor
 			<div id="HS_Flav_options_container" class="mb-1">
 				<div class="container-fluid no-padding-sides">
 					<div class="card rounded-0 text-center">
-						<h3 class="card-header display-5">Options</h3>
+						<h3 class="card-header">Options</h3>
 						<div class="card-body">
 							<!-- Options container -->
-							<div class="row justify-content-center">
+							<div class="row justify-content-center belweMedium">
 								<!-- Mode -->
 								<div class="col-12 mb-2">
 									<div class="btn-group btn-group-toggle" data-toggle="buttons">
@@ -142,7 +142,7 @@ title: HS Flavor
 								</div>
 								<!-- Custom number of multiple choice options -->
 								<div id="mc_size_container" class="col-12">
-									# Options: <input id="mc-size-input" type="text" value="">
+									# Options:  <input id="mc-size-input" type="text" value="">
 								</div>
 								<!-- Enable/Disable hints -->
 								<div id="fr_hints_container" class="col-12">
@@ -168,10 +168,13 @@ title: HS Flavor
 										<label class="custom-control-label" for="noObviousSwitch">Exclude "Obvious" Flavor Text</label>
 									</div>
 								</div>
+								<!-- Visible break -->
+								<hr class="thin-break">
+								<br>
 								<!-- Contact info -->
 								<div class="col-12">
 									<!-- https://www.youtube.com/watch?v=uu7uBD8J9Iw -->
-									<p style="font-size: 1.2em" class="no-margin-bottom">Feature requests, bugs, or other feedback: <a href="mailto:dmcdominic@gmail.com" target="_blank" onclick="onFeedbackLink()">dmcdominic@gmail.com</a></p>
+									<p style="font-size: 1.2em" class="no-margin-bottom belweMedium"><a href="https://twitter.com/DCalkosz" target="_blank" onclick="onFeedbackLink()">Tweet</a> or <a href="mailto:dmcdominic@gmail.com" target="_blank" onclick="onFeedbackLink()">Email</a> me your feedback!</p>
 								</div>
 							</div>
 						</div>

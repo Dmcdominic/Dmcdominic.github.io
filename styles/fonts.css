@@ -1,0 +1,11 @@
+/* Font imports */
+/* Convert ttf to woff - https://convertio.co/ttf-woff/ */
+/* Font-face format - https://stackoverflow.com/questions/24990554/how-to-include-a-font-ttf-using-css */
+
+/* Belwe Medium */
+/* https://www.dafontfree.net/freefonts-belwe-f114816.htm */
+@font-face {
+  font-family: 'BelweMedium';
+  src: url('/fonts/belwe/BelweMediumBT.woff') format('woff'), /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+   url('/fonts/belwe/BelweMediumBT.ttf') format('truetype'); /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
+}

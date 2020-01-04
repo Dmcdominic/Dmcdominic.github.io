@@ -37,6 +37,9 @@ p {
 .cambria {
 	font-family: cambria;
 }
+.belweMedium {
+	font-family: "BelweMedium" !important;
+}
 .italic {
 	font-style: italic;
 }

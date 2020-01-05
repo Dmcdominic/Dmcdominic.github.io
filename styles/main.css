@@ -40,6 +40,10 @@ p {
 .belweMedium {
 	font-family: "BelweMedium" !important;
 }
+.bookman {
+	font-family: Bookman;
+	/* font-family: Verdana !important Palatino Bookman; */
+}
 .italic {
 	font-style: italic;
 }

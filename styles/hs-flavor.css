@@ -9,7 +9,7 @@
 /* Page background */
 body {
 	/* background-color: var(--hearthstone-light-brown); */
-  background-image: url('/images/HS_Flavor_Text_Quiz/HS background.png');
+  background-image: url('/images/HS_Flavor_Text_Quiz/HS background tall.png');
   background-size: cover;
   /* background-repeat: no-repeat; */
   /* background-attachment: fixed; */
@@ -35,12 +35,18 @@ hr.thin-break {
 }
 
 /* Styling by ID */
+#HS_Flav_full_container {
+	padding-top: 0.7em;
+}
+
 #HS_Flav_header {
 	color: #ffb900;
+	text-shadow: 0.03em 0.04em #666666, 0 0.04em #666666, 0.03em 0 #666666;
 	/* text-shadow: -1px -1px #666666, -1px 1px #666666, 1px 1px #666666, 1px -1px #666666, -1px 0 #666666, 0 1px #666666, 1px 0 #666666, 0 -1px #666666; */
 }
 #HS_Flav_subheader {
 	color: #eebb32;
+	text-shadow: 0.05em 0.05em #666666, 0 0.05em #666666, 0.05em 0 #666666;
 }
 
 #correctCardImg {

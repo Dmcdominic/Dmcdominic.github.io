@@ -23,7 +23,9 @@
 
 
 	<!-- Header -->
-	{% include header.html %}
+	{% unless page.no-header or layout.no-header %}
+		{% include header.html %}
+	{% endunless %}
 
 	<!-- Page Content -->
 	{{ content }}

@@ -46,6 +46,7 @@ hr.thin-break {
 }
 #HS_Flav_subheader {
 	color: #eebb32;
+	font-variant: small-caps;
 	text-shadow: 0.05em 0.05em #666666, 0 0.05em #666666, 0.05em 0 #666666;
 }
 
@@ -78,7 +79,7 @@ hr.thin-break {
 }
 
 #flavorTextP, #wrongFlavorTextP {
-	font-family: cursive, Verdana, cambria !important;
+	font-family: "BelweMedium", Optima, Verdana, cambria;
 	padding: 0.5em 3.5% 0.5em 3.5%;
 	background-image: url('/images/HS_Flavor_Text_Quiz/flavor text box plain.png');
 	background-size: cover;

@@ -781,11 +781,12 @@ function stopLoadingLoop() {
 
 // Play an appropriate greeting clip
 function playGreeting() {
-	const RETURNING_MIN_TOTAL = 5;
-	if ((Total_Correct_mc + Total_Correct_fr) >= RETURNING_MIN_TOTAL) {
+	const RETURNING_MIN_TOTAL = 2;
+	if ((parseInt(Total_Correct_mc) + parseInt(Total_Correct_fr)) >= RETURNING_MIN_TOTAL) {
 		playOneShot(getRandomFromArray(SOUNDS.RETURNING_SET));
 	} else {
-		playOneShot(SOUNDS.GREETING);
+		// Non-returning greeting will be strange because of the Chrome rule where audio won't play until user input
+		// playOneShot(SOUNDS.GREETING);
 	}
 	// Start the background chatter
 	let backgroundChatter = playOneShot(SOUNDS.BACKGROUND_CHATTER, 0, true);

@@ -5,6 +5,9 @@ collections:
         permalink: /games/:title
     hs-academia:
         output: false
+    posts:
+        output: true
+        permalink: /blog/:title
 
 # Plugins
 plugins:

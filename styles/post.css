@@ -1,0 +1,19 @@
+/* Blog post styling */
+
+/* Font */
+body {
+	font-family: "BelweMedium", Optima, Verdana, cambria;
+}
+
+/* Paragraph indentation */
+p {
+	text-indent: 2em;
+}
+
+/* Border to separate columns for split section */
+@media (min-width: 992px) {
+	.right-border-lg {
+		padding-right: 13px;
+		border-right: 2px solid #cccccc;
+	}
+}

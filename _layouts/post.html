@@ -1,0 +1,32 @@
+---
+# Front Matter
+layout: default
+---
+
+<!-- Stylesheet dependencies -->
+<link rel="stylesheet" href="/styles/post.css">
+
+<!-- Post content -->
+<div class="container-fluid mt-4 mb-4">
+	<!-- Header -->
+	<div class="row mb-5">
+		<div class="col-12">
+			<h1 class="display-3 text-center">{{ page.title }}</h1>
+			<h3 class="text-center cambria">Game Design - {{ page.date | date_to_string }}</h3>
+		</div>
+	</div>
+
+	<!-- Main content -->
+	<div class="row mt-4 justify-content-center">
+		<div class="col-xl-6 col-lg-8 col-md-9 col-sm-10 col-12 mb-5">
+			{{ content }}
+		</div>
+	</div>
+
+	<!-- Footer with link back to blog -->
+	<div class="row mt-4 justify-content-center">
+		<div class="col-12 mb-3 text-center">
+			<a href="\blog">Back to blog</a>
+		</div>
+	</div>
+</div>

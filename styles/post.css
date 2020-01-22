@@ -9,9 +9,12 @@ body {
 p {
 	text-indent: 2em;
 }
+p.no-indent {
+	text-indent: 0;
+}
 
 /* Border to separate columns for split section */
-@media (min-width: 992px) {
+@media (min-width: 768px) {
 	.right-border-lg {
 		padding-right: 13px;
 		border-right: 2px solid #cccccc;

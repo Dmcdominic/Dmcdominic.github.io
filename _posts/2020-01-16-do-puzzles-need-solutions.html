@@ -1,46 +1,102 @@
 ---
 # Front Matter
-layout: post
+layout: default
 title: Do Puzzles Need Solutions?
 ---
 
-<p>I initially thought that agreeing upon definitions for "puzzle" and "solution" would be a helpful way to begin, and lead us in a constructive direction. But it turns out that there are a variety of quite reasonable definitions for both, and by picking any pair of such definitions, we come upon a simple answer based on semantics alone. So it seems that in order to explore the capabilities and limitations of puzzles, we must rely on our intuitions. Nonetheless, one could make the argument that a puzzle, by nature (similarly <i>by definition</i>), always has a solution. Without a solution, a puzzle is simply a toy. And perhaps that is correct. But at least for a few minutes, let's take the idea of a puzzle, remove all solutions, and explore whatever the result is. So let's rephrase our question.
-</p>
 
-<p><b>"What happens when a puzzle doesn't have a solution?"</b>
-</p>
+<!-- Stylesheet dependencies -->
+<link rel="stylesheet" href="/styles/post.css">
 
-<p>Specifically, I'd like to consider puzzles <i>within games</i>. Stand-alone puzzles such as a Sudoku, or a brainteaser, or a jigsaw puzzle, open up a whole can of worms and steer away from what I am trying to explore. Whether or not each of those examples could be considered a game in and of itself is up for debate as far as I'm concerned, but here we will explore games larger than a single puzzle. For instance, a "puzzle game". So perhaps we should rephrase again.
-</p>
+<!-- Post content -->
+<div class="container-fluid mt-4 mb-4">
+	<!-- Header -->
+	<div class="row mb-5">
+		<div class="col-12">
+			<h1 class="display-3 text-center">{{ page.title }}</h1>
+			<h3 class="text-center cambria">Game Design - {{ page.date | date_to_string }}</h3>
+		</div>
+	</div>
 
-<p><b>"What happens when a game includes puzzles without solutions?"</b>
-</p>
+	<!-- Main content -->
+	<div class="row mt-4 justify-content-center">
+		<div class="col-xl-6 col-lg-8 col-md-9 col-sm-10 col-12 mb-5">
+			<p>I initially thought that agreeing upon definitions for "puzzle" and "solution" would be a helpful way to begin, and lead us in a constructive direction. But it turns out that there are a variety of quite reasonable definitions for both, and by picking any pair of such definitions, we come upon a simple answer based on semantics alone. So it seems that in order to explore the capabilities and limitations of puzzles, we must rely on our intuitions. Nonetheless, one could make the argument that a puzzle, by nature (similarly <i>by definition</i>), always has a solution. Without a solution, a puzzle is simply a toy, a sandbox, or even a mistake. And perhaps that is correct. But at least for a few minutes, let's take the idea of a puzzle, remove all solutions, and explore whatever the result is. So let's rephrase our question.
+			</p>
 
-<p>Once phrased this way, it seems that we should find the answer by actually developing and playtesting a game which puts it to the test. So why discuss it at all? Well, there are many possible designs for such a game, and I believe we could reach some meaningful insights regarding those designs a priori. Now, our question has reached its final form.
-</p>
+			<p><b>"What happens when a puzzle doesn't have a solution?"</b>
+			</p>
 
-<p><b>"How might we design a game that includes puzzles without solutions, and what would happen?"</b>
-</p>
+			<p>Specifically, I'd like to consider puzzles <i>within games</i>. Stand-alone puzzles such as a Sudoku, or a brainteaser, or a jigsaw puzzle, open up a whole can of worms and steer away from what I am trying to explore. Whether or not each of those examples could be considered a game in and of itself is up for debate as far as I'm concerned, but here we will explore games larger than a single puzzle. For instance, a "puzzle game". So perhaps we should rephrase again.
+			</p>
 
-<p>The first design question that arises is: Should the player <i>know</i> that puzzles may or may not have solutions? This forks the space of potential games into two different directions, which lead to very different core experiences. So let's consider each one separately.
-</p>
+			<p><b>"What happens when a game includes puzzles without solutions?"</b>
+			</p>
 
-<div class="container-fluid mt-3 mb-3">
-	<div class="row mb-3 justify-content-center">
-		<div class="col-lg-6 col-12 right-border-lg">
-			<p class="text-center"><u>The player is aware</u></p>
-			<p>
-			(TODO)
+			<p>Once phrased this way, it seems that we should find the answer by actually developing and playtesting a game which puts it to the test. So why discuss it at all? Well, there are many possible designs for such a game, and I believe we could reach some meaningful insights regarding those designs a priori. Now, our question has reached its final form.
+			</p>
+
+			<p><b>"How might we design a game that includes puzzles without solutions, and what would happen?"</b>
+			</p>
+
+			<p>The first design question that arises is: Should the player <i>know</i> that puzzles may or may not have solutions? This forks the space of potential games into two different directions, which lead to very different core experiences. The first is solutionless puzzles <i>as a mechanic</i>, and the second is <i>to subvert expectation</i>. So let's consider each one separately.
 			</p>
 		</div>
-			<div class="col-lg-6 col-12">
-				<p class="text-center"><u>The player is unaware</u></p>
-				<p>
-				(TODO)
-				</p>
-			</div>
+	</div>
+
+	<div class="row mb-4 justify-content-center">
+		<div class="col-lg-4 col-md-5 col-sm-10 col-12 mb-4 right-border-lg">
+			<p class="text-center"><u>As a Mechanic</u></p>
+			<p>
+				From what I can tell, there are two general approaches to using this as a mechanic. This is to answer the design question: Can the player "assert" that the puzzle is unsolvable? If this answer is no, then solutionless puzzles are simply impassable, and so other routes must exist (in whatever the game space is). For example, to access a hidden area in an adventure game, there are two different doors, each with their own puzzle, but only one is truly solvable. This allows the player to become confident that one puzzle is unsolvable, but then second guess themself after struggling with the other puzzle. However, it has the potential for frustration because at any point, the player may feel like they are wasting time on something impossible. But this type of frustration and then relief/reward is often a core part of the puzzle game loop.
+			</p>
+			<p>
+				If you don't want to lead your player into such frustration, there is another option. The player can "assert" (that is, through some mechanic, claim) that the puzzle has no solution. Consider your favorite puzzle type (e.g. a Sudoku board), with an additional red button at the top that says "Impossible." Should the player find themselves stuck, or otherwise convinced that there is no solution, they may press the button. Perhaps the solution all along was that there <i>was</i> no solution. In that sense, we may have simply created a meta puzzle that ultimately always has a solution. But this may still lead to quite interesting designs. For example, it provides the opportunity for strong narrative interaction.
+			</p>
+			<p>
+				Consider a game with an assortment of characters from which you are trying to gather information, make allies, uncover enemies, and understand motives. A mystery game would certainly fit the bill, but a puzzle mystery game at that. Perhaps to befriend an individual, you must solve their puzzle, thus to understand their role in the story and be able to help them. But what if their motives are secretly hostile to yours? That puzzle ought to be unsolvable because your partnership would conflict. The alternative, then, is to realize that the puzzle is unsolvable (narratively, to deduce that their motives are adversarial). By pressing the red button, you put a knife to their throat and demand answers. If you were correct, then you could learn critical new information, but if their motives aligned with yours all along, you could make a dangerous enemy, and perhaps need to make an even more difficult decision...
+			</p>
+		</div>
+		<div class="col-lg-5 col-md-6 col-sm-10 col-12 mb-4">
+			<p class="text-center"><u>To Subvert Expectation</u></p>
+			<p>
+				In every game, there is an unspoken promise to the player that you will give them an enjoyable experience. And in every puzzle game, there is a similar promise that every puzzle has a solution. Thus, if the player <i>fully expects</i> a solution to exist, this subversion ought to be worth their trouble. Not to mention that there is a danger of making them feel so frustrated and stuck to the point of quitting your game. So how do you avoid this, and why might it be worth it?
+			</p>
+			<p>
+				I see two options for doing this without frustrating the player. The first is to offer several paths so that when one puzzle proves difficult (secretly: impossible), the player can simply find a different puzzle or path to continue down. So what would we get out of this version anyway? As with the other possible designs on the subversion side, the answer is probably to convey a message. Think <a href="https://antichamber.fandom.com/wiki/List_of_Signs" target="_blank">Antichamber</a>, where each puzzle rewards the player with a proverb corresponding to the outside-the-box solution. In this case, consider an unsolvable puzzle on a door presented quite early in the game, but which you ultimately find yourself on the other side of (by a different path), and observe that it was simply a wall with a window, where a door had been painted on the other side.
+			</p>
+			<p>
+				Alternatively, the player can deduce for themselves that the puzzle is unsolvable. After all, this is the type of powerful realization that many players seek in puzzle games in the first place. This might be the case with a puzzle small enough, and its rules well understood. But there may be a risk that the player has been solving puzzles through completely random actions, and so would never realize this. In any case, I much prefer the second way of guiding them towards the truth: Narratively (or in general, diegetically). For example, you are sent on an adventure to obtain an artifact of great power, but there are subtle signs, warnings from those who came before or characters you meet along the way, that the artifact can never be obtained. These signs grow more and more obvious, but you've been doubted before. You know you can achieve the impossible in video games. Right? Well, not this time. Will the player be left unsatisfied? Perhaps. But I'm sure there is more nuance to this story, which I will leave for you, or a future me, to grapple with.
+			</p>
+			<p>
+				Now instead, let's completely ignore my spiel about the player getting frustrated and quitting. What if that's how you want your game to end? You could convey another meaningful (albeit cliché) message to your player, but this still assumes that they <i>eventually</i> discover there was never a solution. Perhaps this would fit into a small artistic game. Still, my instinct is that it would feel more frustrating than meaningful. If the twist has to be communicated outside the gamespace, they will simply feel lied to.
+			</p>
+		</div>
+	</div>
+
+	<div class="row mt-4 justify-content-center">
+		<div class="col-xl-6 col-lg-8 col-md-9 col-sm-10 col-12 mb-2">
+			<p>By now, you may have realized yourself that these two approaches could even coexist in one game. The use of solutionless puzzles as a mechanic may be introduced such that it subverts expectation the first time around. Or perhaps it concludes with an unsolvable puzzle, but this time, there is simply no alternative. And with this combined design, perhaps each side of the experience would reinforce the other, creating something deeper and more impactful than they could have individually.
+			</p>
+		</div>
+	</div>
+
+	<div class="row mt-2 justify-content-center">
+		<div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 mb-5">
+			<h3 class="text-center cambria mt-5"><b>Questions We're Probably both left Wondering</b></h3>
+
+			<ul>
+				<li><p class="no-indent">Would this be a cute, one-off novelty for a single game, or does it have the potential for wider/extended use in puzzle design?</p></li>
+				<li><p class="no-indent">How could we extend this discussion to other gameplay genres, such as an action game with an unbeatable boss, or a horror game with an inescapable monster?</p></li>
+				<li><p class="no-indent">Are there already games that have experimented with this? If so, perhaps they are difficult to seek out because it would spoil the twist.</p></li>
+			</ul>
+		</div>
+	</div>
+
+	<!-- Footer with link back to blog -->
+	<div class="row mt-4 justify-content-center">
+		<div class="col-12 mb-3 text-center">
+			<a href="\blog">Back to blog</a>
+		</div>
 	</div>
 </div>
-
-<p>So, what can we conclude?
-</p>

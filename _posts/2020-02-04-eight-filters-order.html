@@ -1,98 +1,179 @@
 ---
 # Front Matter
-layout: post
+layout: default
 title: How Should the Eight Filters Be Ordered?
 ---
 
-<img class="mb-4" src="/images/GD_Blog/Lens-15-the-Eight-Filters-2014.png" alt="Lens 15 - The Eight Filters">
-<br>
+<!-- Stylesheet dependencies -->
+<link rel="stylesheet" href="/styles/post.css">
 
-<p>The Eight Filters, from "The Art of Game Design" by Jesse Schell, are a set of constraints which every finished game must pass.
-  They are immensely useful for evaluating your design decisions early and often.
-  I would like to know what order they should be used in, but even Jesse did not have the answer.
-  So it is our mission here to find out.
-</p>
+<!-- Post content -->
+<div class="container-fluid mt-4 mb-4">
+	<!-- Header -->
+	<div class="row mb-5">
+		<div class="col-12">
+			<h1 class="display-3 text-center">{{ page.title }}</h1>
+			<h3 class="text-center cambria">Game Design - {{ page.date | date_to_string }}</h3>
+		</div>
+	</div>
 
-<p>The short answer is that order doesn’t matter, because your game must ultimately pass every single one.
-  Considering the filters in a different order may result in a different game, but not necessarily a better or worse one.
-  Finding the right order is about the efficiency of your process.
-  It should be based on how deep your changes will have to be, and whether those changes will survive the other filters until the game is done.
-  The deepest issues should be addressed first.
-</p>
+	<!-- Main content -->
+	<div class="row mt-4 justify-content-center">
+		<div class="col-xl-5 col-lg-6 col-12 mb-5">
+			<p>The Eight Filters, from "The Art of Game Design" by Jesse Schell, are a set of constraints which every finished game must pass.
+				They are immensely useful for evaluating your design decisions early and often.
+				I would like to know what order they should be used in, but even Jesse did not have the answer.
+				So it is our mission here to find out.
+			</p>
 
-<p class="no-indent">
-  <u>This post WILL</u>:<br>
-</p>
-<ul>
-  <li><p>Offer a reasonable default ordering for the Eight Filters</p></li>
-  <li><p>Discuss factors that will help you determine the best order for a particular project</p></li>
-</ul>
+			<p>The short answer is that order doesn’t matter, because your game must ultimately pass every single one.
+				Considering the filters in a different order may result in a different game, but not necessarily a better or worse one.
+				Finding the right order is about the efficiency of your process.
+				It should be based on how deep your changes will have to be, and whether those changes will survive the other filters until the game is done.
+				The deepest issues should be addressed first.
+			</p>
 
-<p class="no-indent">
-  <u>This post will NOT</u>:<br>
-</p>
-<ul>
-  <li><p>Tell you the order in which to <i>sacrifice</i> less important filters. For most games, <i>they are not optional</i>!
-    If it is the right decision for your game, you may choose to ignore a particular filter, but that is beyond the scope of this discussion.
-  </p></li>
-</ul>
+			<p class="no-indent">
+				<u>This post WILL</u>:<br>
+			</p>
+			<ul>
+				<li><p>Offer a reasonable default ordering for the Eight Filters</p></li>
+				<li><p>Discuss factors that will help you determine the best order for a particular project</p></li>
+			</ul>
 
-<p>Keep in mind that even if your design has passed a filter once, it will need to be considered again after changes are made.
-  Thus, filters which you should consider first are also those which you should consider most frequently.
-  At the same time, you should not ignore the last filter until all 7 others have been passed.
-  Check regularly that all 8 filters are <i>within reach</i> of your current design trajectory, even if solving the finer issues will come later.
-  In short: An ideal ordering will make your filtering process more productive by avoiding redundancy.
-</p>
+			<p class="no-indent">
+				<u>This post will NOT</u>:<br>
+			</p>
+			<ul>
+				<li><p>Tell you the order in which to <i>sacrifice</i> less important filters. For most games, <i>they are not optional</i>!
+					If it is the right decision for your game, you may choose to ignore a particular filter, but that is beyond the scope of this discussion.
+				</p></li>
+			</ul>
+		</div>
 
-<p>I've found that the filters can be loosely organized into 3 groups based on how deeply you will have to redesign.
-  The first group will help you form a high level idea and establish a direction that can guide you through the development process.
-  These filters are relevant to the very core of your game.
-  The second group will help you design smaller parts of the game, and ensure that your design is practical and implementable.
-  These filters are relevant to the pieces of your game, which rely on the core.
-  The third group will help you tune 
-  These filters are relevant to the feel of your game, which relies on playable pieces.
-</p>
-
-
-<h3><u>The Core of the Game</u></h3>
-<ol>
-  <h4>1. Will this game sell?</h4><p>
-    If your design passes every other lens, there are a limited number of factors that will prevent the game from selling. Is your intended audience too narrow? Is the market for this genre already saturated with strong competitors? Is the platform or technology for your game getting phased out?
-  </p><p>These questions can be difficult to answer early in the process, but they are important to catch before tackling the other filters.
-    You don't want to address the filter for intended audience before realizing that it was too narrow, or solve your technical challenges before realizing that you need to switch platforms.
-  </p>
-  <h4>2. Will the intended audience like this game enough?</h4><p></p>
-  <h4>3. Does this game meet our social and community goals?</h4><p></p>
-  <h4>4. Is this a well-designed game?</h4><p>
-    As a game designer, you will develop your own instincts for good design over time.
-    During the design process, you will naturally use those instincts, often without conscious effort.
-    In fact, it would seem impossible to overcome the other 7 filters without applying your mental model of good design.
-    But when it comes time to use that model as a filter of its own, it will be most useful when many core decisions have already been made.
-  </p>
-</ol>
-
-<h3><u>The Pieces of the Game</u></h3>
-<ol>
-  <h4>5. Is this game novel enough?</h4><p></p>
-  <h4>6. Is it technically possible to build this game?</h4><p></p>
-</ol>
-
-<h3><u>The Feel of the Game</u></h3>
-<ol>
-  <h4>7. Does this game feel right?</h4><p>
-    Feeling out the game for yourself is a critical part of the design process, and you will likely be doing it on a daily basis.
-    TODO
-    When it comes
-  </p>
-  <h4>8. Do the playtesters enjoy this game enough?</h4><p></p>
-</ol>
+		<div class="col-xl-3 col-lg-4 col-12 ml-2 mr-2 mb-5">
+			<img class="medium-img mb-4" src="/images/GD_Blog/Lens-15-the-Eight-Filters-2014.png" alt="Lens 15 - The Eight Filters">
+		</div>
 
 
+		<div class="col-xl-8 col-md-10 col-12 mb-3">
+			<p>Keep in mind that even if your design has passed a filter once, it will need to be considered again after changes are made.
+				Thus, filters which you should consider first are also those which you should consider most frequently.
+				At the same time, you should not ignore the last filter until all 7 others have been passed.
+				Check regularly that every filter is <i>within reach</i> of your current design trajectory, even if solving the finer issues will come later.
+				In short: An ideal ordering will make your filtering process more productive by avoiding redundancy.
+			</p>
 
-<!-- Conclusion -->
-<p>But after all this effort to find the optimal ordering, perhaps you could consider multiple filters at once.
-  If you go over the list and determine which ones your game does not pass, you may be able to take two or three into account while redesigning.
-  In the likely event that you're working with a team, this is especially relevant for parallelization.
-  While someone is working to make the game more novel, another can conduct playtesting.
-  A chosen order will help to prioritize issues, keep your process efficient, and avoid redundant design.
-</p>
+			<p>I've found that the filters can be loosely organized into 3 groups based on how deeply you will have to redesign.
+				The first group will help you form a high level idea and establish a direction that can guide you through the development process.
+				These filters are relevant to the very core of your game.
+				The second group will help you design smaller parts of the game, and ensure that your design is practical and implementable.
+				These filters are relevant to the pieces of your game, which rely on the core.
+				The third group will help you tune your gameplay.
+				These filters are relevant to the feel of your game, which relies on playable pieces.
+			</p>
+		</div>
+
+		<div class="col-xl-8 col-md-10 col-12 mb-3">
+			<h3><u>The Core of the Game</u></h3>
+			<ol>
+				<h4>1. Will this game sell?</h4>
+				<p>
+					If your design passes every other filter, there are a limited number of factors that will prevent the game from selling. Is your intended audience too narrow? Is the market for this genre already saturated with strong competitors? Is the platform or technology for your game getting phased out?
+				</p><p>
+					These questions can be difficult to answer early in the process, but they are important to catch before tackling the other filters.
+					You don't want to address the filter for intended audience before realizing that it was too narrow, or solve your technical challenges before realizing that you need to switch platforms.
+				</p>
+
+				<h4>2. Will the intended audience like this game enough?</h4>
+				<p>
+					Once you have established the target audience for your game, you must decide how to deliver on their desires.
+					This filter should be visited and revisited before most of the others, because it affects the fundamental direction of your game.
+				</p>
+
+				<h4>3. Does this game meet our social and community goals?</h4>
+				<p>
+					This filter should be visited before any development begins, and regularly thereafter, because issues here can lead to major design changes such as swapping platforms or even genres.
+				</p>
+
+				<h4>4. Is this game novel enough?</h4>
+				<p>
+					Designing your game to be innovative and unique will be more effective at a high level, before the core of the game is established.
+					Even if the novelty of your game will lie in the minutiae, recognizing that early on will be important to the other filters.
+					And if the novelty defines a major component of the game, that makes it all the more urgent.
+				</p>
+			</ol>
+
+
+			<h3><u>The Pieces of the Game</u></h3>
+			<ol>
+				<h4>5. Is this a well-designed game?</h4>
+				<p>
+					As a game designer, you will develop your own instincts for good design over time.
+					During the design process, you will naturally use those instincts, often without conscious effort.
+					In fact, it would seem impossible to overcome the other 7 filters without applying your mental model of good design.
+					But when it comes time to use that model as a filter of its own, it will be most useful when many core decisions have already been made.
+				</p>
+
+				<h4>6. Is it technically possible to build this game?</h4>
+				<p>
+					As the game designer, you may or may not be the one that can answer this question.
+					Whether it is you, an engineer, or a client that is tasked with technical feasability, it must be answered before significant implementation time is dedicated.
+					But it will be difficult to ask the question at all before your design has some meat to it.
+				</p>
+			</ol>
+
+
+			<h3><u>The Feel of the Game</u></h3>
+			<ol>
+				<h4>7. Do the playtesters enjoy this game enough?</h4>
+				<p>
+					Playtesting should be done frequently and thoroughly.
+					It will guide the finer details of your game, but can lead to major design changes as well.
+					So why is it so low in my ordering?
+					Making sure that your playtesters enjoy this game <i>enough</i> will require that many of the other filters have already been solved.
+					And addressing this filter prematurely can lead to polish and tuning which disappears after deeper redesigns.
+					Keep in mind that playtesting can help you evaluate several of the other filters, but this is not the same as playtesting to measure enjoyment.
+				</p>
+
+				<h4>8. Does this game feel right?</h4>
+				<p>
+					Feeling out the game for yourself is a critical part of the design process, and you will likely be doing it on a daily basis.
+					However, a gut feeling can vary drastically depdening on polish which comes late in the process, such as art, audio, and juice.
+					It is less likely to guide deep changes to your design, and more likely to suggest finer mechanical adjustements.
+					Thus, resolving this last filter should not be prioritized before any other.
+				</p>
+			</ol>
+
+
+			<!-- Conclusion -->
+			<h3><u>Closing Thoughts</u></h3>
+			<p>After all this effort to find the optimal ordering, let's not forget that you can consider multiple filters at once.
+				If you go over the list and determine which ones your game does not pass, you may be able to take two or three into account for your next redesign.
+				In the likely event that you're working with a team, this is especially relevant for parallelization.
+				While someone is working to make the game more novel, another can conduct playtesting.
+				A well-chosen order for the Eight Filters will help to prioritize issues, keep your process efficient, and avoid redundant design.
+			</p>
+		</div>
+	</div>
+
+
+	<!-- Further questions -->
+	<div class="row mt-2 justify-content-center">
+		<div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 mb-4">
+			<h3 class="text-center cambria mt-5"><b>Questions We're Both Left Wondering</b></h3>
+			<ul>
+				<li><p>What types of games require a drastically different ordering?</p></li>
+				<li><p>Which filters pair well together for simultaneous consideration, and which are well suited for parallelization?</p></li>
+				<li><p>Did I miss a major component of one of these filters that suggests reordering?</p></li>
+			</ul>
+		</div>
+	</div>
+
+	<!-- Footer with link back to blog -->
+	<div class="row mt-4 justify-content-center">
+		<div class="col-12 mb-3 text-center">
+			<a href="\blog">Back to blog</a>
+		</div>
+	</div>
+</div>

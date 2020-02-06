@@ -20,3 +20,9 @@ li p {
 		border-right: 2px solid #cccccc;
 	}
 }
+
+
+/* Post-specific styling */
+.medium-img {
+	width: 90%;
+}

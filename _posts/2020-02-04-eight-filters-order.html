@@ -22,14 +22,15 @@ title: How Should the Eight Filters Be Ordered?
 		<div class="col-xl-5 col-lg-6 col-12 mb-5">
 			<p>The Eight Filters, from "The Art of Game Design" by Jesse Schell, are a set of constraints which every finished game must pass.
 				They are immensely useful for evaluating your design decisions early and often.
-				I would like to know what order they should be used in, but even Jesse did not have the answer.
+				I would like to know what order they should be considered in, but even Jesse did not have the answer.
 				So it is our mission here to find out.
 			</p>
 
-			<p>The short answer is that order doesn’t matter, because your game must ultimately pass every single one.
-				Considering the filters in a different order may result in a different game, but not necessarily a better or worse one.
-				Finding the right order is about the efficiency of your process.
-				It should be based on how deep your changes will have to be, and whether those changes will survive the other filters until the game is done.
+			<p>The short answer is that order doesn’t matter, because your game must ultimately pass every single one (with rare exceptions).
+				Another answer is that considering the filters in a different order may result in a different game, but not necessarily a better or worse one.
+				I agree with both of these, but still claim that order is important; finding the right order is about the efficiency of your process.
+				Resolving issues indicated by a given filter will require changes of varying magnitude to your game.
+				Thus, my ordering will be based on how deep your changes will have to be, and whether those changes will survive the other filters until the game is done.
 				The deepest issues should be addressed first.
 			</p>
 
@@ -37,15 +38,15 @@ title: How Should the Eight Filters Be Ordered?
 				<u>This post WILL</u>:<br>
 			</p>
 			<ul>
-				<li><p>Offer a reasonable default ordering for the Eight Filters</p></li>
-				<li><p>Discuss factors that will help you determine the best order for a particular project</p></li>
+				<li><p>Offer my own default ordering for the Eight Filters</p></li>
+				<li><p>Discuss factors that will help you determine the best order for any particular project</p></li>
 			</ul>
 
 			<p class="no-indent">
 				<u>This post will NOT</u>:<br>
 			</p>
 			<ul>
-				<li><p>Tell you the order in which to <i>sacrifice</i> less important filters. For most games, <i>they are not optional</i>!
+				<li><p>Tell you the order in which to <i>disregard</i> filters. For most games, <i>they are not optional</i>!
 					If it is the right decision for your game, you may choose to ignore a particular filter, but that is beyond the scope of this discussion.
 				</p></li>
 			</ul>
@@ -57,14 +58,7 @@ title: How Should the Eight Filters Be Ordered?
 
 
 		<div class="col-xl-8 col-md-10 col-12 mb-3">
-			<p>Keep in mind that even if your design has passed a filter once, it will need to be considered again after changes are made.
-				Thus, filters which you should consider first are also those which you should consider most frequently.
-				At the same time, you should not ignore the last filter until all 7 others have been passed.
-				Check regularly that every filter is <i>within reach</i> of your current design trajectory, even if solving the finer issues will come later.
-				In short: An ideal ordering will make your filtering process more productive by avoiding redundancy.
-			</p>
-
-			<p>I've found that the filters can be loosely organized into 3 groups based on how deeply you will have to redesign.
+			<p>I've found that the filters can be loosely organized into 3 groups based on how deep redesigns will have to be.
 				The first group will help you form a high level idea and establish a direction that can guide you through the development process.
 				These filters are relevant to the very core of your game.
 				The second group will help you design smaller parts of the game, and ensure that your design is practical and implementable.
@@ -72,14 +66,24 @@ title: How Should the Eight Filters Be Ordered?
 				The third group will help you tune your gameplay.
 				These filters are relevant to the feel of your game, which relies on playable pieces.
 			</p>
+
+			<p>
+				Keep in mind that even if your design has passed a filter once, it will need to be considered again after changes are made.
+				With this grouping in mind, there may be times during your design process when you hyperfocus on a particular set of filters.
+				Although this can be more productive in the short term, make sure not to lose sight of the filters which came before.
+				In addition, using an ordering does not mean ignoromg the last filter until all 7 others have been passed.
+				Check regularly that every filter is <i>within reach</i> of your current design trajectory, even if solving the finer issues will come later.
+				In short: An ideal ordering will make your filtering process more productive by avoiding redundancy.
+			</p>
 		</div>
 
-		<div class="col-xl-8 col-md-10 col-12 mb-3">
+		<div class="col-xl-8 col-md-10 col-12 mb-2">
 			<h3><u>The Core of the Game</u></h3>
 			<ol>
 				<h4>1. Will this game sell?</h4>
 				<p>
-					If your design passes every other filter, there are a limited number of factors that will prevent the game from selling. Is your intended audience too narrow? Is the market for this genre already saturated with strong competitors? Is the platform or technology for your game getting phased out?
+					Assuming that you eventually tackle all of the other filters, there are a limited number of factors that will prevent your game from selling.
+					Is your intended audience too narrow? Is the market for this genre already saturated with strong competitors? Is the platform or technology for your game getting phased out?
 				</p><p>
 					These questions can be difficult to answer early in the process, but they are important to catch before tackling the other filters.
 					You don't want to address the filter for intended audience before realizing that it was too narrow, or solve your technical challenges before realizing that you need to switch platforms.
@@ -110,9 +114,9 @@ title: How Should the Eight Filters Be Ordered?
 				<h4>5. Is this a well-designed game?</h4>
 				<p>
 					As a game designer, you will develop your own instincts for good design over time.
-					During the design process, you will naturally use those instincts, often without conscious effort.
+					During the design process, you will naturally use those instincts.
 					In fact, it would seem impossible to overcome the other 7 filters without applying your mental model of good design.
-					But when it comes time to use that model as a filter of its own, it will be most useful when many core decisions have already been made.
+					But when it comes time to use that model explicitly, as a filter of its own, it will be most useful when many core decisions have already been made.
 				</p>
 
 				<h4>6. Is it technically possible to build this game?</h4>
@@ -131,17 +135,17 @@ title: How Should the Eight Filters Be Ordered?
 					Playtesting should be done frequently and thoroughly.
 					It will guide the finer details of your game, but can lead to major design changes as well.
 					So why is it so low in my ordering?
-					Making sure that your playtesters enjoy this game <i>enough</i> will require that many of the other filters have already been solved.
+					Ensuring that your playtesters enjoy this game <i>enough</i> will require many of the other filters to already be solved.
 					And addressing this filter prematurely can lead to polish and tuning which disappears after deeper redesigns.
-					Keep in mind that playtesting can help you evaluate several of the other filters, but this is not the same as playtesting to measure enjoyment.
+					Keep in mind that playtesting can help you evaluate several of the other filters, but this is not the same as playtesting for final-product enjoyment.
 				</p>
 
 				<h4>8. Does this game feel right?</h4>
 				<p>
 					Feeling out the game for yourself is a critical part of the design process, and you will likely be doing it on a daily basis.
-					However, a gut feeling can vary drastically depdening on polish which comes late in the process, such as art, audio, and juice.
-					It is less likely to guide deep changes to your design, and more likely to suggest finer mechanical adjustements.
-					Thus, resolving this last filter should not be prioritized before any other.
+					However, a gut feeling can vary drastically depending on polish which comes late in the process, such as art, audio, and juice.
+					It is less likely to guide deep changes to your design, and more likely to suggest finer mechanical adjustments.
+					Thus, this filter should not be prioritized above any other.
 				</p>
 			</ol>
 
@@ -163,9 +167,9 @@ title: How Should the Eight Filters Be Ordered?
 		<div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 mb-4">
 			<h3 class="text-center cambria mt-5"><b>Questions We're Both Left Wondering</b></h3>
 			<ul>
+				<li><p>Did I miss a major component of one of these filters that suggests reordering?</p></li>
 				<li><p>What types of games require a drastically different ordering?</p></li>
 				<li><p>Which filters pair well together for simultaneous consideration, and which are well suited for parallelization?</p></li>
-				<li><p>Did I miss a major component of one of these filters that suggests reordering?</p></li>
 			</ul>
 		</div>
 	</div>

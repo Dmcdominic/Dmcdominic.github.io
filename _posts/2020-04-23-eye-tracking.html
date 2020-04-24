@@ -1,0 +1,129 @@
+---
+# Front Matter
+layout: default
+title: What Is Holding Back Eye Tracking in Video Games?
+---
+
+<!-- Stylesheet dependencies -->
+<link rel="stylesheet" href="/styles/post.css">
+
+<!-- Post content -->
+<div class="container-fluid mt-4 mb-4">
+	<!-- Header -->
+	<div class="row mb-5">
+		<div class="col-12">
+			<h1 class="display-3 text-center">{{ page.title }}</h1>
+			<h3 class="text-center cambria">Game Design - {{ page.date | date_to_string }}</h3>
+		</div>
+	</div>
+
+	<!-- Main content -->
+	<div class="row mt-4 justify-content-center">
+		<!-- Introduction -->
+		<div class="col-xl-8 col-md-10 col-12 mb-3">
+			<p>Eye tracking is one of those sleek new technologies that seemed exciting at first, but never really took off in the wider consumer market.
+				It promises a more natural and intuitive means of interaction with modern technology, and what better place to introduce intuitive UI than video games?
+				One company in particular that has done its best to bring eye tracking to gaming is "tobii".
+				They sell two options for hardware that enable you to use a variety of eye tracking software, including a surprising number of integrations.
+				As of April 2020, there appear to be:
+				<a href="https://gaming.tobii.com/games/" target="_blank">152 eye tracking enabled games</a>,
+				<a href="https://gaming.tobii.com/products/" target="_blank">Windows 10 integration</a>,
+				and <a href="https://gaming.tobii.com/esports/" target="_blank">Mobalytics</a>, a subscription service for improving your League of Legends gameplay.
+				But how is eye tracking actually used in games?
+			</p>
+		</div>
+		<!-- The 5 Core Enhancements -->
+		<div class="col-xl-6 col-lg-7 col-md-6 col-12 mb-3">
+			<p>
+				tobii claims to deliver "the 5 core enhancements," or "the 5 immersions" with their technology:
+				<b>Immersive graphics</b> (a.k.a. extended view) can keep UI such as a HUD more transparent until you focus on it, or change the exposure of the in-game camera depending on where you're looking.
+				<b>Natural targeting</b> allows you to aim by looking, e.g. with a gun, or for interacting with nearby objects.
+				<b>Gaze awareness</b> means that characters in-game can notice when you're looking at them.
+				<b>Infinite screen</b> allows you to turn your eyes/head in order to pan the camera more naturally.
+				<b>Direct interaction</b> seems to be a catch-all for features that otherwise utilize your eye tracking, such as to navigate a menu.
+			</p>
+		</div>
+		<div class="col-xl-4 col-lg-5 col-md-6 col-9 mb-3 text-center">
+			<img class="medium-img mb-1" src="/images/GD_Blog/Eye Tracking/5 Core Enhancements.png" alt="Random Dice Premium">
+			<p><i>source - <a href="https://help.tobii.com/hc/en-us/articles/115003295025-Eye-tracking-in-gaming-how-does-it-work-" target="_blank">tobii.com</a></i></p>
+		</div>
+	</div>
+
+	<!-- Do they work? -->
+	<div class="row mt-2 justify-content-center">
+		<div class="col-xl-8 col-md-10 col-12 mb-3">
+			<p>
+				You can find clips of these "immersions" being used in a handful of eye tracking enabled games (from the list linked above).
+				Without trying it for myself/yourself, it seems hard to say which of these actually make gameplay more immersive.
+				But there are a variety of enhancements available, and an assortment of games with integration, so I can only assume that <i>some</i> of these actually succeed at improving the gameplay experience.
+				Is it such a small improvement, though, that eye tracking has remained this unpopular?
+				Or is there something else holding it back?
+				I believe that there are 3 main barriers to wider adoption of eye tracking in video games.
+				They do not <i>all</i> need to be overcome, nor are they equal in importance, but each one holds this technology back in one way or another.
+			</p>
+			<h3>1. Hardware Cost</h3>
+			<p>
+				tobii's two hardware options are each over $100.
+				This is a steep ask for customers (other than those with accessibility needs) when the features that come along are generally quality-of-life, or otherwise seem to be small improvements.
+				But almost every modern laptop has a built-in webcam, and webcams are very common among desktop computer users.
+				So if we all have a camera ready to go, many customers may be wondering why they need to buy more hardware at all.
+				And as a matter of fact, they don't!
+				Free browser libraries such as <a href="https://webgazer.cs.brown.edu/" target="_blank">WebGazer.js</a> exist which can use your simple webcam.
+				But there is a tradeoff...
+			</p>
+			<h3>2. Calibration</h3>
+			<p>
+				Eye tracking always requires some form of calibration.
+				This typically involves some user input, such as self-calibration by matching mouse clicks to gaze location on the screen.
+				But going through these steps would only be a small nuisance, and some eye tracking can handle calibration automatically.
+				The real issue faced here is the <i>quality</i> of the calibration.
+				Especially with libraries that use built-in webcams, accuracy is flaky and inconsistent, making many use cases quite inconvenient.
+			</p>
+			<h3>3. Being Watched...</h3>
+			<p>
+				This is very different from the first two barriers, because it is more of a social barrier than a technological one.
+				For certain users, there will always be a lurking concern that they are being watched through any live camera connected to their computer.
+				Webcam covers are a popular peripheral for precisely this reason.
+			</p>
+			<p>
+				If the reliable hardware options become cheaper, or reliability improves for software-only options, then we'd be one large step closer to wider adoption of eye tracking in video games.
+				There is also potential for a social shift of perspectives on surveillance to affect the popularity of this technology (though this could be positive or negative).
+				Either way, I'm interested to see whether eye tracking in video games has already peaked in popularity, or if it has more potential in the years ahead.
+			</p>
+		</div>
+	</div>
+
+
+
+	<!-- Barriers that eye tracking face:
+	1. Hardware cost
+	2. Calibration
+	3. Being watched... -->
+	<!-- 4. TOO intuitive? -->
+	<!-- 5. Just not good/quick enough (yet?) -->
+	<!-- 6. Software implementation costs (for developers)? -->
+
+
+
+	<!-- Further questions -->
+	<div class="row mt-2 justify-content-center">
+		<div class="col-xl-8 col-lg-9 col-md-10 col-sm-11 col-12 mb-4">
+			<h3 class="text-center cambria mt-5"><b>Questions We're Both Left Wondering</b></h3>
+			<ul>
+				<li><p>Are there more immersions/enhancements potentially offered by eye tracking in video games which tobii is missing?
+				</p></li>
+				<li><p>How far out is reliable eye tracking software for built-in webcams?
+				</p></li>
+				<li><p>Is there a more fundamental flaw with eye tracking features that prevent them from achieving the immersive enhancements they are intended for?
+				</p></li>
+			</ul>
+		</div>
+	</div>
+
+	<!-- Footer with link back to blog -->
+	<div class="row mt-4 justify-content-center">
+		<div class="col-12 mb-3 text-center">
+			<a href="\blog">Back to blog</a>
+		</div>
+	</div>
+</div>

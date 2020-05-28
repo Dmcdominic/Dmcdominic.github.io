@@ -1,5 +1,9 @@
 <html>
 <head>
+    <!-- Meta data -->
+    <meta charset="utf-8">
+    <!-- Title -->
+    <title>HearthNash</title>
     <!-- Script Dependencies -->
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
@@ -16,7 +20,7 @@
 
 
 <body>
-    <div class="container-fluid mt-4 mb-5">
+    <div class="container-fluid mt-4 mb-3">
         <!-- Title -->
         <div class="row mb-3">
             <div class="col-12 mb-3 text-center">
@@ -26,8 +30,12 @@
 
         <!-- Meta Settings -->
         <div class="row">
-            <div class="col-lg-6 col-12 mb-3">
+            <div class="col-12 mb-3">
                 <h2><u>Meta Settings</u></h2>
+
+                <label for="loadCSV" class="btn">Import CSV:</label>
+                <input type="file" class="mb-2" id="loadCSV" accept=".csv, .xls, .xlsx, .txt">
+
                 <table id="winratesTable" class="table table-bordered table-responsive">
                     <thead id="winratesTableHead">
                         <tr id="theadRow">
@@ -201,10 +209,11 @@
                 </table>
                 <button type="button" class="btn btn-sm btn-dark mb-2" id="minus1Deck">-1 Deck</button>
                 <button type="button" class="btn btn-sm btn-dark mb-2" id="plus1Deck">+1 Deck</button>
+                <input type="button" class="mb-2" id="saveCSV" value="Download as CSV">
             </div>
 
             <!-- Format Settings -->
-            <div class="col-lg-6 col-12 mb-3">
+            <div class="col-lg-6 col-12 order-lg-last mb-3">
                 <h2><u>Format Settings</u></h2>
                 <div class="row">
                     <div class="col-12 mb-2">
@@ -282,5 +291,20 @@
             </div>
         </div>
     </div>
+
+
+    <!-- Footer -->
+    <div class="container-fluid">
+        <div class="row mt-2 mb-2">
+            <div class="col-12">
+                <footer id="HN-page-footer">
+                    <div class="text-center">
+                        <p class="footer-text">For questions, feedback, or collaboration, please <a href="https://dominic-calkosz.com/Contact-Me" target="_blank">contact me</a>!</p>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>

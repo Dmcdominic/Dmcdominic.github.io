@@ -71,3 +71,14 @@ input[type=number] {
 #generateMTBErrorText {
     color: red;
 }
+
+
+
+/* Footer */
+#HN-page-footer {
+    /* background-color: gray; */
+    font-family: Helvetica, Arial, serif;
+    font-weight: normal;
+    width: 100%;
+    font-size: 0.9em;
+}

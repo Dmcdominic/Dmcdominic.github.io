@@ -950,6 +950,10 @@ $(document).ready(function () {
     $("#matchTreeRoot").unbind().click(ascendToRoot);
     // Set up Format Settings Presets Dropdown
     initFormatPresetsDropdown();
+    // Set up Save CSV listener
+    $("#saveCSV").unbind().click(saveCSV);
+    var loadCSVInput = document.getElementById("loadCSV");
+    loadCSVInput.addEventListener('change', loadCSV);
 });
 // ===== META SETTINGS =====
 // Add a listener to each winrate matrix cell, to update the rest of the matrix
@@ -962,8 +966,8 @@ function resetWinrateListeners() {
             cell.addEventListener('propertyChange', onWinrateCellEdited);
         }
     }
-    $("#minus1Deck").unbind().click(minus1Deck);
-    $("#plus1Deck").unbind().click(plus1Deck);
+    $("#minus1Deck").unbind().click(onMinus1DeckClicked);
+    $("#plus1Deck").unbind().click(onPlus1DeckClicked);
     for (var i = 0; i < n; i++) {
         var inputField = (document.getElementById('deckName' + i));
         inputField.addEventListener('input', onDeckNameEdited);
@@ -973,11 +977,19 @@ function resetWinrateListeners() {
 // Called when a winrate cell is edited by the user.
 function onWinrateCellEdited() {
     var winrates = readWinrateMatrix(); // As decimal
+    setWinrateMatrix(winrates);
+}
+// Set the values in the winrate matrix, using a *decimal* winrates input (not as percentage yet).
+function setWinrateMatrix(winrates, overrideUsrInput) {
+    if (overrideUsrInput === void 0) { overrideUsrInput = false; }
     WI_Utility.toPercentMatrix(winrates); // Now as percent
     // Update all the cells
     var n = getInterfaceWinrateMatrixSize();
     for (var r = 0; r < n; r++) {
         for (var c = 0; c < n; c++) {
+            if (c < r && !overrideUsrInput) {
+                continue;
+            }
             var cell = document.getElementById('deckWinrate' + r + '_' + c);
             cell.value = (winrates[r][c]).toString();
         }
@@ -991,7 +1003,11 @@ function onDeckNameEdited() {
     }
 }
 // Called when the -1 Deck button is clicked
-function minus1Deck() {
+function onMinus1DeckClicked() {
+    remove1Deck();
+}
+// Removes 1 deck (1 row and column) from the winrates matrix
+function remove1Deck() {
     if ($("#winratesTableBody").children().length > 1) {
         $("#winratesTableBody").children().last().remove();
         $("#theadRow").children().last().remove();
@@ -999,7 +1015,15 @@ function minus1Deck() {
     }
 }
 // Called when the +1 Deck button is clicked
-function plus1Deck() {
+function onPlus1DeckClicked() {
+    add1Deck();
+    // Then reset the listeners and validate the deck name/winrate values
+    resetWinrateListeners();
+    onWinrateCellEdited();
+    onDeckNameEdited();
+}
+// Adds 1 deck (1 row and column) to the winrate matrix
+function add1Deck() {
     var newRow = $("#winratesTableBody").children().last().clone();
     var lastRowIndex = parseInt(newRow.prop("id").replace("winratesRow", ""));
     var newRowIndex = lastRowIndex + 1;
@@ -1028,10 +1052,6 @@ function plus1Deck() {
         newDeckWinrate.prop("disabled", true);
         newDeckWinrate.val("50");
     }
-    // Then reset the listeners and validate the deck name/winrate values
-    resetWinrateListeners();
-    onWinrateCellEdited();
-    onDeckNameEdited();
 }
 // Reads the winrate matrix from the web interface.
 // Converts it to a decimal matrix and legitimizes it before returning the result.
@@ -1050,6 +1070,20 @@ function readWinrateMatrix() {
     }
     WI_Utility.fromPercentMatrix(winrates); // Convert to decimal
     WI_Utility.legitimizeWinrateMatrix(winrates); // Legitimize
+    return winrates;
+}
+// Reads the winrate matrix, including the deck names
+function readWinrateMatrixDeckNames() {
+    var winrates = readWinrateMatrix();
+    var n = winrates.length;
+    var deckNames = [];
+    for (var i = 0; i < n; i++) {
+        var inputField = (document.getElementById('deckName' + i));
+        deckNames.push(inputField.value);
+        winrates[i].unshift(inputField.value);
+    }
+    deckNames.unshift("");
+    winrates.unshift(deckNames);
     return winrates;
 }
 // Returns the size of the winrate matrix on the web interface currently.
@@ -1137,10 +1171,10 @@ function getCurrentTreeDepth() {
 function generateMatchTree() {
     var errorText = $("#generateMTBErrorText");
     errorText.attr("hidden", "");
-    var MetaInfo = readMetaSettings();
-    var FormatSettings = readFormatSettings();
-    var decks = readStartingDecks();
     try {
+        var MetaInfo = readMetaSettings();
+        var FormatSettings = readFormatSettings();
+        var decks = readStartingDecks();
         CurrentMatchRoot = HearthNash.evaluateMatch(decks, FormatSettings, MetaInfo);
     }
     catch (err) {
@@ -1237,6 +1271,64 @@ function clearAllParentsButRoot() {
     while (explorerParents.children().length > 1) {
         explorerParents.children().last().remove();
     }
+}
+// ===== CSV SAVING/LOADING =====
+// Downloads the current winrate matrix, including deck names, as a csv
+function saveCSV() {
+    var winratesTxt = WI_Utility.array2DToCSV(readWinrateMatrixDeckNames());
+    WI_Utility.download("HearthNash winrates.csv", winratesTxt);
+}
+// Loads the file given as input into the winrates matrix and deck names
+function loadCSV() {
+    var inputElem = (document.getElementById("loadCSV"));
+    if (inputElem.files.length === 0) {
+        console.error("No files given to loadCSV");
+        return;
+    }
+    var file = inputElem.files[0];
+    var winrates;
+    var fr = new FileReader();
+    fr.onload = function (e) {
+        try {
+            var fileTxt = (e.target.result);
+            var rows = fileTxt.split('\n');
+            var winratesSize = rows[0].split(',').length - 1;
+            rows.shift();
+            // Update the number of decks in the interface
+            while (winratesSize > getInterfaceWinrateMatrixSize()) {
+                add1Deck();
+            }
+            while (winratesSize < getInterfaceWinrateMatrixSize()) {
+                remove1Deck();
+            }
+            var newWinrates = [];
+            for (var r = 0; r < winratesSize; r++) {
+                var thisRow = rows[r].split(',');
+                // Update the deck name
+                $("#deckName" + r).val(thisRow[0]);
+                thisRow.shift();
+                // The rest are winrates
+                newWinrates.push([]);
+                for (var c = 0; c < thisRow.length; c++) {
+                    newWinrates[r][c] = parseFloat(thisRow[c]);
+                }
+            }
+            // Now actually set the values of the winrate matrix in the interface
+            setWinrateMatrix(newWinrates, true);
+            // Then reset the listeners and validate the deck name/winrate values
+            resetWinrateListeners();
+            onWinrateCellEdited();
+            onDeckNameEdited();
+        }
+        catch (err) {
+            console.error("Error caught while trying to read CSV: " + err);
+            var errorText = $("#generateMTBErrorText");
+            errorText.text("Error caught while trying to read CSV: " + err);
+            errorText.removeAttr("hidden");
+            return;
+        }
+    };
+    fr.readAsText(file);
 }
 // ===== MODULE EXPORTS =====
 window['WI'] = this;
@@ -1508,6 +1600,42 @@ function listArrayElemsDeckNames(array, matchRoot) {
     }
     return txt;
 }
+// ===== CSV UTILITY FUNCTIONS =====
+// Utility function to download a file containing certain text.
+// Source - https://www.geeksforgeeks.org/how-to-trigger-a-file-download-when-clicking-an-html-button-or-javascript/
+function download(file, text) {
+    //creating an invisible element
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8, ' + encodeURIComponent(text));
+    element.setAttribute('download', file);
+    //the above code is equivalent to
+    // <a href="path of file" download="file name">
+    document.body.appendChild(element);
+    //onClick property
+    element.click();
+    document.body.removeChild(element);
+}
+// Converts a 2D array to a CSV (string).
+// Replicated from IO_Utility, because fs-extra seems to conflict with browserify
+function array2DToCSV(arr) {
+    var CSV = "";
+    if (!Array.isArray(arr))
+        throw new Error("Non-array passed to array2DToCSV()");
+    for (var i = 0; i < arr.length; i++) {
+        CSV += array1DToCSV(arr[i]) + ((i == arr.length - 1) ? "" : "\n");
+    }
+    return CSV;
+}
+function array1DToCSV(arr, separator) {
+    if (separator === void 0) { separator = ","; }
+    var CSV = "";
+    if (!Array.isArray(arr))
+        throw new Error("Non-array passed to array1DToCSV()");
+    for (var i = 0; i < arr.length; i++) {
+        CSV += arr[i] + ((i == arr.length - 1) ? "" : separator);
+    }
+    return CSV;
+}
 // ===== MODULE EXPORTS =====
 module.exports.toPercentMatrix = toPercentMatrix;
 module.exports.fromPercentMatrix = fromPercentMatrix;
@@ -1520,6 +1648,8 @@ module.exports.vertexWinProbabilityStr = vertexWinProbabilityStr;
 module.exports.deckName = deckName;
 module.exports.listArrayElems = listArrayElems;
 module.exports.listArrayElemsDeckNames = listArrayElemsDeckNames;
+module.exports.array2DToCSV = array2DToCSV;
+module.exports.download = download;
 
 },{"../lib/HN_Settings.js":2,"../lib/HN_Utility.js":3}],8:[function(require,module,exports){
 /*!

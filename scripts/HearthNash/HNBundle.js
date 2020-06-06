@@ -1030,8 +1030,8 @@ function add1Deck() {
     newRow.prop("id", "winratesRow" + newRowIndex);
     newRow.appendTo($("#winratesTableBody"));
     // Update the id of each important descendent
-    newRow.find("#P0_CheckDeck" + lastRowIndex).prop("id", "P0_CheckDeck" + newRowIndex);
-    newRow.find("#P1_CheckDeck" + lastRowIndex).prop("id", "P1_CheckDeck" + newRowIndex);
+    newRow.find("#P0_CheckDeck" + lastRowIndex).prop("id", "P0_CheckDeck" + newRowIndex).prop("checked", false);
+    newRow.find("#P1_CheckDeck" + lastRowIndex).prop("id", "P1_CheckDeck" + newRowIndex).prop("checked", false);
     newRow.find("#deckName" + lastRowIndex).prop("id", "deckName" + newRowIndex).val("Deck " + newRowIndex);
     for (var i = 0; i < newRowIndex; i++) {
         var elem = newRow.find("#deckWinrate" + lastRowIndex + "_" + i);

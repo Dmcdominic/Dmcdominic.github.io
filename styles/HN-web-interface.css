@@ -74,6 +74,13 @@ input[type=number] {
 
 
 
+/* Tooltips */
+.HN-tooltip-icon {
+    color: orange !important;
+}
+
+
+
 /* Footer */
 #HN-page-footer {
     /* background-color: gray; */

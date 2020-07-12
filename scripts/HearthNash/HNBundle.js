@@ -942,6 +942,23 @@ var HearthNash = require("../lib/HearthNash.js");
 var HN_Utility = require("../lib/HN_Utility.js");
 var WI_Utility = require("../lib/WebInterface_Utility.js");
 var $ = require("jquery");
+// Constants
+// Sources - https://i.imgur.com/PBstziq.jpg  -  https://i.redd.it/kmyxk3b4yct41.png
+// Lower classes have higher priority.
+var CLASS_COLORS = {
+    DH: "#14302b",
+    ROGUE: "#241c12",
+    SHAMAN: "#3f4b85",
+    WARRIOR: "#91321c",
+    DRUID: "#5c3b17",
+    HUNTER: "#0d542c",
+    PRIEST: "#f5eed2",
+    WARLOCK: "#572d3b",
+    MAGE: "#2f6d94",
+    PALADIN: "#ffae49",
+    "DEMON HUNTER": "#14302b",
+    DEMONHUNTER: "#14302b"
+};
 // Initialization
 $(document).ready(function () {
     // Add listeners
@@ -953,6 +970,7 @@ $(document).ready(function () {
     // Set up Save CSV listener
     $("#saveCSV").unbind().click(saveCSV);
     var loadCSVInput = document.getElementById("loadCSV");
+    $("#loadCSV").unbind().click(onClickLoadCSV);
     loadCSVInput.addEventListener('change', loadCSV);
 });
 // ===== META SETTINGS =====
@@ -998,8 +1016,27 @@ function setWinrateMatrix(winrates, overrideUsrInput) {
 // Called when a deck name field is edited by the user.
 function onDeckNameEdited() {
     var n = getInterfaceWinrateMatrixSize();
+    var _loop_1 = function (i) {
+        // Update the deck name in the header row
+        var deckName = ($("#deckName" + i).val());
+        $("#deckNameTop" + i).text(deckName);
+        // Detect class names and color the boxes appropriately
+        $("#deckNameTop" + i).css("background-color", '#FFFFFF');
+        $("#deckName" + i).css("background-color", '#FFFFFF');
+        $("#deckNameTop" + i).css("color", '#000000');
+        $("#deckName" + i).css("color", '#000000');
+        Object.keys(CLASS_COLORS).forEach(function (key) {
+            if (deckName.toLowerCase().includes(key.toLowerCase())) {
+                $("#deckNameTop" + i).css("background-color", CLASS_COLORS[key]);
+                $("#deckName" + i).css("background-color", CLASS_COLORS[key]);
+                var textColor = WI_Utility.getBestTextColor(CLASS_COLORS[key]);
+                $("#deckNameTop" + i).css("color", textColor);
+                $("#deckName" + i).css("color", textColor);
+            }
+        });
+    };
     for (var i = 0; i < n; i++) {
-        $("#deckNameTop" + i).text(($("#deckName" + i).val()));
+        _loop_1(i);
     }
 }
 // Called when the -1 Deck button is clicked
@@ -1134,7 +1171,7 @@ function initFormatPresetsDropdown() {
     var samplePresetLink = $("#samplePresetLink");
     var presetDropdownLinks = $("#presetDropdownLinks");
     var coreFormatKeys = Object.keys(Formats.CORE_FORMATS);
-    var _loop_1 = function (f) {
+    var _loop_2 = function (f) {
         var newPresetLink = samplePresetLink.clone();
         var format = Formats.CORE_FORMATS[coreFormatKeys[f]];
         newPresetLink.text(format.name);
@@ -1143,7 +1180,7 @@ function initFormatPresetsDropdown() {
         newPresetLink.removeAttr("hidden");
     };
     for (var f = 0; f < coreFormatKeys.length; f++) {
-        _loop_1(f);
+        _loop_2(f);
     }
 }
 // Populate the Format Settings options with a certain formatSettings object
@@ -1240,7 +1277,7 @@ function populateExplorerChildren() {
     var explorerChildren = $("#explorerChildren");
     var vertexOptionsByChild = WI_Utility.vertexOptionsByChild(CurrentMatchVertex, CurrentMatchRoot);
     if (CurrentMatchVertex.children) {
-        var _loop_2 = function (i) {
+        var _loop_3 = function (i) {
             var nextChild = CurrentMatchVertex.children[i];
             var thisChildOpts = (vertexOptionsByChild) ? (vertexOptionsByChild[i] + "<br>") : "";
             var newBtn = sampleChildBtn.clone();
@@ -1251,7 +1288,7 @@ function populateExplorerChildren() {
             newBtn.appendTo(explorerChildren);
         };
         for (var i = 0; i < CurrentMatchVertex.children.length; i++) {
-            _loop_2(i);
+            _loop_3(i);
         }
     }
 }
@@ -1329,6 +1366,11 @@ function loadCSV() {
         }
     };
     fr.readAsText(file);
+}
+// Called when you first click the loadCSV input button.
+// Clears the currently selected field so that the change event will always trigger.
+function onClickLoadCSV() {
+    $("#loadCSV").val("");
 }
 // ===== MODULE EXPORTS =====
 window['WI'] = this;
@@ -1576,6 +1618,15 @@ function deckName(index, matchRoot) {
 function getNumberOfArchetypes(matchRoot) {
     return matchRoot.MetaInfo.deckArchetypes.length;
 }
+// Returns a text hexcolor (black or white) that will be most readable against a certain background color
+// https://stackoverflow.com/questions/35969656/how-can-i-generate-the-opposite-color-according-to-current-color
+function getBestTextColor(hex) {
+    hex = hex.slice(1, hex.length);
+    var r = parseInt(hex.slice(0, 2), 16);
+    var g = parseInt(hex.slice(2, 4), 16);
+    var b = parseInt(hex.slice(4, 6), 16);
+    return ((r * 0.299 + g * 0.587 + b * 0.114) > 186) ? '#000000' : '#FFFFFF';
+}
 // Returns a string which is a list of the elements of array.
 function listArrayElems(array) {
     if (array.length === 0) {
@@ -1646,6 +1697,7 @@ module.exports.vertexOptionsByPlayer = vertexOptionsByPlayer;
 module.exports.vertexOptionsByChild = vertexOptionsByChild;
 module.exports.vertexWinProbabilityStr = vertexWinProbabilityStr;
 module.exports.deckName = deckName;
+module.exports.getBestTextColor = getBestTextColor;
 module.exports.listArrayElems = listArrayElems;
 module.exports.listArrayElemsDeckNames = listArrayElemsDeckNames;
 module.exports.array2DToCSV = array2DToCSV;

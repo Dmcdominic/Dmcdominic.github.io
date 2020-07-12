@@ -28,12 +28,17 @@ input {
 }
 
 .deckWinrate {
-    max-width: 4rem;
+    max-width: 3.5rem;
 }
 
 .deckName {
-    /* width: 7rem; */
+    /* width: 10rem; */
     min-width: 5rem;
+}
+
+th {
+    max-width: 5rem;
+    overflow: hidden;
 }
 
 /* Remove arrows */

@@ -303,7 +303,8 @@ ul.timeline > li:before {
 .left-timeline-panel {
 	display: inline-block;
 	position: relative;
-	left: -150px;
+	left: -5.3em;
+	/* left: -155px; */
 	top: -24px;
 	width: 100px;
 	height: 20px;

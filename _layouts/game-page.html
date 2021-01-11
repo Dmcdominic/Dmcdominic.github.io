@@ -3,6 +3,16 @@
 layout: game-page-wrapper
 ---
 
+<!-- Title -->
+{% if page.display_title %}
+<div class="row mb-4">
+	<div class="col-sm-12">
+		<h1 class="display-3 text-center">{{ page.title }}</h1>
+	</div>
+</div>
+{% endif %}
+
+
 <!-- Logo -->
 {% if page.logo %}
 <div class="col-sm-12 mb-5">
@@ -54,10 +64,18 @@ layout: game-page-wrapper
 			{% endif %}
 
 			{% if page.windows_build or page.GCS_page %}
-			<h4>Play It Now!</h4>
+			{% if page.not_playable %}
+				<h4>Links</h4>
+			{% else %}
+				<h4>Play It Now!</h4>
+			{% endif %}
 			<p>
-				<a href="{{ page.windows_build }}" download>Windows Download</a><br>
-				<a href="{{ page.GCS_page }}" target="_blank">Game Creation Society Page</a><br>
+				{% if page.windows_build %}
+					<a href="{{ page.windows_build }}" download>Windows Download</a><br>
+				{% endif %}
+				{% if page.GCS_page %}
+					<a href="{{ page.GCS_page }}" target="_blank">Game Creation Society Page</a><br>
+				{% endif %}
 			</p>
 			{% endif %}
 		</div>

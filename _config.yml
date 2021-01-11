@@ -3,8 +3,15 @@ collections:
     games:
         output: true
         permalink: /games/:title
+    members:
+        output: false
     hs-academia:
         output: false
     posts:
         output: true
         permalink: /blog/:title
+
+
+# Plugins
+plugins:
+  - jekyll-redirect-from

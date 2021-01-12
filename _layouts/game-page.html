@@ -76,6 +76,7 @@ layout: game-page-wrapper
 					{% for link in page.links %}
 						<a href="{{ link[1] }}" download>{{ link[0] }}</a><br>
 					{% endfor %}
+					{{ page.text_below_links }}
 				</p>
 			{% endif %}
 		</div>
@@ -129,6 +130,14 @@ layout: game-page-wrapper
 	{% endif %}
 
 
+	<!-- Remaining Screenshots -->
+	{% for img in page.screenshots offset:3 %}
+	<div class="v-center-col col-md-6 mb-5">
+		<img class="v-center-img rounded-img" src="{{ page.image_path }}{{ img }}" alt="Game Screenshot">
+	</div>
+	{% endfor %}
+
+
     <!-- Gameplay videos -->
     {% if page.gameplay_videos and page.gameplay_videos.size > 0 %}
 	<div class="col-12 text-center">
@@ -148,14 +157,6 @@ layout: game-page-wrapper
 		</div>
 	</div>
     {% endif %}
-
-
-	<!-- Remaining Screenshots -->
-	{% for img in page.screenshots offset:3 %}
-	<div class="v-center-col col-md-6 mb-5">
-		<img class="v-center-img rounded-img" src="{{ page.image_path }}{{ img }}" alt="Game Screenshot">
-	</div>
-	{% endfor %}
 
 
 	<!-- My Contributions -->

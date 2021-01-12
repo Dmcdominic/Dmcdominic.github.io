@@ -53,7 +53,10 @@ layout: game-page-wrapper
 	{% endif %}
 
 	<!-- Project Background & Play/Download Links -->
-	{% if page.background or page.windows_build or page.GCS_page %}
+	{% if page.links and page.links.size > 0 %}
+		{% assign has_links = true %}
+	{% endif %}
+    {% if page.background or has_links %}
 	<div class="v-center-col col-md-6 mb-5 text-center">
 		<div class="v-center-content">
 			{% if page.background %}
@@ -63,20 +66,17 @@ layout: game-page-wrapper
 			</p>
 			{% endif %}
 
-			{% if page.windows_build or page.GCS_page %}
-			{% if page.not_playable %}
-				<h4>Links</h4>
-			{% else %}
-				<h4>Play It Now!</h4>
-			{% endif %}
-			<p>
-				{% if page.windows_build %}
-					<a href="{{ page.windows_build }}" download>Windows Download</a><br>
+			{% if has_links %}
+				{% if page.not_playable %}
+					<h4>Links</h4>
+				{% else %}
+					<h4>Play It Now!</h4>
 				{% endif %}
-				{% if page.GCS_page %}
-					<a href="{{ page.GCS_page }}" target="_blank">Game Creation Society Page</a><br>
-				{% endif %}
-			</p>
+				<p>
+					{% for link in page.links %}
+						<a href="{{ link[1] }}" download>{{ link[0] }}</a><br>
+					{% endfor %}
+				</p>
 			{% endif %}
 		</div>
 	</div>
@@ -130,15 +130,15 @@ layout: game-page-wrapper
 
 
     <!-- Gameplay videos -->
-    {% if page.gameplay-videos %}
+    {% if page.gameplay_videos and page.gameplay_videos.size > 0 %}
 	<div class="col-12 text-center">
-		{% if page.gameplay-videos.size == 1 %}
+		{% if page.gameplay_videos.size == 1 %}
 			<h3>Gameplay Video</h3>
 		{% else %}
 			<h3>Gameplay Videos</h3>
 		{% endif %}
 		<div class="row no-margin justify-content-center">
-			{% for video in page.gameplay-videos %}
+			{% for video in page.gameplay_videos %}
 			<div class="col-xl-6 col-lg-6 d-flex justify-content-center" style="padding: 8px">
 				<div class="video-container">
 					<iframe class="video-iframe" src="https://{{ video }}" frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -153,7 +153,7 @@ layout: game-page-wrapper
 	<!-- Remaining Screenshots -->
 	{% for img in page.screenshots offset:3 %}
 	<div class="v-center-col col-md-6 mb-5">
-		<img class="v-center-img rounded-img" src="{{ page.image_path }}{{ page.screenshots[2] }}" alt="Game Screenshot">
+		<img class="v-center-img rounded-img" src="{{ page.image_path }}{{ img }}" alt="Game Screenshot">
 	</div>
 	{% endfor %}
 

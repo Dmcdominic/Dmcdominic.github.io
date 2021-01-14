@@ -13,7 +13,7 @@ is the high variety of cards, which can be chosen by the players
 to create their own decks. In contrast to simpler card games, the
 value of many cards is determined by their possible synergies.
 The vast amount of possible decks, the randomness of the game,
-as well as the restricted information during the player’s turn
+as well as the restricted information during the player's turn
 offer quite a hard challenge for the development of game-playing
 agents. This short paper introduces the competition framework
 and goes into more detail on the problems and challenges that

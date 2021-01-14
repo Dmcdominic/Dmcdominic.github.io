@@ -1,37 +1,45 @@
 /* Imports */
 /* @import url("https://use.fontawesome.com/releases/v5.7.2/css/all.css"); */
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;600&display=swap');
 @import url("https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css");
 
 
 /* Responsive styling */
 /* https://getbootstrap.com/docs/4.1/layout/overview/#responsive-breakpoints */
-@media (min-width: 576px) {
+html {
+    font-size: 1.1em;
+}
+
+@media screen and (min-width: 576px) {
     html {
-        font-size: 0.9em;
+        font-size: 1.0em;
     }
 }
 
-@media (min-width: 768px) {
-    html {
-        font-size: 1em;
-    }
-}
-
-@media (min-width: 992px) {
+@media screen and (min-width: 768px) {
     html {
         font-size: 1.05em;
     }
 }
 
-@media (min-width: 1200px) {
+@media screen and (min-width: 992px) {
     html {
         font-size: 1.1em;
     }
 }
 
+@media screen and (min-width: 1200px) {
+    html {
+        font-size: 1.15em;
+    }
+}
+
 /* Text styling */
 p {
-	font: 1.4em cambria;
+	font-size: 1.35em;
+	font-family: 'Lora', cambria, serif;
+	font-weight: 400;
+	line-height: normal;
 }
 
 .cambria {
@@ -86,6 +94,14 @@ a.no-link-style:hover h3 {
 }
 
 /* Nav bar styling */
+#page-header {
+    overflow-x: auto;
+    white-space: nowrap;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch; /* momentum scroll on ios */
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+}
+
 .nav-item {
 	margin-right: 0.5em;
 	margin-left: 0.5em;
@@ -154,28 +170,29 @@ p.about_details {
 	border: 0;
 }
 
+/* SoundCloud embed */
+.soundcloud-embed {
+	width: 100%;
+	height: 17em;
+}
+
 
 /* Vertical centering in Boostrap rows */
 html, body, .v-center-container {
 	height: 100%;
 }
 .v-center-col {
-	height: 75%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: wrap;
 }
 .v-center-row {
 	height: 50%;
 }
-.v-center-content {
-	position: absolute;
-	top: 50%; left: 50%;
-	transform: translate(-50%,-50%);
-	width: 95%;
-}
-.v-center-img {
-	position: absolute;
-	top: 50%; left: 50%;
-	transform: translate(-50%,-50%);
-	max-height: 98%;
+
+.contained-img {
+	max-height: 25em;
 	max-width: 98%;
 }
 
@@ -199,7 +216,7 @@ html, body, .v-center-container {
 	margin-bottom: 7rem !important;
 }
 
-/* Game Portfolio page styling */
+/* Game Portfolio styling */
 a.card-link-wrapper,
 a.card-link-wrapper:hover {
 	color: inherit;

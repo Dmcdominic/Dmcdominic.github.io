@@ -196,7 +196,11 @@ layout: default
 		<!-- My Contributions -->
 		{% if page.my_contributions %}
 		<div class="col-12 mb-5 text-center">
-			<h3>My Contributions</h3>
+			{% if page.project_members %}
+				<h3>My Contributions</h3>
+			{% else %}
+				<h3>My Process</h3>
+			{% endif %}
 			<p>
 				{{ page.my_contributions }}
 			</p>

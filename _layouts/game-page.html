@@ -102,7 +102,7 @@ layout: default
 
 
 		<!-- Project Members and Source Code -->
-		{% if page.project_members or page.GitHub_repo %}
+		{% if page.project_members or page.source_code or page.featured_on %}
 		<div class="v-center-col col-lg-6 col-12 mb-5 text-center">
 			<div>
 				{% if page.project_members %}
@@ -128,10 +128,12 @@ layout: default
 				</p>
 				{% endif %}
 
-				{% if page.GitHub_repo %}
+				{% if page.source_code %}
 				<h4 class="mt-4">Source Code</h4>
 				<p>
-					<a href="{{ page.GitHub_repo }}" target="_blank">GitHub Repository</a><br>
+					{% for source in page.source_code %}
+					<a href="{{ source[1] }}" target="_blank">{{ source[0] }}</a><br>
+					{% endfor %}
 				</p>
 				{% endif %}
 

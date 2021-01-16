@@ -3,86 +3,19 @@ layout: default
 title: Game Portfolio
 ---
 
-<div class="container mt-4 mb-5">
-	<div class="row mb-5">
+<link rel="stylesheet" href="/styles/listed_game.css">
+
+<div class="container-fluid mt-4 mb-3">
+	<div class="row mb-3">
 		<div class="col-sm-12">
 			<h1 class="display-3 text-center">Game Portfolio</h1>
 		</div>
 	</div>
 
-	<div class="row justify-content-center">
-		{% assign sorted_games = site.games | reverse %}
-		{% for game in sorted_games %}
-		<div class="v-center-col col-lg-4 col-sm-6 col-10 mt-5">
-			<!-- <h3 class="left-timeline-panel text-center">
-				{{ game.time_period }}
-			</h3> -->
-			{% if game.redirect_to %}
-			<a class="card-link-wrapper text-dark" href="{{ game.redirect_to }}">
-			{% else %}
-			<a class="card-link-wrapper text-dark" href="{{ game.url }}">
-			{% endif %}
-				<div class="card mt-neg-medium mb-5">
-					<img class="card-img-top" src="{{ game.image_path }}{{ game.logo }}" alt="Game Logo">
-					<div class="card-body">
-						{% if game.long_title %}
-							<h1 class="card-title">{{ game.long_title }}</h1>
-						{% else %}
-							<h1 class="card-title">{{ game.title }}</h1>
-						{% endif %}
-
-						<p class="card-text">{{ game.short_description }}</p>
-
-						{% if game.context %}
-							<h5>({{ game.context }})</h5>
-						{% endif %}
-					</div>
-				</div>
-			</a>
-		</div>
+	<div class="row justify-content-around align-items-center ml-5 mr-5">
+		{% assign games_sorted = site.games | reverse %}
+        {% for game in games_sorted %}
+            {% include listed_game.html %}
 		{% endfor %}
 	</div>
-
-
-	<!-- Timeline Format -->
-	{% comment %}
-	<div class="row">
-		<div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">
-			<ul class="timeline">
-
-				{% assign sorted_games = site.games | reverse %}
-				{% for game in sorted_games %}
-				<li>
-					<h3 class="left-timeline-panel text-center">
-						{{ game.time_period }}
-					</h3>
-					{% if game.redirect_to %}
-					<a class="card-link-wrapper text-dark" href="{{ game.redirect_to }}">
-					{% else %}
-					<a class="card-link-wrapper text-dark" href="{{ game.url }}">
-					{% endif %}
-						<div class="card mt-neg-medium mb-5">
-							<img class="card-img-top" src="{{ game.image_path }}{{ game.logo }}" alt="Game Logo">
-							<div class="card-body">
-								{% if game.long_title %}
-									<h1 class="card-title">{{ game.long_title }}</h1>
-								{% else %}
-									<h1 class="card-title">{{ game.title }}</h1>
-								{% endif %}
-
-								<p class="card-text">{{ game.short_description }}</p>
-
-								{% if game.context %}
-									<h5>({{ game.context }})</h5>
-								{% endif %}
-							</div>
-						</div>
-					</a>
-				</li>
-				{% endfor %}
-
-			</ul>
-		</div>
-	</div>
-	{% endcomment %}
 </div>

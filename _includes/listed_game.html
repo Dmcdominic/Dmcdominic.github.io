@@ -64,14 +64,6 @@
                 document.getElementById("{{ game.title | slugify }}-preview-child").style="background-image: url('{{ game.image_path }}{{ game.logo }}')";
             {% endif %}
         }
-
-        {% assign index = game.screenshots.size | minus: 1 %}
-
-        {% assign split_screenshot_string = game.screenshots[index] | split: "." %}
-
-        {% if split_screenshot_string[1] == "webm" %}
-            convert("{{ game.image_path }}{{ split_screenshot_string[0] }}", "{{ game.title }}", "header-{{ game.title | slugify }}", "{{ game.title | slugify }}-preview-child", true, "{{ split_screenshot_string[1] }}");
-        {% endif %}
     </script>
 </a>
 

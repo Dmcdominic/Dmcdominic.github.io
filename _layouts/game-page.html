@@ -33,7 +33,7 @@ layout: default
 
 		<!-- Description -->
 		{% if page.description %}
-		<div class="v-center-col col-lg-6 col-12 mb-5 text-center">
+		<div class="v-center-col col-lg-6 col-12 order-lg-1 mb-5 text-center">
 			<div>
 				<h4>Description</h4>
 				<p>
@@ -47,13 +47,7 @@ layout: default
 		<!-- Screenshot 0 -->
 		{% if page.screenshots and page.screenshots[0] %}
 			{% assign screenshot_path = page.image_path | append: page.screenshots[0] %}
-			{% include screenshot.html %}
-		{% endif %}
-
-
-		<!-- Screenshot 1 -->
-		{% if page.screenshots and page.screenshots[1] %}
-			{% assign screenshot_path = page.image_path | append: page.screenshots[1] %}
+			{% assign order_lg = 2 %}
 			{% include screenshot.html %}
 		{% endif %}
 
@@ -65,7 +59,7 @@ layout: default
 			{% assign has_links2 = true %}
 		{% endif %}
 		{% if page.background or has_links %}
-		<div class="v-center-col col-lg-6 col-12 mb-5 text-center">
+		<div class="v-center-col col-lg-6 col-12 order-lg-4 mb-5 text-center">
 			<div>
 				{% if page.background %}
 				<h4 class="mt-4">Project Background</h4>
@@ -101,9 +95,17 @@ layout: default
 		{% endif %}
 
 
+		<!-- Screenshot 1 -->
+		{% if page.screenshots and page.screenshots[1] %}
+			{% assign screenshot_path = page.image_path | append: page.screenshots[1] %}
+			{% assign order_lg = 3 %}
+			{% include screenshot.html %}
+		{% endif %}
+
+
 		<!-- Project Members and Source Code -->
 		{% if page.project_members or page.source_code or page.featured_on %}
-		<div class="v-center-col col-lg-6 col-12 mb-5 text-center">
+		<div class="v-center-col col-lg-6 col-12 order-lg-5 mb-5 text-center">
 			<div>
 				{% if page.project_members %}
 				<h4>Team</h4>
@@ -153,6 +155,7 @@ layout: default
 		<!-- Remaining Screenshots -->
 		{% for img in page.screenshots offset:2 %}
 			{% assign screenshot_path = page.image_path | append: img %}
+			{% assign order_lg = 6 %}
 			{% include screenshot.html %}
 		{% endfor %}
 
@@ -160,9 +163,9 @@ layout: default
 		<!-- Gameplay videos -->
 		{% if page.gameplay_videos and page.gameplay_videos.size > 0 %}
 			{% if page.gameplay_videos.size == 1 %}
-			<div class="col-lg-6 col-12 mb-5 text-center">
+			<div class="col-lg-6 col-12 order-last mb-5 text-center">
 			{% else %}
-			<div class="col-12 mb-5 text-center">
+			<div class="col-12 order-last mb-5 text-center">
 			{% endif %}
 				{% if page.gameplay_videos.size == 1 %}
 					<h3>Gameplay Video</h3>
@@ -188,7 +191,7 @@ layout: default
 		
 		<!-- SoundCloud embed -->
 		{% if page.SoundCloud_embed %}
-		<div class="col-lg-6 col-md-9 col-12 mb-5 text-center justify-content-center">
+		<div class="col-lg-6 col-md-9 col-12 order-last mb-5 text-center justify-content-center">
 			<h3>Original Soundtrack</h3>
 			<iframe class="soundcloud-embed" scrolling="no" frameborder="no" allow="autoplay" src="{{ page.SoundCloud_embed }}"></iframe>
 		</div>
@@ -197,7 +200,7 @@ layout: default
 
 		<!-- My Contributions -->
 		{% if page.my_contributions %}
-		<div class="col-12 mb-5 text-center">
+		<div class="col-12 order-last mb-5 text-center">
 			{% if page.project_members %}
 				<h3>My Contributions</h3>
 			{% else %}

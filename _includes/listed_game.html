@@ -69,17 +69,20 @@
 
 <style>
     {% if game.screenshots.size > 1 %}
-        #{{ game.title | slugify }}-preview:hover .listed-game-preview-img {
-            {% assign index = game.screenshots.size | minus: 1 %}
-            {% assign split_screenshot = game.screenshots[index] | split: "." %}
+    
+        @media screen and (min-width: 992px) {
+            #{{ game.title | slugify }}-preview:hover .listed-game-preview-img {
+                {% assign index = game.screenshots.size | minus: 1 %}
+                {% assign split_screenshot = game.screenshots[index] | split: "." %}
 
-            {% if fallback_hover_image %}
-                {% if split_screenshot[1] == "webm" || game.webm_hover_enabled %}
-                    background-image: url("{{ game.image_path }}{{split_screenshot[0]}}.gif") !important;
-                {% else %}
-                    background-image: url("{{ game.image_path }}{{game.screenshots[index]}}") !important;
+                {% if fallback_hover_image %}
+                    {% if split_screenshot[1] == "webm" || game.webm_hover_enabled %}
+                        background-image: url("{{ game.image_path }}{{split_screenshot[0]}}.gif") !important;
+                    {% else %}
+                        background-image: url("{{ game.image_path }}{{game.screenshots[index]}}") !important;
+                    {% endif %}
                 {% endif %}
-            {% endif %}
+            }
         }
     {% endif %}
 </style>

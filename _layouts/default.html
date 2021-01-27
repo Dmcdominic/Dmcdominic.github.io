@@ -5,8 +5,32 @@
 	<!-- Meta data -->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+	<!-- Non-required, but good meta tags -->
+	<meta name="author" content="Dominic Calkosz">
+	{% if page.short_description %}
+		<meta name="description" content="{{ page.short_description | strip_html }}">
+		<meta property="og:description" content="{{ page.short_description | strip_html }}">
+	{% elsif page.description %}
+		<meta name="description" content="{{ page.description | strip_html }}">
+		<meta property="og:description" content="{{ page.description | strip_html }}">
+	{% else %}
+		<meta name="description" content="The personal website and game portfolio of Dominic Calkosz">
+		<meta property="og:description" content="The personal website and game portfolio of Dominic Calkosz">
+	{% endif %}
+	<meta name="keywords" content="Dominic, Calkosz, Games, Game Creation Society, Coding, CMU, Carnegie Mellon University">
+	<!-- <meta name="theme-color" content="#b12d36"> -->
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="{{ site.url }}{{ page.url }}">
+	{% if page.thumbnail %}
+		<meta property="og:image" content="{{ site.url }}{{ page.image_path }}{{ page.thumbnail }}">
+	{% elsif page.logo %}
+		<meta property="og:image" content="{{ site.url }}{{ page.image_path }}{{ page.logo }}">
+	{% else %}
+		<meta property="og:image" content="{{ site.url }}/images/Profile.JPG">
+	{% endif %}
 	<!-- Title -->
 	<title>{{ page.title }} - Dominic Calkosz</title>
+	<meta property="og:title" content="{{ page.title }} - Dominic Calkosz">
 
 	<!-- Favicon -->
 	{% include favicon.html %}

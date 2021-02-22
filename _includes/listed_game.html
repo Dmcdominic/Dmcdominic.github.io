@@ -11,38 +11,60 @@
     {% assign title = game.long_title %}
 {% endif %}
 
+
+{% if game.thumbnail %}
+    {% assign background_image = game.image_path | append: game.thumbnail %}
+{% else %}
+    {% assign background_image = game.image_path | append: game.logo %}
+{% endif %}
+
+
+{% assign hover_img = nil %}
+{% if game.screenshots.size > 0 %}
+    {% assign index = game.screenshots.size | minus: 1 %}
+    {% assign split_screenshot = game.screenshots[index] | split: "." %}
+
+    {% if split_screenshot[1] == "webm" || game.webm_hover_enabled %}
+        {% assign hover_img = game.image_path | append: split_screenshot[0] | append: ".gif" %}
+    {% else %}
+        {% assign hover_img = game.image_path | append: game.screenshots[index] %}
+    {% endif %}
+{% endif %}
+
 <a class="listed-game-preview listed_game ml-2 mr-2
 {% for tag in game.tags %} {{ tag }}_game-tag {% endfor %}
 {% if game.awards and game.awards.size > 0 %} Award-Winning_game-tag {% endif %}"
     id="{{ game.title | slugify }}-preview" href="{{ url }}">
-    <div id="{{ game.title | slugify }}-preview-child" class="listed-game-preview-img"
-        {% if game.thumbnail %}
-            style="background-image: url('{{ game.image_path }}{{game.thumbnail}}')"
-        {% else %}
-            style="background-image: url('{{ game.image_path }}{{ game.logo }}')"
-        {% endif %}>
-    </div>
-    <div id="{{game.title | remove: ' '}}_div" class="listed-game-preview-overlay">
+    <div id="{{ game.title | slugify }}-preview-child" class="listed-game-preview-img" style="background-image: url('{{ background_image }}')"></div>
+    <div style="display:none"><img id="{{ game.title | slugify }}_hover_preload" src="{{hover_img}}"></div>
+    <div id="{{ game.title | slugify }}_div" class="listed-game-preview-overlay">
         <h4 class="game_title"><strong>{{ title }}</strong></h4>
         <p class="game_semester_year">{{ game.time_period }}</p>
         {% for member in game.project_members %}
             <p class="game_members" style="display:none">{{member[0]}}</p>
         {% endfor %}
+        <!-- Stripped-down description that doesn't display (this is for searching) -->
+        <p class="game_description" style="display:none">{{game.description | newline_to_br | strip_html | strip_newlines | strip | replace: '"', ''}}</p>
     </div>
     
     <!-- Preload the on-hover screenshot -->
-    <!-- Also manually add in a stripped-down description that doesn't display (this is for searching) -->
     <script type="text/javascript">
-        // Create description element and set properties
-        var desc = document.createElement("p");
-        desc.className = "game_description";
-        desc.style.display = "none";
+        function once_loaded() {
+            document.getElementById("{{ game.title | slugify }}-preview-child").classList.add("hover-img-loaded");
+        }
 
-        // Filter and strip text and then add it to a div
-        var text = "{{game.description | newline_to_br | strip_html | strip_newlines | strip | replace: '"', ''}}";
-        desc.appendChild(document.createTextNode(text));
-        document.getElementById("{{game.title | remove: ' '}}_div").appendChild(desc);
+        var img = document.getElementById("{{ game.title | slugify }}_hover_preload");
+        if (img.complete) {
+            once_loaded();
+        } else {
+            img.addEventListener('load', once_loaded);
+            img.addEventListener('error', function() {
+                console.error("failed to load image:");
+                console.error(img);
+            });
+        }
 
+        // Idk if this is still doing something?
         // https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
 
         // Opera 8.0+
@@ -54,35 +76,19 @@
         // Internet Explorer 6-11
         var isIE = /*@cc_on!@*/false || !!document.documentMode;
 
-        {% assign fallback_hover_image = false %}
-
         if (isOpera || isSafari || isIE) {
-            {% assign fallback_hover_image = true %}
-            {% if game.thumbnail %}
-                document.getElementById("{{ game.title | slugify }}-preview-child").style="background-image: url('{{ game.image_path }}{{ game.thumbnail }}')";
-            {% elsif game.screenshots.size > 0 %}
-                document.getElementById("{{ game.title | slugify }}-preview-child").style="background-image: url('{{ game.image_path }}{{ game.logo }}')";
-            {% endif %}
+            document.getElementById("{{ game.title | slugify }}-preview-child").style="background-image: url('{{ background_image }}')";
         }
     </script>
 </a>
 
+{% if hover_img %}
 <style>
-    {% if game.screenshots.size > 1 %}
-    
         @media screen and (min-width: 992px) {
-            #{{ game.title | slugify }}-preview:hover .listed-game-preview-img {
-                {% assign index = game.screenshots.size | minus: 1 %}
-                {% assign split_screenshot = game.screenshots[index] | split: "." %}
-
-                {% if fallback_hover_image %}
-                    {% if split_screenshot[1] == "webm" || game.webm_hover_enabled %}
-                        background-image: url("{{ game.image_path }}{{split_screenshot[0]}}.gif") !important;
-                    {% else %}
-                        background-image: url("{{ game.image_path }}{{game.screenshots[index]}}") !important;
-                    {% endif %}
-                {% endif %}
+            /* #{{ game.title | slugify }}-preview:hover .listed-game-preview-img { */
+            #{{ game.title | slugify }}-preview:hover .listed-game-preview-img.hover-img-loaded {
+                background-image: url("{{ hover_img }}") !important;
             }
         }
-    {% endif %}
 </style>
+{% endif %}

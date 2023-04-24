@@ -1,0 +1,15 @@
+---
+title: Detecting strategic moves in HearthStone matches
+authors: "Boris Doux, Clement Gautrais, and Benjamin Negrevergne"
+year: 2016
+link: "https://hal.science/hal-01412432/file/hearthstone_paper.pdf"
+full-paper: "https://hal.science/hal-01412432/file/hearthstone_paper.pdf"
+keywords: "e-sports analytics, descriptive analysis"
+
+abstract: "In this paper, we demonstrate how to extract strategic knowledge from gaming data collected among players of the popular video
+game HearthStone. Our methodology is as follows. First we train a series of classifiers to predict the outcome of the game during a match,
+then we demonstrate how to spot key strategic events by tracking sudden changes in the classifier prediction. This methodology is applied to a
+large collection of HeathStone matches that we have collected from top
+ranked European players. Expert analysis shows that the events identified with this approach are both important and easy to interpret with
+the corresponding data."
+---

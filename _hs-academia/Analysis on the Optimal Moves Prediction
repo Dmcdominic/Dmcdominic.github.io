@@ -1,0 +1,21 @@
+---
+title: "Analysis on the Optimal Moves Prediction for Hearthstone"
+authors: "Haoxuan Wei"
+year: 2022
+link: "https://www.atlantis-press.com/proceedings/ichssr-22/125974786"
+full-paper: "https://www.atlantis-press.com/proceedings/ichssr-22/125974786"
+keywords: "Hearthstone, Card Game, Deck Tracking, Game Theory, Games"
+
+abstract: "Even though there are many different game modes in Hearthstone, the main idea is still to combat between players. In
+classic mode, each player will have its own preconstructed decks and choose one of them after the banning phase. In
+addition, Battleground is another game mode that contains 8 players, each player will choose a hero to play with. In the
+game, each round it’s a 1v1 combat between 2 players. So in general, Hearthstone is a digital card game in which 2
+players compete with each other. Such tournaments measure players’ skills and are exciting for viewers, but can take
+place in a variety of match formats which fans claim drastically affect the competitiveness and viewer engagement. In
+battleground mode, even though each hero has its own abilities, there should be an optimal way to play each round in
+order to maximize the player’s winning rate. The purpose of this paper is to build a program that can automatically help
+player make the most optimal move. The idea of this comes from HsReplay, the author uses its database. Even though
+the whole program is still developing and improving, it contains some basic functions for some specific heroes. This
+paper provides some references for software development to help players make the optimal moves under certain fixed
+conditions so that they can win the game eventually."
+---

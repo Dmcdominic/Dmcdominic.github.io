@@ -42,7 +42,7 @@ var songs = [
         "videoId": "q-7w-iRQpTQ",
         "builds": [
             {
-                "buildEnd": 25.10,
+                "buildEnd": 25.20,
                 "silentPause": false
             },
             {
@@ -52,10 +52,56 @@ var songs = [
         ],
         "drops": [
             {
-                "dropStart": 25.10
+                "dropStart": 25.70
             },
             {
-                "dropStart": 115.0
+                "dropStart": 115.20
+            }
+        ]
+    },
+    {
+        "name": "Easy Go",
+        "artist": "Grandtheft & Delaney Jane",
+        "videoId": "dmXgDVEhC1U",
+        "builds": [
+            {
+                "buildEnd": 49.25,
+                "silentPause": false
+            },
+            {
+                "buildEnd": 135.3,
+                "silentPause": false
+            }
+        ],
+        "drops": [
+            {
+                "dropStart": 49.40
+            },
+            {
+                "dropStart": 135.50
+            }
+        ]
+    },
+    {
+        "name": "Torque",
+        "artist": "Space Laces",
+        "videoId": "WsPg4ZRA_Us",
+        "builds": [
+            {
+                "buildEnd": 53.0,
+                "silentPause": false
+            },
+            {
+                "buildEnd": 132.40,
+                "silentPause": false
+            }
+        ],
+        "drops": [
+            {
+                "dropStart": 53.0
+            },
+            {
+                "dropStart": 132.40
             }
         ]
     }

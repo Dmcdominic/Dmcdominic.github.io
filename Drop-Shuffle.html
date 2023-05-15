@@ -6,23 +6,31 @@ title: Drop Shuffle
 <!-- https://developers.google.com/youtube/iframe_api_reference -->
 
 <div class="container-fluid mt-4 mb-4">
-	<div class="row mb-4">
+	<div class="row mb-2">
 		<div class="col-sm-12">
 			<h1 class="display-3 text-center">Drop Shuffle (beta)</h1>
 		</div>
 	</div>
 
+	<!-- TODO - button that skips to right before drop -->
+	<div class="row mt-2">
+		<div class="mb-1">
+			<div class="text-center">
+				<button type="button" onclick="skipToChangeup()" class="btn btn-lg btn-info mb-1 ml-1">Skip to Changeup</button>
+			</div>
+		</div>
+	</div>
 
-	<div class="row mt-4">
-		<div class="col-xl-3 col-md-6 mb-5">
+	<div class="row mt-2">
+		<div class="col-xl-3 col-md-6 mb-2">
 			<!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
 			<div id="player_0"></div>
 		</div>
 	</div>
 
 
-	<div class="row mt-4">
-		<div class="col-xl-3 col-md-6 mb-5">
+	<div class="row mt-2">
+		<div class="col-xl-3 col-md-6 mb-2">
 			<!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
 			<div id="player_1"></div>
 		</div>

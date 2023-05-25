@@ -13,23 +13,27 @@ const BUILD_END_BLEED_SECONDS = 0.1; // Amount of time that the build song shoul
 const PIVOT_SAME_SONG_DROP_TO_BUILD_GAP_SECONDS = 5;
 const PIVOT_SAME_SONG_DROP_TO_BUILD_ODDS = 0.75;
 const SKIP_TO_CHANGEUP_GAP_SECONDS = 3;
+const SHUFFLE_DROP_ODDS = 0.8;
 
 const BUILD = 0;
 const DROP = 1;
+const BoD_ANY = 2;
 
 const STATE_NONE = 0;
 const STATE_PAUSED = 1;
 const STATE_BUILDING = 2;
 const STATE_DROPPING = 3;
-const STATE_WAITING_TO_BUILD = 4;
-const STATE_WAITING_TO_DROP = 5;
-const STATE_PHASING_OUT = 6;
-const STATE_DONE = 7;
+const STATE_FULLPLAYING = 4;
+const STATE_WAITING_TO_BUILD = 5;
+const STATE_WAITING_TO_DROP = 6;
+const STATE_WAITING_TO_FULLPLAY = 7;
+const STATE_PHASING_OUT = 8;
+const STATE_DONE = 9;
 
 
 // ----- Variables -----
 // songs are defined in drop_shuffle_data.js
-var available_songs = [[], []]; // available_songs[0] == Builds, [1] == Drops
+var available_songs = [[], [], []]; // available_songs[0] == Builds, [1] == Drops, [2] == All songs
 
 var tracks = [
     {
@@ -60,10 +64,10 @@ var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 songs.shift(); // Drop the song example template
-generateAvailableSongs(BUILD);
-generateAvailableSongs(DROP);
-setTrackToRandomSong(tracks[0], BUILD);
-setTrackToRandomSong(tracks[1], DROP);
+generateAvailableSongs();
+let first_BoD = (SHUFFLE_DROP_ODDS > Math.random()) ? BUILD : BoD_ANY;
+setTrackToRandomSong(tracks[0], first_BoD);
+setTrackToRandomSong(tracks[1], getInverseBoD(first_BoD));
 setInterval(checkForTrackSwap, 50);
 
 
@@ -112,10 +116,10 @@ function loadTrackVideo(track) {
 function onPlayerReady(track) {
     return event => {
         let build_or_drop = getTrackBoDRaw(track);
-        if (build_or_drop == BUILD) {
+        if (build_or_drop == BUILD || build_or_drop == BoD_ANY) {
             event.target.seekTo(0, true);
             event.target.pauseVideo();
-        } else {
+        } else if (build_or_drop == DROP) {
             event.target.seekTo(track["drop"]["dropStart"], true);
             event.target.pauseVideo();
         }
@@ -138,7 +142,7 @@ function onPlayerStateChange(event) {
                 track["preloading"] = false;
             }
             // TODO - Do we even need to check the current state? The only exception would be if it's phasing out, right?
-            track["state"] = (getTrackBoDRaw(track) == BUILD) ? STATE_BUILDING : STATE_DROPPING;
+            track["state"] = getStateFromBoD(getTrackBoDRaw(track));
             tryPivotTrackToBuild(track);
             // Ever need to update the state of the other track, and/or even pause the other track if it was playing?
             setTimeout(function() {
@@ -146,7 +150,14 @@ function onPlayerStateChange(event) {
                 let next_track = getNextTrack();
                 // Should we also check if the next_track is currently the wrong BoD, and if so, pick a new song to fix it? (since maybe we pivoted or something?)
                 if (next_track["state"] == STATE_DONE) {
-                    let next_BoD = getInverseBoD(getTrackBoDRaw(track));
+                    let next_BoD = null;
+                    if (getTrackBoDRaw(track) == BUILD) {
+                        next_BoD = DROP;
+                    } else if (SHUFFLE_DROP_ODDS > Math.random()) {
+                        next_BoD = BUILD;
+                    } else {
+                        next_BoD = BoD_ANY;
+                    }
                     setTrackToRandomSong(next_track, next_BoD);
                 }
             }, (DROP_EARLY_PHASEIN_SECONDS + BUILD_END_BLEED_SECONDS) * 1000); // For this amount of time because that's the max that their playing can overlap, in theory
@@ -188,7 +199,8 @@ function checkForTrackSwap() {
 // Sets the specified track to a random build song
 function setTrackToRandomSong(track, build_or_drop) {
     if (available_songs[build_or_drop].length == 0) {
-        generateAvailableSongs(build_or_drop);
+        console.log("Ran out of available " + BoDToString(build_or_drop) + ". Regenerating lists of all available songs!");
+        generateAvailableSongs();
     }
 
     let song = popAvailableSong(build_or_drop);
@@ -198,10 +210,16 @@ function setTrackToRandomSong(track, build_or_drop) {
         track["build"] = getRandomItemFromArray(song["builds"]);
         track["drop"] = null;
         track["state"] = STATE_WAITING_TO_BUILD;
-    } else {
+    } else if (build_or_drop == DROP) {
         track["build"] = null;
         track["drop"] = getRandomItemFromArray(song["drops"]);
         track["state"] = STATE_WAITING_TO_DROP;
+    } else if (build_or_drop == BoD_ANY) {
+        track["build"] = null;
+        track["drop"] = null;
+        track["state"] = STATE_WAITING_TO_FULLPLAY;
+    } else {
+        console.error("Invalid build_or_drop: " + build_or_drop);
     }
 
     if (track["player"]) {
@@ -210,25 +228,33 @@ function setTrackToRandomSong(track, build_or_drop) {
 }
 
 
-// Generate the list of available build songs or drop songs
-function generateAvailableSongs(build_or_drop) {
-    available_songs[build_or_drop] = [];
-    let key = (build_or_drop ? "drops" : "builds");
+// Generate the lists of available build songs, drop songs, and all songs
+function generateAvailableSongs() {
+    available_songs = [[], [], []];
     songs.forEach(song => {
-        if (song[key].length > 0) {
-            available_songs[build_or_drop].push(song);
+        if (song["builds"].length > 0) {
+            available_songs[0].push(song);
         }
+        if (song["drops"].length > 0) {
+            available_songs[1].push(song);
+        }
+        available_songs[2].push(song);
     });
-    shuffleArray(available_songs[build_or_drop]);
+    shuffleArray(available_songs[0]);
+    shuffleArray(available_songs[1]);
+    shuffleArray(available_songs[2]);
 }
 
 // Pops an available song from the corresponding build or drop list, and removes it from the other list too
-function popAvailableSong(build_or_drop) {
-    let song = available_songs[build_or_drop].pop();
-    let inverseBoD = getInverseBoD(build_or_drop);
-    available_songs[inverseBoD] = available_songs[inverseBoD].filter(s => {
-        return s != song;
-    });
+function popAvailableSong(list_index) {
+    let song = available_songs[list_index].pop();
+    for (let i=0; i <= 2; i++) {
+        if (i != list_index) {
+            available_songs[i] = available_songs[i].filter(s => {
+                return s != song;
+            });
+        }
+    }
     return song;
 }
 
@@ -237,7 +263,7 @@ function swapCurrentTrackPlaying() {
     let current_track = getCurrentTrack();
     let next_track = getNextTrack();
     current_track["state"] = STATE_PHASING_OUT;
-    next_track["state"] = (getTrackBoDRaw(next_track) == BUILD) ? STATE_BUILDING : STATE_DROPPING;
+    next_track["state"] = getStateFromBoD(getTrackBoDRaw(next_track));
     next_track["player"].playVideo();
     // tryPivotTrackToBuild(next_track);
     setTimeout(function() {
@@ -279,7 +305,7 @@ function skipToChangeup() {
     if (player == null) return;
     if (current_track["state"] == STATE_BUILDING) {
         player.seekTo(current_track["build"]["buildEnd"] - 5, true);
-    } else if (current_track["state"] == STATE_DROPPING) {
+    } else if (current_track["state"] == STATE_DROPPING || current_track["state"] == STATE_FULLPLAYING) {
         player.seekTo(player.getDuration() - SKIP_TO_CHANGEUP_GAP_SECONDS, true);
     }
 }
@@ -307,8 +333,8 @@ function getCurrentTrackIndex() {
     // if (tracks[1]["player"] && tracks[1]["player"].getPlayerState && tracks[1]["player"].getPlayerState() == YT.PlayerState.PLAYING) return 1;
     // if (tracks[0]["player"] && tracks[0]["player"].getPlayerState && tracks[0]["player"].getPlayerState() == YT.PlayerState.ENDED) return 0;
     // if (tracks[1]["player"] && tracks[1]["player"].getPlayerState && tracks[1]["player"].getPlayerState() == YT.PlayerState.ENDED) return 1;
-    if (tracks[0]["state"] == STATE_BUILDING || tracks[0]["state"] == STATE_DROPPING) return 0;
-    if (tracks[1]["state"] == STATE_BUILDING || tracks[1]["state"] == STATE_DROPPING) return 1;
+    if (tracks[0]["state"] == STATE_BUILDING || tracks[0]["state"] == STATE_DROPPING || tracks[0]["state"] == STATE_FULLPLAYING) return 0;
+    if (tracks[1]["state"] == STATE_BUILDING || tracks[1]["state"] == STATE_DROPPING || tracks[1]["state"] == STATE_FULLPLAYING) return 1;
     return null;
 }
 
@@ -320,12 +346,13 @@ function getInverseTrackIndex(track_index) {
 function getTrackBoDRaw(track) {
     if (track["build"]) return BUILD;
     if (track["drop"]) return DROP;
-    return null;
+    return BoD_ANY;
 }
 
 function getInverseBoD(build_or_drop) {
     if (build_or_drop == BUILD) return DROP;
     if (build_or_drop == DROP) return BUILD;
+    if (build_or_drop == BoD_ANY) return BoD_ANY;
     console.error("inverseBoD was passed an invalid input: " + build_or_drop);
     return null;
 }
@@ -339,6 +366,13 @@ function getIndexOfTrack(track) {
 function getTrackFromPlayer(player) {
     if (player == tracks[0]["player"]) return tracks[0];
     if (player == tracks[1]["player"]) return tracks[1];
+    return null;
+}
+
+function getStateFromBoD(build_or_drop) {
+    if (build_or_drop == BUILD) return STATE_BUILDING;
+    if (build_or_drop == DROP) return STATE_DROPPING;
+    if (build_or_drop == BoD_ANY) return STATE_FULLPLAYING;
     return null;
 }
 
@@ -403,10 +437,14 @@ function stateToString(state) {
             return "STATE_BUILDING";
         case STATE_DROPPING:
             return "STATE_DROPPING";
+        case STATE_FULLPLAYING:
+            return "STATE_FULLPLAYING";
         case STATE_WAITING_TO_BUILD:
             return "STATE_WAITING_TO_BUILD";
         case STATE_WAITING_TO_DROP:
             return "STATE_WAITING_TO_DROP";
+        case STATE_WAITING_TO_FULLPLAY:
+            return "STATE_WAITING_TO_FULLPLAY";
         case STATE_PHASING_OUT:
             return "STATE_PHASING_OUT";
         case STATE_DONE:
@@ -432,5 +470,18 @@ function ytPlayerStateToString(playerState) {
             return "video cued";
         default:
             return "(invalid or unknown ytPlayerState)";
+    }
+}
+
+function BoDToString(build_or_drop) {
+    switch (build_or_drop) {
+        case BUILD:
+            return "BUILD";
+        case DROP:
+            return "DROP";
+        case BoD_ANY:
+            return "BoD_ANY";
+        default:
+            return "(invalid or unknown build_or_drop)";
     }
 }

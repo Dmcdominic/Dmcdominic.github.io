@@ -38,7 +38,6 @@ var tracks = [
         "build": null,
         "drop": null,
         "state": null,
-        "preloading": false,
         "player": null
     },
     {
@@ -46,7 +45,6 @@ var tracks = [
         "build": null,
         "drop": null,
         "state": null,
-        "preloading": false,
         "player": null
     }
 ];
@@ -136,9 +134,6 @@ function onPlayerStateChange(event) {
             break;
         case YT.PlayerState.PLAYING:
             // TODO - update this section to appropriately handle the phasing in/out
-            if (track["preloading"]) {
-                track["preloading"] = false;
-            }
             // If the track state already indicates that it should be playing, no need to update it. Otherwise, the user probably pressed play on the player, so let's update it.
             if (!isStatePlaying(track["state"])) {
                 track["state"] = getStateFromBoD(getTrackBoDRaw(track));
@@ -163,7 +158,6 @@ function onPlayerStateChange(event) {
             }, (DROP_EARLY_PHASEIN_SECONDS + BUILD_END_BLEED_SECONDS) * 1000); // For this amount of time because that's the max that their playing can overlap, in theory
             break;
         case YT.PlayerState.PAUSED:
-            // track["preloading"] = false;
             // track["state"] = STATE_PAUSED;
             // track["state"] = STATE_DONE;
             // Any state update needed here?
@@ -193,7 +187,26 @@ function checkForUpdatesOnInterval() {
 
 // Called at frequent intervals to check if we're in the middle of phasing between 2 songs and need to update their volumes
 function updateCrossfade() {
-    // TODO - adjust volume if applicable
+    let track_fading_out = null;
+    let track_fading_in = null;
+    if (tracks[0]["state"] == STATE_PHASING_OUT_OF_BUILD) {
+        if (!tracks[1]["state"] == STATE_PHASING_INTO_DROP) console.error("tracks[0][\"state\"] == STATE_PHASING_OUT_OF_BUILD but !tracks[1][\"state\"] == STATE_PHASING_INTO_DROP");
+        track_fading_out = tracks[0];
+        track_fading_in = tracks[1];
+    } else if (tracks[1]["state"] == STATE_PHASING_OUT_OF_BUILD) {
+        if (!tracks[0]["state"] == STATE_PHASING_INTO_DROP) console.error("tracks[1][\"state\"] == STATE_PHASING_OUT_OF_BUILD but !tracks[0][\"state\"] == STATE_PHASING_INTO_DROP");
+        track_fading_out = tracks[1];
+        track_fading_in = tracks[0];
+    } else {
+        return;
+    }
+    // TODO - adjust volume
+    if (track_fading_out["player"].getCurrentTime() > track["build"]["buildEnd"]) {
+        // E.g. this would be an instant swap
+        // track_fading_out.setVolume(0);
+        // track_fading_in.setVolume(100);
+        // finishCrossfade();
+    }
     // TODO - check for crossfade ending
 }
 

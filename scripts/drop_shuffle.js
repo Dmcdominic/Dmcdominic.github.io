@@ -3,14 +3,25 @@
 // https://developers.google.com/youtube/iframe_api_reference
 
 
-// ----- Constants -----
-const DROP_EARLY_PHASEIN_SECONDS = 0.1; // Amount of time the drop should start playing before the build ends, and overlap
-const BUILD_END_BLEED_SECONDS = 0.1; // Amount of time that the build song should keep playing after the drop kicks in, and overlap
-const PIVOT_SAME_SONG_DROP_TO_BUILD_GAP_SECONDS = 5;
-const PIVOT_SAME_SONG_DROP_TO_BUILD_ODDS = 1; // 0.75
-const SKIP_TO_CHANGEUP_GAP_SECONDS = 3;
-const SHUFFLE_DROP_ODDS = 1.0; // 0.8
+// ----- USER FACING SETTINGS -----
+const VOLUME = 30; // Out of 100
 
+const SHUFFLE_DROP_ODDS = 1.0; // 0.8
+const PIVOT_SAME_SONG_DROP_TO_BUILD_ODDS = 1; // 0.75
+
+const CROSSFADE_DURATION_SECONDS = 0.15; // Amount of time during which the build fades out and the drop fades in
+
+
+// ----- INTERNAL SYSTEM TUNING -----
+const CROSSFADE_PRIMING_WINDOW_SECONDS = 4;
+
+const PIVOT_SAME_SONG_DROP_TO_BUILD_MINIMUM_GAP_SECONDS = 5;
+
+const SKIP_TO_CHANGEUP_GAP_SECONDS = 6;
+
+
+
+// ----- Constants -----
 const BUILD = 0;
 const DROP = 1;
 const BoD_ANY = 2;
@@ -102,7 +113,7 @@ function onYouTubeIframeAPIReady() {
 function loadTrackVideo(track) {
     let startSeconds = 0;
     if (track["state"] == STATE_DROPPING || track["state"] == STATE_WAITING_TO_DROP) {
-        startSeconds = track["drop"]["dropStart"];
+        startSeconds = track["drop"]["dropStart"] - getNextCrossfadePrimingWindow(track);
     }
     track["player"].cueVideoById(track["song"]["videoId"], startSeconds);
 }
@@ -110,12 +121,13 @@ function loadTrackVideo(track) {
 // The API will call this function when the video player is ready (meaning only the first video).
 function onPlayerReady(track) {
     return event => {
+        event.target.setVolume(VOLUME);
         let build_or_drop = getTrackBoDRaw(track);
         if (build_or_drop == BUILD || build_or_drop == BoD_ANY) {
             event.target.seekTo(0, true);
             event.target.pauseVideo();
         } else if (build_or_drop == DROP) {
-            event.target.seekTo(track["drop"]["dropStart"], true);
+            event.target.seekTo(track["drop"]["dropStart"] - getNextCrossfadePrimingWindow(track), true);
             event.target.pauseVideo();
         }
     };
@@ -133,33 +145,15 @@ function onPlayerStateChange(event) {
             startNewSongAfterSongEnd();
             break;
         case YT.PlayerState.PLAYING:
-            // TODO - update this section to appropriately handle the phasing in/out
             // If the track state already indicates that it should be playing, no need to update it. Otherwise, the user probably pressed play on the player, so let's update it.
             if (!isStatePlaying(track["state"])) {
-                track["state"] = getStateFromBoD(getTrackBoDRaw(track));
+                track["state"] = getPlayingStateRaw(track);
             }
             // Ever need to update the state of the other track, and/or even pause the other track if it was playing?
-            setTimeout(function() {
-                tryPivotTrackToBuild(track);
-                // Try an assertion here that the other track (determined by inverse, not by getNextTrack()) is not building or dropping (and not YT player playing at all)?
-                let next_track = getNextTrack();
-                // Should we also check if the next_track is currently the wrong BoD, and if so, pick a new song to fix it? (since maybe we pivoted or something?)
-                if (next_track["state"] == STATE_ENDED) {
-                    let next_BoD = null;
-                    if (getTrackBoDRaw(track) == BUILD) {
-                        next_BoD = DROP;
-                    } else if (SHUFFLE_DROP_ODDS > Math.random()) {
-                        next_BoD = BUILD;
-                    } else {
-                        next_BoD = BoD_ANY;
-                    }
-                    setTrackToRandomSong(next_track, next_BoD);
-                }
-            }, (DROP_EARLY_PHASEIN_SECONDS + BUILD_END_BLEED_SECONDS) * 1000); // For this amount of time because that's the max that their playing can overlap, in theory
             break;
         case YT.PlayerState.PAUSED:
             // track["state"] = STATE_PAUSED;
-            // track["state"] = STATE_DONE;
+            // track["state"] = STATE_ENDED;
             // Any state update needed here?
             break;
         case YT.PlayerState.BUFFERING:
@@ -168,6 +162,7 @@ function onPlayerStateChange(event) {
         case YT.PlayerState.CUED:
             // Any state update needed here?
             // Play then pause the video real quick to make sure it's preloaded
+            track["player"].setVolume(0);
             track["player"].playVideo();
             track["player"].pauseVideo();
             break;
@@ -200,23 +195,41 @@ function updateCrossfade() {
     } else {
         return;
     }
-    // TODO - adjust volume
-    if (track_fading_out["player"].getCurrentTime() > track["build"]["buildEnd"]) {
-        // E.g. this would be an instant swap
-        // track_fading_out.setVolume(0);
-        // track_fading_in.setVolume(100);
-        // finishCrossfade();
+    // TODO - should we check for correction needed? (between build end and drop start times lining up) At least try console logging how far off we are from the desired timing
+    // Adjust volume
+    let current_time = track_fading_out["player"].getCurrentTime();
+    let build_end_time = track_fading_out["build"]["buildEnd"];
+    if (current_time > build_end_time) {
+        let lerp = (current_time - build_end_time) / CROSSFADE_DURATION_SECONDS;
+        if (lerp > 1) {
+            lerp = 1;
+        }
+        track_fading_in["player"].setVolume(lerp * VOLUME);
+        track_fading_out["player"].setVolume((1 - lerp) * VOLUME);
+        // Check if the crossfade is done
+        if (lerp == 1) {
+            track_fading_in["state"] = STATE_DROPPING;
+            track_fading_out["state"] = STATE_ENDED;
+            track_fading_out["player"].pauseVideo();
+            tryPivotTrackToBuild(track_fading_in);
+            // Now set up the next next track
+            setupNextTrack();
+        }
     }
-    // TODO - check for crossfade ending
 }
 
 // Called at frequent intervals to check if we're building and the buildEnd time has arrived
 function checkForTrackSwap() {
-    let track = getCurrentTrack();
-    if (!track || !track["song"] || !track["player"]) return;
-    if (track["state"] == STATE_BUILDING) {
-        if (track["player"].getCurrentTime() > track["build"]["buildEnd"] - DROP_EARLY_PHASEIN_SECONDS) {
-            primeCrossfade();
+    let current_track = getCurrentTrack();
+    if (!current_track || !current_track["song"] || !current_track["player"]) return;
+    if (current_track["state"] == STATE_BUILDING) {
+        let next_track = getNextTrack();
+        if (current_track["player"].getCurrentTime() > current_track["build"]["buildEnd"] - getNextCrossfadePrimingWindow(next_track)) {
+            // Prime the crossfade by starting the drop track early (at 0 volume) so that it can be faded in at the right time
+            current_track["state"] = STATE_PHASING_OUT_OF_BUILD;
+            next_track["state"] = STATE_PHASING_INTO_DROP;
+            next_track["player"].setVolume(0);
+            next_track["player"].playVideo();
         }
     }
 }
@@ -225,7 +238,7 @@ function checkForTrackSwap() {
 // Sets the specified track to a random build song
 function setTrackToRandomSong(track, build_or_drop) {
     if (available_songs[build_or_drop].length == 0) {
-        console.log("Ran out of available " + BoDToString(build_or_drop) + ". Regenerating lists of all available songs!");
+        console.log("Ran out of available " + BoDToString(build_or_drop) + ". Regenerating all lists of all available songs!");
         generateAvailableSongs();
     }
 
@@ -284,45 +297,33 @@ function popAvailableSong(list_index) {
     return song;
 }
 
-// Starts playing the drop track so that it can be faded in at the right time
-function primeCrossfade() {
-    // TODO (the logic below is just a copy-paste from the old swapCurrentTrackPlaying())
-    let current_track = getCurrentTrack();
-    let next_track = getNextTrack();
-    if (!current_track || !next_track) console.error("Invalid current_track or next_track in primeCrossfade()");
-    // TODO - update this whole function with new STATE_PHASING_IN stuff
-    next_track["state"] = getStateFromBoD(getTrackBoDRaw(next_track));
-    next_track["player"].playVideo();
-    if (current_track["state"] == STATE_BUILDING) {
-        current_track["state"] = STATE_PHASING_OUT_OF_BUILD;
-        // TODO - as part of, or instead of, this timeout we need to crossfade the songs
-        setTimeout(function() {
-            if (current_track["state"] == STATE_PHASING_OUT_OF_BUILD) {
-                current_track["player"].stopVideo();
-                current_track["state"] = STATE_ENDED;
-                // let next_next_BoD = getInverseBoD(getTrackBoDRaw(next_track));
-                // setTrackToRandomSong(current_track, next_next_BoD);
-            }
-        }, (DROP_EARLY_PHASEIN_SECONDS + BUILD_END_BLEED_SECONDS) * 1000);
-    } else {
-        current_track["state"] = STATE_ENDED;
-    }
-}
-
-// Called when the build has finished fading out and the drop has finished fading in.
-// Now the finished build can be swapped out for the next song.
-function finishCrossfade() {
-    // TODO
-}
-
 // After a drop or fullplay song is over, start the next totally new song
 function startNewSongAfterSongEnd() {
-    let current_track = getCurrentTrack();
+    let current_track = getCurrentTrack(); // The song that just ended should still have a "playing" state
     let next_track = getNextTrack();
     if (!current_track || !next_track) console.error("Invalid current_track or next_track in startNewSongAfterSongEnd()");
     current_track["state"] = STATE_ENDED;
-    next_track["state"] = getStateFromBoD(getTrackBoDRaw(next_track));
+    next_track["state"] = getPlayingStateRaw(next_track);
+    next_track["player"].setVolume(VOLUME);
     next_track["player"].playVideo();
+    // Now set up the next next track
+    setupNextTrack();
+}
+
+// Sets up the next song, given that a new song just got setup and playing, typically after a crossfade is done or a song just ended.
+function setupNextTrack() {
+    let current_track = getCurrentTrack();
+    let next_track = getNextTrack();
+    if (!current_track || !next_track) console.error("Invalid current_track or next_track in setupNextNextTrack()");
+    let next_BoD = null;
+    if (current_track["state"] == STATE_BUILDING) {
+        next_BoD = DROP;
+    } else if (SHUFFLE_DROP_ODDS > Math.random()) {
+        next_BoD = BUILD;
+    } else {
+        next_BoD = BoD_ANY;
+    }
+    setTrackToRandomSong(next_track, next_BoD);
 }
 
 // If the given track is currently a drop but also has a build later in the song, Pivot it to that build, without pausing it!
@@ -334,7 +335,8 @@ function tryPivotTrackToBuild(track) {
     let builds = track["song"]["builds"];
     for (let i=0; i < builds.length; i++) {
         let build = builds[i];
-        if (current_time < build["buildEnd"] && drop["dropStart"] < build["buildEnd"] + PIVOT_SAME_SONG_DROP_TO_BUILD_GAP_SECONDS) {
+        // Had to subtract the crossfade priming window to make sure that this doesn't trigger right as the crossfade ends
+        if (current_time < build["buildEnd"] - CROSSFADE_PRIMING_WINDOW_SECONDS && drop["dropStart"] < build["buildEnd"] + PIVOT_SAME_SONG_DROP_TO_BUILD_MINIMUM_GAP_SECONDS) {
             if (PIVOT_SAME_SONG_DROP_TO_BUILD_ODDS > Math.random()) {
                 track["drop"] = null;
                 track["build"] = build;
@@ -370,7 +372,6 @@ function getCurrentTrack() {
 
 // Returns the track that is NOT currently playing, or null if neither are playing.
 function getNextTrack() {
-    // TODO - should this check track states rather than assuming it is the inverse of the current track? (e.g. maybe it's supposed to be null sometimes). Consider use cases of this function and maybe they need different checks
     let next_track_index = getInverseTrackIndex(getCurrentTrackIndex());
     if (next_track_index == null) return null;
     return tracks[next_track_index];
@@ -392,10 +393,22 @@ function getInverseTrackIndex(track_index) {
     return 1 - track_index;
 }
 
+// Returns the state that the given track should be in, assuming that it's playing, based on if it has a build or drop (or neither) set
+function getPlayingStateRaw(track) {
+    return getStateFromBoD(getTrackBoDRaw(track));
+}
+
 function getTrackBoDRaw(track) {
     if (track["build"]) return BUILD;
     if (track["drop"]) return DROP;
     return BoD_ANY;
+}
+
+function getStateFromBoD(build_or_drop) {
+    if (build_or_drop == BUILD) return STATE_BUILDING;
+    if (build_or_drop == DROP) return STATE_DROPPING;
+    if (build_or_drop == BoD_ANY) return STATE_FULLPLAYING;
+    return null;
 }
 
 function getInverseBoD(build_or_drop) {
@@ -418,16 +431,14 @@ function getTrackFromPlayer(player) {
     return null;
 }
 
-function getStateFromBoD(build_or_drop) {
-    if (build_or_drop == BUILD) return STATE_BUILDING;
-    if (build_or_drop == DROP) return STATE_DROPPING;
-    if (build_or_drop == BoD_ANY) return STATE_FULLPLAYING;
-    return null;
-}
-
 // Returns true if the input indicates a state that is "playing" in any way
 function isStatePlaying(state) {
     return state == STATE_BUILDING || state == STATE_DROPPING || state == STATE_FULLPLAYING || state == STATE_PHASING_OUT_OF_BUILD || state == STATE_PHASING_INTO_DROP;
+}
+
+// Returns the amount of time that the given track should be playing silently in advance before the crossfade
+function getNextCrossfadePrimingWindow(track) {
+    return Math.min(CROSSFADE_PRIMING_WINDOW_SECONDS, track["drop"]["dropStart"]);
 }
 
 
@@ -504,9 +515,9 @@ function stateToString(state) {
         case STATE_PHASING_INTO_DROP:
             return "STATE_PHASING_INTO_DROP";
         case STATE_ENDED:
-            return "STATE_DONE";
+            return "STATE_ENDED";
         default:
-            return "(invalid or unknown state)";
+            return "(invalid or unknown state: " + state + ")";
     }
 }
 
@@ -525,7 +536,7 @@ function ytPlayerStateToString(playerState) {
         case 5:
             return "video cued";
         default:
-            return "(invalid or unknown ytPlayerState)";
+            return "(invalid or unknown ytPlayerState: " + playerState + ")";
     }
 }
 
@@ -538,6 +549,6 @@ function BoDToString(build_or_drop) {
         case BoD_ANY:
             return "BoD_ANY";
         default:
-            return "(invalid or unknown build_or_drop)";
+            return "(invalid or unknown build_or_drop: " + build_or_drop + ")";
     }
 }

@@ -14,11 +14,10 @@ const CROSSFADE_DURATION_SECONDS = 0.15; // Amount of time during which the buil
 
 // ----- INTERNAL SYSTEM TUNING -----
 const CROSSFADE_PRIMING_WINDOW_SECONDS = 4;
-
 const PIVOT_SAME_SONG_DROP_TO_BUILD_MINIMUM_GAP_SECONDS = 5;
-
 const SKIP_TO_CHANGEUP_GAP_SECONDS = 6;
 
+const CHECK_FOR_UPDATES_INTERVAL_MS = 20; // With limited testing, this seems to have a minimum of ~5ms
 
 
 // ----- Constants -----
@@ -74,7 +73,7 @@ generateAvailableSongs();
 let first_BoD = (SHUFFLE_DROP_ODDS > Math.random()) ? BUILD : BoD_ANY;
 setTrackToRandomSong(tracks[0], first_BoD);
 setTrackToRandomSong(tracks[1], getInverseBoD(first_BoD));
-setInterval(checkForUpdatesOnInterval, 50);
+setInterval(checkForUpdatesOnInterval, CHECK_FOR_UPDATES_INTERVAL_MS);
 
 
 // ----- Functions -----
@@ -172,7 +171,6 @@ function onPlayerStateChange(event) {
             break;
     }
 }
-
 
 // Called at frequent intervals to check for updates such as crossfading and track swap
 function checkForUpdatesOnInterval() {

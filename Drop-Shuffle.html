@@ -3,8 +3,11 @@ layout: default
 title: Drop Shuffle
 ---
 
-<!-- https://developers.google.com/youtube/iframe_api_reference -->
+<!-- Stylesheet dependencies -->
+<link rel="stylesheet" href="/styles/drop-shuffle.css">
 
+
+<!-- Content -->
 <div class="container-fluid mt-4 mb-4">
 	<div class="row mb-2">
 		<div class="col-sm-12">
@@ -12,7 +15,13 @@ title: Drop Shuffle
 		</div>
 	</div>
 
-	<!-- TODO - button that skips to right before drop -->
+	<!-- Volume Slider -->
+	<h4>Volume: <span id="volumeDisplay">50%</span></h4>
+	<div class="slidecontainer">
+		<input id="volumeSlider" type="range" min="0" max="100" value="50" class="slider">
+	</div>
+
+	<!-- Button that skips to right before drop -->
 	<div class="row mt-2">
 		<div class="mb-1">
 			<div class="text-center">
@@ -21,6 +30,7 @@ title: Drop Shuffle
 		</div>
 	</div>
 
+	<!-- https://developers.google.com/youtube/iframe_api_reference -->
 	<div class="row mt-2">
 		<div class="col-xl-3 col-md-6 mb-2">
 			<!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
@@ -37,6 +47,7 @@ title: Drop Shuffle
 	</div>
 
 </div>
+
 
 <!-- Page-specific script dependencies -->
 <script type="text/javascript" src="/scripts/drop_shuffle_data.js"></script>

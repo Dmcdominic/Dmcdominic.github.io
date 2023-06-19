@@ -4,7 +4,7 @@
 
 
 // ----- USER FACING SETTINGS -----
-const VOLUME = 30; // Out of 100
+var volume = 50; // Out of 100
 
 const SHUFFLE_DROP_ODDS = 1.0; // 0.8
 const PIVOT_SAME_SONG_DROP_TO_BUILD_ODDS = 1; // 0.75
@@ -58,6 +58,15 @@ var tracks = [
         "player": null
     }
 ];
+
+
+// ----- UI Elements -----
+var UI_Volume_Slider = document.getElementById("volumeSlider");
+var UI_Volume_Display = document.getElementById("volumeDisplay");
+UI_Volume_Slider.value = volume;
+UI_Volume_Slider.oninput = function() {
+    updateVolume(this.value);
+}
 
 
 // ----- Initialization -----
@@ -119,7 +128,7 @@ function loadTrackVideo(track) {
 // The API will call this function when the video player is ready (meaning only the first video).
 function onPlayerReady(track) {
     return event => {
-        event.target.setVolume(VOLUME);
+        event.target.setVolume(volume);
         let build_or_drop = getTrackBoDRaw(track);
         if (build_or_drop == BUILD || build_or_drop == BoD_ANY) {
             event.target.seekTo(0, true);
@@ -196,22 +205,28 @@ function updateCrossfade() {
     // Adjust volume
     let current_time = track_fading_out["player"].getCurrentTime();
     let build_end_time = track_fading_out["build"]["buildEnd"];
-    if (current_time > build_end_time) {
-        let lerp = (current_time - build_end_time) / CROSSFADE_DURATION_SECONDS;
-        if (lerp > 1) {
-            lerp = 1;
-        }
-        track_fading_in["player"].setVolume(lerp * VOLUME);
-        track_fading_out["player"].setVolume((1 - lerp) * VOLUME);
-        // Check if the crossfade is done
-        if (lerp == 1) {
-            track_fading_in["state"] = STATE_DROPPING;
-            track_fading_out["state"] = STATE_ENDED;
-            track_fading_out["player"].pauseVideo();
-            tryPivotTrackToBuild(track_fading_in);
-            // Now set up the next next track
-            setupNextTrack();
-        }
+    let lerp = (current_time - build_end_time) / CROSSFADE_DURATION_SECONDS;
+    lerp = clamp(lerp, 0, 1);
+    track_fading_in["player"].setVolume(lerp * volume);
+    track_fading_out["player"].setVolume((1 - lerp) * volume);
+    // Check if the crossfade is done
+    if (lerp == 1) {
+        track_fading_in["state"] = STATE_DROPPING;
+        track_fading_out["state"] = STATE_ENDED;
+        track_fading_out["player"].pauseVideo();
+        tryPivotTrackToBuild(track_fading_in);
+        // Now set up the next next track
+        setupNextTrack();
+    }
+}
+
+// Called by the volume slider to update the volume variable and the current track's volume
+function updateVolume(new_volume) {
+    volume = new_volume;
+    UI_Volume_Display.innerHTML = new_volume + "%";
+    let current_track = getCurrentTrack();
+    if (current_track != null) {
+        current_track["player"].setVolume(volume);
     }
 }
 
@@ -301,7 +316,7 @@ function startNewSongAfterSongEnd() {
     if (!current_track || !next_track) console.error("Invalid current_track or next_track in startNewSongAfterSongEnd()");
     current_track["state"] = STATE_ENDED;
     next_track["state"] = getPlayingStateRaw(next_track);
-    next_track["player"].setVolume(VOLUME);
+    next_track["player"].setVolume(volume);
     next_track["player"].playVideo();
     // Now set up the next next track
     setupNextTrack();
@@ -456,6 +471,12 @@ function shuffleArray(array) {
       [array[currentIndex], array[randomIndex]] = [
         array[randomIndex], array[currentIndex]];
     }
+}
+
+
+// ------------ OTHER UTILITY ------------
+function clamp(x, min, max) {
+    return Math.max(min, Math.min(x, max));
 }
 
 

@@ -17,7 +17,7 @@ const CROSSFADE_PRIMING_WINDOW_SECONDS = 4;
 const PIVOT_SAME_SONG_DROP_TO_BUILD_MINIMUM_GAP_SECONDS = 5;
 const SKIP_TO_CHANGEUP_GAP_SECONDS = 6;
 
-const CHECK_FOR_UPDATES_INTERVAL_MS = 20; // With limited testing, this seems to have a minimum of ~5ms
+const CHECK_FOR_UPDATES_INTERVAL_MS = 10; // With limited testing, this seems to have a minimum of ~5ms
 
 
 // ----- Constants -----
@@ -68,7 +68,6 @@ tag.src = "https://www.youtube.com/iframe_api";
 var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-songs.shift(); // Drop the song example template
 generateAvailableSongs();
 let first_BoD = (SHUFFLE_DROP_ODDS > Math.random()) ? BUILD : BoD_ANY;
 setTrackToRandomSong(tracks[0], first_BoD);

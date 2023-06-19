@@ -1,27 +1,10 @@
 var songs = [
     {
-        "name": "",
-        "artist": "",
-        "videoId": "",
-        "builds": [
-            {
-                "buildEnd": 12.30,
-                "silentPause": false
-            }
-        ],
-        "drops": [
-            {
-                "dropStart": 45.60
-            }
-        ]
-    },
-    {
         "name": "AHHHHH",
         "videoId": "yBLdQ1a4-JI",
         "builds": [
             {
-                "buildEnd": 12.9,
-                "silentPause": false
+                "buildEnd": 12.9
             }
         ],
         "drops": []
@@ -42,12 +25,10 @@ var songs = [
         "videoId": "q-7w-iRQpTQ",
         "builds": [
             {
-                "buildEnd": 25.20,
-                "silentPause": false
+                "buildEnd": 25.20
             },
             {
-                "buildEnd": 115.0,
-                "silentPause": false
+                "buildEnd": 115.0
             }
         ],
         "drops": [
@@ -65,12 +46,10 @@ var songs = [
         "videoId": "dmXgDVEhC1U",
         "builds": [
             {
-                "buildEnd": 49.25,
-                "silentPause": false
+                "buildEnd": 49.25
             },
             {
-                "buildEnd": 135.3,
-                "silentPause": false
+                "buildEnd": 135.3
             }
         ],
         "drops": [
@@ -88,12 +67,10 @@ var songs = [
         "videoId": "WsPg4ZRA_Us",
         "builds": [
             {
-                "buildEnd": 53.0,
-                "silentPause": false
+                "buildEnd": 53.0
             },
             {
-                "buildEnd": 132.40,
-                "silentPause": false
+                "buildEnd": 132.40
             }
         ],
         "drops": [
@@ -104,5 +81,30 @@ var songs = [
                 "dropStart": 132.40
             }
         ]
+    },
+    {
+        "name": "Internet Friends",
+        "artist": "Knife Party",
+        "videoId": "luJJBeCFeM0",
+        "builds": [
+            {
+                "buildEnd": 223.0
+            }
+        ],
+        "drops": [
+            {
+                "dropStart": 104.0,
+                "silentStart": true
+            },
+            {
+                "dropStart": 223.0
+            }
+        ]
     }
+]
+
+
+var sources = [
+    "https://www.youtube.com/watch?v=SBI4H0Allz8",
+    "https://www.youtube.com/watch?v=JQ1txLdu6qg"
 ]

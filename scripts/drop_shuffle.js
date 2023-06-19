@@ -4,7 +4,7 @@
 
 
 // ----- USER FACING SETTINGS -----
-var volume = 50; // Out of 100
+var volume = 30; // Out of 100
 
 const SHUFFLE_DROP_ODDS = 1.0; // 0.8
 const PIVOT_SAME_SONG_DROP_TO_BUILD_ODDS = 1; // 0.75
@@ -39,7 +39,8 @@ const STATE_ENDED = 10;
 
 
 // ----- Variables -----
-// songs are defined in drop_shuffle_data.js
+// default songs list is defined in drop_shuffle_data.js
+var songs = songs_obj["songsList"];
 var available_songs = [[], [], []]; // available_songs[0] == Builds, [1] == Drops, [2] == All songs
 
 var tracks = [
@@ -61,9 +62,13 @@ var tracks = [
 
 
 // ----- UI Elements -----
+var UI_Songlist_Import = document.getElementById("songListImport");
+UI_Songlist_Import.addEventListener("change", importSongList);
+
 var UI_Volume_Slider = document.getElementById("volumeSlider");
 var UI_Volume_Display = document.getElementById("volumeDisplay");
 UI_Volume_Slider.value = volume;
+UI_Volume_Display.innerHTML = volume + "%";
 UI_Volume_Slider.oninput = function() {
     updateVolume(this.value);
 }
@@ -77,10 +82,7 @@ tag.src = "https://www.youtube.com/iframe_api";
 var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-generateAvailableSongs();
-let first_BoD = (SHUFFLE_DROP_ODDS > Math.random()) ? BUILD : BoD_ANY;
-setTrackToRandomSong(tracks[0], first_BoD);
-setTrackToRandomSong(tracks[1], getInverseBoD(first_BoD));
+restartSongs();
 setInterval(checkForUpdatesOnInterval, CHECK_FOR_UPDATES_INTERVAL_MS);
 
 
@@ -172,12 +174,21 @@ function onPlayerStateChange(event) {
             track["player"].setVolume(0);
             track["player"].playVideo();
             track["player"].pauseVideo();
+            track["player"].setVolume(volume);
             break;
         default:
             console.error("Unknown event.data passed into onPlayerStateChange(event). Event dump:");
             console.error(event);
             break;
     }
+}
+
+// Resets the available_songs lists 
+function restartSongs() {
+    generateAvailableSongs();
+    let first_BoD = (SHUFFLE_DROP_ODDS > Math.random()) ? BUILD : BoD_ANY;
+    setTrackToRandomSong(tracks[0], first_BoD);
+    setTrackToRandomSong(tracks[1], getInverseBoD(first_BoD));
 }
 
 // Called at frequent intervals to check for updates such as crossfading and track swap
@@ -451,6 +462,35 @@ function isStatePlaying(state) {
 // Returns the amount of time that the given track should be playing silently in advance before the crossfade
 function getNextCrossfadePrimingWindow(track) {
     return Math.min(CROSSFADE_PRIMING_WINDOW_SECONDS, track["drop"]["dropStart"]);
+}
+
+
+// ------------ SONG LIST IMPORT/EXPORT ------------
+// Called when the user selects a file to upload their custom song list
+function importSongList() {
+    if (UI_Songlist_Import.files.length > 0) {
+        let file_reader = new FileReader();
+        file_reader.addEventListener("load", () => {
+            let imported_songs_obj = JSON.parse(file_reader.result);
+            songs = imported_songs_obj["songsList"];
+            console.log("New song list:");
+            console.log(songs);
+        });
+        file_reader.readAsText(UI_Songlist_Import.files[0]);
+    }
+}
+
+// Called when the user clicks the button to download the current song list
+function downloadSongList() {
+    let new_songs_obj = { "songsList": songs };
+    let element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(new_songs_obj)));
+    element.setAttribute('download', "DropShuffleSongListExport.json");
+  
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
 }
 
 

@@ -9,7 +9,8 @@ var volume = 30; // Out of 100
 const SHUFFLE_DROP_ODDS = 1.0; // 0.8
 const PIVOT_SAME_SONG_DROP_TO_BUILD_ODDS = 1; // 0.75
 
-const CROSSFADE_DURATION_SECONDS = 0.15; // Amount of time during which the build fades out and the drop fades in
+const CROSSFADE_BUILD_DURATION_SECONDS = 0.2; // Amount of time during which the build fades out
+const CROSSFADE_DROP_DURATION_SECONDS = 0.02; // Amount of time during which the drop fades in
 
 
 // ----- INTERNAL SYSTEM TUNING -----
@@ -214,14 +215,18 @@ function updateCrossfade() {
     }
     // TODO - should we check for correction needed? (between build end and drop start times lining up) At least try console logging how far off we are from the desired timing
     // Adjust volume
-    let current_time = track_fading_out["player"].getCurrentTime();
+    let current_build_time = track_fading_out["player"].getCurrentTime();
+    let current_drop_time = track_fading_in["player"].getCurrentTime();
     let build_end_time = track_fading_out["build"]["buildEnd"];
-    let lerp = (current_time - build_end_time) / CROSSFADE_DURATION_SECONDS;
-    lerp = clamp(lerp, 0, 1);
-    track_fading_in["player"].setVolume(lerp * volume);
-    track_fading_out["player"].setVolume((1 - lerp) * volume);
+    let drop_end_time = track_fading_in["drop"]["dropStart"];
+    let lerp_build = 1 - ((current_build_time - build_end_time) / CROSSFADE_BUILD_DURATION_SECONDS);
+    let lerp_drop = (current_drop_time - drop_end_time) / CROSSFADE_DROP_DURATION_SECONDS;
+    lerp_build = clamp(lerp_build, 0, 1);
+    lerp_drop = clamp(lerp_drop, 0, 1);
+    track_fading_out["player"].setVolume(lerp_build * volume);
+    track_fading_in["player"].setVolume(lerp_drop * volume);
     // Check if the crossfade is done
-    if (lerp == 1) {
+    if (lerp_build <= 0 && lerp_drop >= 1) {
         track_fading_in["state"] = STATE_DROPPING;
         track_fading_out["state"] = STATE_ENDED;
         track_fading_out["player"].pauseVideo();

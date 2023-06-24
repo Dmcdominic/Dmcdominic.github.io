@@ -102,7 +102,7 @@ var songs_obj = {
                     "silentStart": true
                 },
                 {
-                    "dropStart": 110.0,
+                    "dropStart": 110.5,
                     "silentStart": false
                 },
                 {

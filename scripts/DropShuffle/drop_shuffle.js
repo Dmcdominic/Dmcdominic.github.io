@@ -14,9 +14,12 @@ const CROSSFADE_DROP_DURATION_SECONDS = 0.02; // Amount of time during which the
 
 
 // ----- INTERNAL SYSTEM TUNING -----
-const CROSSFADE_PRIMING_WINDOW_SECONDS = 4;
+const CROSSFADE_PRIMING_WINDOW_SECONDS = 3;
 const PIVOT_SAME_SONG_DROP_TO_BUILD_MINIMUM_GAP_SECONDS = 5;
-const SKIP_TO_CHANGEUP_GAP_SECONDS = 6;
+
+const SKIP_TO_CHANGEUP_GAP_SECONDS = 4; // NOTE - this should probably stay above CROSSFADE_PRIMING_WINDOW_SECONDS
+const EDITOR_TEST_TIME_WARMUP_SECONDS = 3; // For an editor test time, this is how far before the build/drop it will start
+const EDITOR_TEST_HANGTIME_SECONDS = 1.5; // While doing an editor test time, this is the duration which it will pause between build and drop
 
 const CHECK_FOR_UPDATES_INTERVAL_MS = 10; // With limited testing, this seems to have a minimum of ~5ms
 
@@ -61,11 +64,20 @@ var tracks = [
     }
 ];
 
+var editor_track = {
+    "song": null,
+    "build": null,
+    "drop": null,
+    "state": null,
+    "player": null
+}
+var editor_time = 0;
+var editor_priming_testing_time = false;
+var editor_testing_time = false;
+var editor_resumeTestTime = false;
+
 
 // ----- UI Elements -----
-var UI_Songlist_Import = document.getElementById("songListImport");
-UI_Songlist_Import.addEventListener("change", importSongList);
-
 var UI_Volume_Slider = document.getElementById("volumeSlider");
 var UI_Volume_Display = document.getElementById("volumeDisplay");
 UI_Volume_Slider.value = volume;
@@ -114,6 +126,19 @@ function onYouTubeIframeAPIReady() {
         events: {
             'onReady': onPlayerReady(tracks[1]),
             'onStateChange': onPlayerStateChange
+        }
+    });
+    
+    editor_track["player"] = new YT.Player('editor_player', {
+        height: '390',
+        width: '640',
+        videoId: null,
+        playerVars: {
+            'playsinline': 1
+        },
+        events: {
+            // 'onReady': onPlayerReady(tracks[1]),
+            'onStateChange': onEditorPlayerStateChange
         }
     });
 }
@@ -196,6 +221,9 @@ function restartSongs() {
 function checkForUpdatesOnInterval() {
     checkForTrackSwap();
     updateCrossfade();
+    if (editor_testing_time) {
+        updateEditorTestingTime();
+    }
 }
 
 // Called at frequent intervals to check if we're in the middle of phasing between 2 songs and need to update their volumes
@@ -470,7 +498,149 @@ function getNextCrossfadePrimingWindow(track) {
 }
 
 
+// ------------ EDITOR -------------
+function onEditorPlayerStateChange(event) {
+    switch (event.data) {
+        case YT.PlayerState.UNSTARTED:
+            break;
+        case YT.PlayerState.ENDED:
+            break;
+        case YT.PlayerState.PLAYING:
+            if (editor_priming_testing_time) {
+                editor_priming_testing_time = false;
+                editor_testing_time = true;
+            }
+            break;
+        case YT.PlayerState.PAUSED:
+            break;
+        case YT.PlayerState.BUFFERING:
+            break;
+        case YT.PlayerState.CUED:
+            break;
+        default:
+            console.error("Unknown event.data passed into onEditorPlayerStateChange(event). Event dump:");
+            console.error(event);
+            break;
+    }
+}
+
+// Add New Song
+var editor_videoId = document.getElementById("editor_videoId");
+var editor_songName = document.getElementById("editor_songName");
+var editor_artist = document.getElementById("editor_artist");
+var editor_new_song_form = document.getElementById("editor_new_song_form");
+
+function editor_SubmitNewSong(event){
+    //Preventing page refresh - https://www.tutorialspoint.com/how-to-stop-refreshing-the-page-on-submit-in-javascript
+    event.preventDefault();
+    let new_song = {
+        "name": editor_songName.value,
+        "artist": editor_artist.value,
+        "videoId": editor_videoId.value,
+        "builds": [],
+        "drops": []
+    }
+    songs.push(new_song);
+    editor_track["song"] = new_song;
+    editor_track["player"].loadVideoById(editor_track["song"]["videoId"], 0);
+    // editor_track["player"].setPlaybackRate(0.5);
+}
+editor_new_song_form.addEventListener('submit', editor_SubmitNewSong);
+
+// Sync & display time
+var editor_savedTime = document.getElementById("editor_savedTime");
+var editor_syncTimeButton = document.getElementById("editor_syncTime");
+function editor_SyncTime(event) {
+    editor_updateSavedTime(editor_track["player"].getCurrentTime());
+}
+editor_syncTimeButton.addEventListener("click", editor_SyncTime);
+
+// Nudge time
+document.getElementById("editor_timeDown").addEventListener("click", () => { editor_updateSavedTime(editor_time - 0.5); });
+document.getElementById("editor_timeDownNudge").addEventListener("click", () => { editor_updateSavedTime(editor_time - 0.05); });
+document.getElementById("editor_timeUpNudge").addEventListener("click", () => { editor_updateSavedTime(editor_time + 0.05); });
+document.getElementById("editor_timeUp").addEventListener("click", () => { editor_updateSavedTime(editor_time + 0.5); });
+
+function editor_updateSavedTime(new_time) {
+    editor_time = new_time;
+    let pct_minutes = Math.floor(editor_time / 60);
+    let pct_seconds = Math.floor(editor_time % 60);
+    let pct_str = ((pct_minutes < 10) ? "0" : "") + pct_minutes + ":" + ((pct_seconds < 10) ? "0" : "") + pct_seconds;
+    editor_savedTime.innerHTML = "Time: &nbsp; " + pct_str + " &nbsp; (" + editor_time + ")";
+}
+
+// Add as build or drop
+var editor_addAsBuildButton = document.getElementById("editor_addAsBuild");
+var editor_addAsDropButton = document.getElementById("editor_addAsDrop");
+function editor_addAsBuild(event) {
+    let song = editor_track["song"];
+    let time = editor_track["player"].getCurrentTime();
+    let rounded_time = Math.round(time * 1000) / 1000;
+    let new_build = {
+        "buildEnd": rounded_time
+    }
+    song["builds"].push(new_build);
+    console.log("Added new build: " + rounded_time);
+    console.log(song);
+}
+function editor_addAsDrop(event) {
+    let song = editor_track["song"];
+    let time = editor_track["player"].getCurrentTime();
+    let rounded_time = Math.round(time * 1000) / 1000;
+    let new_drop = {
+        "dropStart": rounded_time
+    }
+    song["drops"].push(new_drop);
+    console.log("Added new drop: " + rounded_time);
+    console.log(song);
+}
+editor_addAsBuildButton.addEventListener("click", editor_addAsBuild);
+editor_addAsDropButton.addEventListener("click", editor_addAsDrop);
+
+// Test time
+var editor_testTimeButton = document.getElementById("editor_testTime");
+function editor_testTime(event) {
+    editor_priming_testing_time = true;
+    editor_testing_time = false;
+    editor_track["state"] = STATE_BUILDING;
+    editor_track["player"].seekTo(editor_time - EDITOR_TEST_TIME_WARMUP_SECONDS, true);
+    editor_track["player"].playVideo();
+}
+editor_testTimeButton.addEventListener("click", editor_testTime);
+
+// While editor_testing_time is true, this is called on every update interval to see if we should pause/unpause
+function updateEditorTestingTime() {
+    // TODO - Add "test build" and "test drop" buttons that uses crossfade settings
+    let current_player_time = editor_track["player"].getCurrentTime();
+    // let lerp_build = 1 - ((current_player_time - editor_time) / CROSSFADE_BUILD_DURATION_SECONDS);
+    // let lerp_drop = (current_player_time - editor_time) / CROSSFADE_DROP_DURATION_SECONDS;
+    // lerp_build = clamp(lerp_build, 0, 1);
+    // lerp_drop = clamp(lerp_drop, 0, 1);
+    if (editor_track["state"] == STATE_BUILDING) {
+        // editor_track["player"].setVolume(lerp_build * volume);
+        if (current_player_time >= editor_time) {
+            editor_resumeTestTime = false;
+            setTimeout(() => { editor_resumeTestTime = true; }, EDITOR_TEST_HANGTIME_SECONDS * 1000);
+            editor_track["player"].pauseVideo();
+            editor_track["state"] = STATE_PAUSED;
+        }
+    } else if (editor_track["state"] == STATE_PAUSED) {
+        if (editor_resumeTestTime) {
+            editor_track["player"].playVideo();
+            editor_resumeTestTime = false;
+            editor_testing_time = false;
+            editor_track["state"] = STATE_DROPPING;
+        }
+    } else if (editor_track["state"] == STATE_DROPPING) {
+        // editor_track["player"].setVolume(lerp_drop * volume);
+    }
+}
+
+
 // ------------ SONG LIST IMPORT/EXPORT ------------
+var UI_Songlist_Import = document.getElementById("songListImport");
+UI_Songlist_Import.addEventListener("change", importSongList);
+
 // Called when the user selects a file to upload their custom song list
 function importSongList() {
     if (UI_Songlist_Import.files.length > 0) {

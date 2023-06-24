@@ -9,12 +9,14 @@ title: Drop Shuffle
 
 <!-- Content -->
 <div class="container-fluid mt-4 mb-4">
+	<!-- Title -->
 	<div class="row mb-2">
 		<div class="col-sm-12">
 			<h1 class="display-3 text-center">Drop Shuffle (beta)</h1>
 		</div>
 	</div>
 
+	<!-- Main Listening -->
 	<div class="row mb-2">
 		<!-- Players -->
 		<div class="col-sm-6">
@@ -26,8 +28,6 @@ title: Drop Shuffle
 						<div id="player_0"></div>
 					</div>
 				</div>
-
-
 				<div class="row mt-2">
 					<div class="col-xl-3 col-md-6 mb-2">
 						<!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
@@ -40,14 +40,6 @@ title: Drop Shuffle
 		<!-- Settings -->
 		<div class="col-sm-6">
 			<h2><u>Settings</u></h2>
-			<!-- Song JSON import/export -->
-			<h4>Custom song list:</h4>
-			<input id="songListImport" type="file">
-			<button onclick="downloadSongList()">Download song list</button>
-			<!-- <form onsubmit="downloadSongList()">
-				<input type="submit" value="Download song list">
-			</form> -->
-
 			<!-- Volume Slider -->
 			<h4 class="mt-4">Volume: <span id="volumeDisplay">50%</span></h4>
 			<div class="slidecontainer">
@@ -71,6 +63,64 @@ title: Drop Shuffle
 					</div>
 				</div>
 			</div>
+		</div>
+	</div>
+
+	
+	<!-- Editor -->
+	<div class="row mb-2">
+		<!-- Player -->
+		<div class="col-sm-6">
+			<div class="container-fluid mt-4 mb-4">
+				<!-- https://developers.google.com/youtube/iframe_api_reference -->
+				<div class="row mt-2">
+					<div class="col-xl-3 col-md-6 mb-2">
+						<!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
+						<div id="editor_player"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Editor Interface -->
+		<div class="col-sm-6 mb-2">
+			<h2><u>Editor</u></h2>
+			<!-- Song JSON import/export -->
+			<h4>Custom song list:</h4>
+			<input id="songListImport" type="file">
+			<button onclick="downloadSongList()">Download song list</button>
+			<!-- <form onsubmit="downloadSongList()">
+				<input type="submit" value="Download song list">
+			</form> -->
+		
+			<!-- Song Editor -->
+			<h4>Song Editor:</h4>
+			
+			<form id="editor_new_song_form">
+				<label for="editor_videoId">Video ID:</label>
+				<input type="text" id="editor_videoId" name="editor_videoId"><br>
+				<label for="editor_songName">Song Name:</label>
+				<input type="text" id="editor_songName" name="editor_songName"><br>
+				<label for="editor_artist">Artist:</label>
+				<input type="text" id="editor_artist" name="editor_artist"><br>
+				<input type="submit" value="Add Song">
+			</form>
+			<br>
+
+			<!-- <form id="editor_build_drop_form">
+				<input type="checkbox" class="abstract_checkbox" data-toggle="toggle" data-on="Build" data-off="Drop" data-onstyle="success" data-offstyle="warning"><br>
+			</form> -->
+			
+			<!-- Button that updates the build/drop time to save to whatever time the video is at -->
+			<button id="editor_syncTime">Sync Time</button>
+			<button id="editor_timeDown">-0.5</button>
+			<button id="editor_timeDownNudge">-0.05</button>
+			<button id="editor_timeUpNudge">+0.05</button>
+			<button id="editor_timeUp">+0.5</button>
+			<p id="editor_savedTime">Time:</p>
+			<button id="editor_testTime">Test Time</button>
+			<button id="editor_addAsBuild">Add as Build</button>
+			<button id="editor_addAsDrop">Add as Drop</button>
 		</div>
 	</div>
 </div>

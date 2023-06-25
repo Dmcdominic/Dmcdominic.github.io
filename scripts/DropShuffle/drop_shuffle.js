@@ -6,13 +6,15 @@
 // ----- USER FACING SETTINGS -----
 var volume = 30; // Out of 100
 
-var shuffle_drop_odds = 0.8; // 0 to 1
+var shuffle_drop_odds = 0.9; // 0 to 1
 var pivot_same_song_drop_to_build_odds = 0.9; // 0 to 1
 
 
 // ----- INTERNAL SYSTEM TUNING -----
-const CROSSFADE_BUILD_DURATION_SECONDS = 0.1; // Amount of time during which the build fades out
+const CROSSFADE_BUILD_DURATION_SECONDS = 0.25; // Amount of time during which the build fades out. Consider in tandem with CROSSFADE_BUILD_FADE_LEAD_TIME
 const CROSSFADE_DROP_DURATION_SECONDS = 0.02; // Amount of time during which the drop fades in
+
+const CROSSFADE_BUILD_FADE_LEAD_TIME = 0.2; // How far in advance of the actual build ending should it start fading out. Should always be less than CROSSFADE_BUILD_DURATION_SECONDS
 const CROSSFADE_DROP_LEAD_TIME = 0.25; // Amount of time before the build ends that the drop will be scheduled to start
 
 const CROSSFADE_PRIMING_WINDOW_SECONDS = 3;
@@ -267,7 +269,7 @@ function updateCrossfade() {
     // Adjust volume
     let current_build_time = track_fading_out["player"].getCurrentTime();
     let current_drop_time = track_fading_in["player"].getCurrentTime();
-    let build_end_time = track_fading_out["build"]["buildEnd"];
+    let build_end_time = track_fading_out["build"]["buildEnd"] - CROSSFADE_BUILD_FADE_LEAD_TIME;
     let drop_end_time = track_fading_in["drop"]["dropStart"];
     let lerp_build = 1 - ((current_build_time - build_end_time) / CROSSFADE_BUILD_DURATION_SECONDS);
     let lerp_drop = (current_drop_time - drop_end_time) / CROSSFADE_DROP_DURATION_SECONDS;
@@ -712,15 +714,28 @@ UI_Songlist_Import.addEventListener("change", importSongList);
 
 // Called when the user selects a file to upload their custom song list
 function importSongList() {
-    if (UI_Songlist_Import.files.length > 0) {
-        let file_reader = new FileReader();
-        file_reader.addEventListener("load", () => {
-            let imported_songs_obj = JSON.parse(file_reader.result);
-            songs = imported_songs_obj["songsList"];
-            console.log("New song list:");
-            console.log(songs);
-        });
-        file_reader.readAsText(UI_Songlist_Import.files[0]);
+    if (songs.length == 0 || confirm("Importing a song list will ADD those songs to the current list. If you'd like to load ONLY the new songs, please click the red 'Reset to empty song list' button first.")) {
+        if (UI_Songlist_Import.files.length > 0) {
+            let file_reader = new FileReader();
+            file_reader.addEventListener("load", () => {
+                let imported_songs_obj = JSON.parse(file_reader.result);
+                let imported_songs = imported_songs_obj["songsList"];
+                console.log("Imported songs:");
+                console.log(imported_songs);
+                if (songs.length == 0) {
+                    songs = imported_songs;
+                } else {
+                    imported_songs.forEach(new_song => {
+                        songs.push(new_song);
+                    });
+                }
+                console.log("New song list:");
+                console.log(songs);
+            });
+            file_reader.readAsText(UI_Songlist_Import.files[0]);
+        }
+    } else {
+        UI_Songlist_Import.value = null;
     }
 }
 

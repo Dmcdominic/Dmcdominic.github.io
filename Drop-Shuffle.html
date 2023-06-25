@@ -41,7 +41,7 @@ title: Drop Shuffle
 		<div class="col-sm-6">
 			<h2><u>Settings</u></h2>
 			<!-- Volume Slider -->
-			<h4 class="mt-4">Volume: <span id="volumeDisplay">50%</span></h4>
+			<h5 class="mt-3">Volume: <span id="volumeDisplay">?%</span></h5>
 			<div class="slidecontainer">
 				<input id="volumeSlider" type="range" min="0" max="100" value="50" class="slider">
 			</div>
@@ -62,6 +62,16 @@ title: Drop Shuffle
 						<button type="button" onclick="skipToChangeup()" class="btn btn-lg btn-info mb-1 ml-1">Skip to Changeup</button>
 					</div>
 				</div>
+			</div>
+
+			<!-- Odds Sliders -->
+			<h5 class="mt-2">Shuffle Drop Odds: <span id="settings_shuffleDropOddsDisplay">?%</span></h5>
+			<div class="slidecontainer">
+				<input id="settings_shuffleDropOdds" type="range" min="0" max="100" value="50" class="slider">
+			</div>
+			<h5 class="mt-2">Pivot Same Song Drop-to-Build Odds: <span id="settings_pivotSameSongOddsDisplay">?%</span></h5>
+			<div class="slidecontainer">
+				<input id="settings_pivotSameSongOdds" type="range" min="0" max="100" value="50" class="slider">
 			</div>
 		</div>
 	</div>
@@ -88,13 +98,11 @@ title: Drop Shuffle
 			<!-- Song JSON import/export -->
 			<h4>Custom song list:</h4>
 			<input id="songListImport" type="file">
-			<button onclick="downloadSongList()">Download song list</button>
-			<!-- <form onsubmit="downloadSongList()">
-				<input type="submit" value="Download song list">
-			</form> -->
+			<button onclick="exportSongList()">Export song list</button><br>
+			<button onclick="resetToEmptySongList()" style="background-color: red;">Reset to empty song list</button>
 		
 			<!-- Song Editor -->
-			<h4>Song Editor:</h4>
+			<h4 class="mt-1">Song Editor:</h4>
 			
 			<form id="editor_new_song_form">
 				<label for="editor_videoId">Video ID:</label>
@@ -117,10 +125,12 @@ title: Drop Shuffle
 			<button id="editor_timeDownNudge">-0.05</button>
 			<button id="editor_timeUpNudge">+0.05</button>
 			<button id="editor_timeUp">+0.5</button>
-			<p id="editor_savedTime">Time:</p>
-			<button id="editor_testTime">Test Time</button>
-			<button id="editor_addAsBuild">Add as Build</button>
-			<button id="editor_addAsDrop">Add as Drop</button>
+			<p id="editor_savedTimeDisplay">Saved Time: &nbsp; 00:00</p>
+			<button id="editor_testTimeWithPause">Test with Pause</button><br>
+			<button id="editor_testAsBuild">Test as Build</button>
+			<button id="editor_testAsDrop">Test as Drop</button><br>
+			<button id="editor_addAsBuild" style="background-color: green;">Add as Build</button>
+			<button id="editor_addAsDrop" style="background-color: green;">Add as Drop</button>
 		</div>
 	</div>
 </div>

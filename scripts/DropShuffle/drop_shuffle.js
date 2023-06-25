@@ -6,14 +6,14 @@
 // ----- USER FACING SETTINGS -----
 var volume = 30; // Out of 100
 
-const SHUFFLE_DROP_ODDS = 1.0; // 0.8
-const PIVOT_SAME_SONG_DROP_TO_BUILD_ODDS = 1; // 0.75
-
-const CROSSFADE_BUILD_DURATION_SECONDS = 0.2; // Amount of time during which the build fades out
-const CROSSFADE_DROP_DURATION_SECONDS = 0.02; // Amount of time during which the drop fades in
+var shuffle_drop_odds = 0.8; // 0 to 1
+var pivot_same_song_drop_to_build_odds = 0.9; // 0 to 1
 
 
 // ----- INTERNAL SYSTEM TUNING -----
+const CROSSFADE_BUILD_DURATION_SECONDS = 0.2; // Amount of time during which the build fades out
+const CROSSFADE_DROP_DURATION_SECONDS = 0.02; // Amount of time during which the drop fades in
+
 const CROSSFADE_PRIMING_WINDOW_SECONDS = 3;
 const PIVOT_SAME_SONG_DROP_TO_BUILD_MINIMUM_GAP_SECONDS = 5;
 
@@ -71,19 +71,35 @@ var editor_track = {
     "state": null,
     "player": null
 }
-var editor_time = 0;
+var editor_savedTime = 0;
 var editor_priming_testing_time = false;
 var editor_testing_time = false;
 var editor_resumeTestTime = false;
 
 
 // ----- UI Elements -----
-var UI_Volume_Slider = document.getElementById("volumeSlider");
-var UI_Volume_Display = document.getElementById("volumeDisplay");
-UI_Volume_Slider.value = volume;
-UI_Volume_Display.innerHTML = volume + "%";
-UI_Volume_Slider.oninput = function() {
+var Settings_Volume_Slider = document.getElementById("volumeSlider");
+var Settings_Volume_Display = document.getElementById("volumeDisplay");
+Settings_Volume_Slider.value = volume;
+Settings_Volume_Display.innerHTML = volume + "%";
+Settings_Volume_Slider.oninput = function() {
     updateVolume(this.value);
+}
+
+var Settings_ShuffleDropOdds_Slider = document.getElementById("settings_shuffleDropOdds");
+var Settings_ShuffleDropOdds_Display = document.getElementById("settings_shuffleDropOddsDisplay");
+Settings_ShuffleDropOdds_Slider.value = shuffle_drop_odds * 100;
+Settings_ShuffleDropOdds_Display.innerHTML = (shuffle_drop_odds * 100) + "%";
+Settings_ShuffleDropOdds_Slider.oninput = function() {
+    updateShuffleDropOdds(this.value);
+}
+
+var Settings_PivotSameSongOdds_Slider = document.getElementById("settings_pivotSameSongOdds");
+var Settings_PivotSameSongOdds_Display = document.getElementById("settings_pivotSameSongOddsDisplay");
+Settings_PivotSameSongOdds_Slider.value = pivot_same_song_drop_to_build_odds * 100;
+Settings_PivotSameSongOdds_Display.innerHTML = (pivot_same_song_drop_to_build_odds * 100) + "%";
+Settings_PivotSameSongOdds_Slider.oninput = function() {
+    updatePivotSameSongOdds(this.value);
 }
 
 
@@ -145,12 +161,17 @@ function onYouTubeIframeAPIReady() {
 
 // Loads the video for a track on its player.
 // Assumes that the track has its song and player set up already.
-function loadTrackVideo(track) {
+function loadTrackVideo(track, play_immediately = false) {
     let startSeconds = 0;
     if (track["state"] == STATE_DROPPING || track["state"] == STATE_WAITING_TO_DROP) {
         startSeconds = track["drop"]["dropStart"] - getNextCrossfadePrimingWindow(track);
     }
-    track["player"].cueVideoById(track["song"]["videoId"], startSeconds);
+    if (play_immediately) {
+        track["player"].loadVideoById(track["song"]["videoId"], startSeconds);
+        track["player"].setVolume(volume);
+    } else {
+        track["player"].cueVideoById(track["song"]["videoId"], startSeconds);
+    }
 }
 
 // The API will call this function when the video player is ready (meaning only the first video).
@@ -212,7 +233,7 @@ function onPlayerStateChange(event) {
 // Resets the available_songs lists 
 function restartSongs() {
     generateAvailableSongs();
-    let first_BoD = (SHUFFLE_DROP_ODDS > Math.random()) ? BUILD : BoD_ANY;
+    let first_BoD = (shuffle_drop_odds > Math.random()) ? BUILD : BoD_ANY;
     setTrackToRandomSong(tracks[0], first_BoD);
     setTrackToRandomSong(tracks[1], getInverseBoD(first_BoD));
 }
@@ -267,12 +288,25 @@ function updateCrossfade() {
 // Called by the volume slider to update the volume variable and the current track's volume
 function updateVolume(new_volume) {
     volume = new_volume;
-    UI_Volume_Display.innerHTML = new_volume + "%";
+    Settings_Volume_Display.innerHTML = new_volume + "%";
     let current_track = getCurrentTrack();
     if (current_track != null) {
         current_track["player"].setVolume(volume);
     }
+    if (editor_track != null && editor_track["player"]) {
+        editor_track["player"].setVolume(volume);
+    }
 }
+
+function updateShuffleDropOdds(new_odds) {
+    shuffle_drop_odds = new_odds / 100;
+    Settings_ShuffleDropOdds_Display.innerHTML = new_odds + "%";
+}
+function updatePivotSameSongOdds(new_odds) {
+    pivot_same_song_drop_to_build_odds = new_odds / 100;
+    Settings_PivotSameSongOdds_Display.innerHTML = new_odds + "%";
+}
+
 
 // Called at frequent intervals to check if we're building and the buildEnd time has arrived
 function checkForTrackSwap() {
@@ -292,7 +326,7 @@ function checkForTrackSwap() {
 
 
 // Sets the specified track to a random build song
-function setTrackToRandomSong(track, build_or_drop) {
+function setTrackToRandomSong(track, build_or_drop, play_immediately = false) {
     if (available_songs[build_or_drop].length == 0) {
         console.log("Ran out of available " + BoDToString(build_or_drop) + ". Regenerating all lists of all available songs!");
         generateAvailableSongs();
@@ -318,7 +352,7 @@ function setTrackToRandomSong(track, build_or_drop) {
     }
 
     if (track["player"]) {
-        loadTrackVideo(track);
+        loadTrackVideo(track, play_immediately);
     }
 }
 
@@ -374,7 +408,7 @@ function setupNextTrack() {
     let next_BoD = null;
     if (current_track["state"] == STATE_BUILDING) {
         next_BoD = DROP;
-    } else if (SHUFFLE_DROP_ODDS > Math.random()) {
+    } else if (shuffle_drop_odds > Math.random()) {
         next_BoD = BUILD;
     } else {
         next_BoD = BoD_ANY;
@@ -393,7 +427,7 @@ function tryPivotTrackToBuild(track) {
         let build = builds[i];
         // Had to subtract the crossfade priming window to make sure that this doesn't trigger right as the crossfade ends
         if (current_time < build["buildEnd"] - CROSSFADE_PRIMING_WINDOW_SECONDS && drop["dropStart"] < build["buildEnd"] + PIVOT_SAME_SONG_DROP_TO_BUILD_MINIMUM_GAP_SECONDS) {
-            if (PIVOT_SAME_SONG_DROP_TO_BUILD_ODDS > Math.random()) {
+            if (pivot_same_song_drop_to_build_odds > Math.random()) {
                 track["drop"] = null;
                 track["build"] = build;
                 track["state"] = STATE_BUILDING;
@@ -533,6 +567,7 @@ var editor_new_song_form = document.getElementById("editor_new_song_form");
 function editor_SubmitNewSong(event){
     //Preventing page refresh - https://www.tutorialspoint.com/how-to-stop-refreshing-the-page-on-submit-in-javascript
     event.preventDefault();
+    // Polish - Could check if song is already in the list?
     let new_song = {
         "name": editor_songName.value,
         "artist": editor_artist.value,
@@ -548,7 +583,7 @@ function editor_SubmitNewSong(event){
 editor_new_song_form.addEventListener('submit', editor_SubmitNewSong);
 
 // Sync & display time
-var editor_savedTime = document.getElementById("editor_savedTime");
+var editor_savedTimeDisplay = document.getElementById("editor_savedTimeDisplay");
 var editor_syncTimeButton = document.getElementById("editor_syncTime");
 function editor_SyncTime(event) {
     editor_updateSavedTime(editor_track["player"].getCurrentTime());
@@ -556,69 +591,97 @@ function editor_SyncTime(event) {
 editor_syncTimeButton.addEventListener("click", editor_SyncTime);
 
 // Nudge time
-document.getElementById("editor_timeDown").addEventListener("click", () => { editor_updateSavedTime(editor_time - 0.5); });
-document.getElementById("editor_timeDownNudge").addEventListener("click", () => { editor_updateSavedTime(editor_time - 0.05); });
-document.getElementById("editor_timeUpNudge").addEventListener("click", () => { editor_updateSavedTime(editor_time + 0.05); });
-document.getElementById("editor_timeUp").addEventListener("click", () => { editor_updateSavedTime(editor_time + 0.5); });
+document.getElementById("editor_timeDown").addEventListener("click", () => { editor_updateSavedTime(editor_savedTime - 0.5); });
+document.getElementById("editor_timeDownNudge").addEventListener("click", () => { editor_updateSavedTime(editor_savedTime - 0.05); });
+document.getElementById("editor_timeUpNudge").addEventListener("click", () => { editor_updateSavedTime(editor_savedTime + 0.05); });
+document.getElementById("editor_timeUp").addEventListener("click", () => { editor_updateSavedTime(editor_savedTime + 0.5); });
 
 function editor_updateSavedTime(new_time) {
-    editor_time = new_time;
-    let pct_minutes = Math.floor(editor_time / 60);
-    let pct_seconds = Math.floor(editor_time % 60);
+    editor_savedTime = new_time;
+    let pct_minutes = Math.floor(editor_savedTime / 60);
+    let pct_seconds = Math.floor(editor_savedTime % 60);
     let pct_str = ((pct_minutes < 10) ? "0" : "") + pct_minutes + ":" + ((pct_seconds < 10) ? "0" : "") + pct_seconds;
-    editor_savedTime.innerHTML = "Time: &nbsp; " + pct_str + " &nbsp; (" + editor_time + ")";
+    editor_savedTimeDisplay.innerHTML = "Saved Time: &nbsp; " + pct_str + " &nbsp; (" + editor_savedTime + ")";
+    editor_addAsBuildButton.disabled = false;
+    editor_addAsDropButton.disabled = false;
 }
+
+// Test time with pause - Directly in the editor player
+var editor_testTimeWithPauseButton = document.getElementById("editor_testTimeWithPause");
+function editor_testTimeWithPause(event) {
+    editor_priming_testing_time = true;
+    editor_testing_time = false;
+    editor_track["state"] = STATE_BUILDING;
+    editor_track["player"].seekTo(editor_savedTime - EDITOR_TEST_TIME_WARMUP_SECONDS, true);
+    editor_track["player"].setVolume(volume);
+    editor_track["player"].playVideo();
+}
+editor_testTimeWithPauseButton.addEventListener("click", editor_testTimeWithPause);
+
+// Test time as build/drop - Uses the main players with the new song and a random complementary song
+var editor_testTimeAsBuildButton = document.getElementById("editor_testAsBuild");
+var editor_testTimeAsDropButton = document.getElementById("editor_testAsDrop");
+function editor_testTimeAsBuild(event) {
+    editor_track["state"] = STATE_PAUSED;
+    editor_track["player"].pauseVideo();
+    generateAvailableSongs();
+    let track = tracks[0];
+    track["song"] = editor_track["song"];
+    track["build"] = { "buildEnd": editor_savedTime };
+    track["drop"] = null;
+    track["state"] = STATE_WAITING_TO_BUILD;
+    loadTrackVideo(track, true);
+    setTrackToRandomSong(tracks[1], DROP, false);
+}
+function editor_testTimeAsDrop(event) {
+    editor_track["state"] = STATE_PAUSED;
+    editor_track["player"].pauseVideo();
+    generateAvailableSongs();
+    let track = tracks[1];
+    track["song"] = editor_track["song"];
+    track["build"] = null;
+    track["drop"] = { "dropStart": editor_savedTime };
+    track["state"] = STATE_WAITING_TO_DROP;
+    loadTrackVideo(track, false);
+    setTrackToRandomSong(tracks[0], BUILD, true);
+}
+editor_testTimeAsBuildButton.addEventListener("click", editor_testTimeAsBuild);
+editor_testTimeAsDropButton.addEventListener("click", editor_testTimeAsDrop);
+
 
 // Add as build or drop
 var editor_addAsBuildButton = document.getElementById("editor_addAsBuild");
 var editor_addAsDropButton = document.getElementById("editor_addAsDrop");
 function editor_addAsBuild(event) {
     let song = editor_track["song"];
-    let time = editor_track["player"].getCurrentTime();
-    let rounded_time = Math.round(time * 1000) / 1000;
+    let rounded_time = Math.round(editor_savedTime * 1000) / 1000;
     let new_build = {
         "buildEnd": rounded_time
     }
     song["builds"].push(new_build);
+    editor_addAsBuildButton.disabled = true;
     console.log("Added new build: " + rounded_time);
     console.log(song);
 }
 function editor_addAsDrop(event) {
     let song = editor_track["song"];
-    let time = editor_track["player"].getCurrentTime();
-    let rounded_time = Math.round(time * 1000) / 1000;
+    let rounded_time = Math.round(editor_savedTime * 1000) / 1000;
     let new_drop = {
         "dropStart": rounded_time
     }
     song["drops"].push(new_drop);
+    editor_addAsDropButton.disabled = true;
     console.log("Added new drop: " + rounded_time);
     console.log(song);
 }
 editor_addAsBuildButton.addEventListener("click", editor_addAsBuild);
 editor_addAsDropButton.addEventListener("click", editor_addAsDrop);
 
-// Test time
-var editor_testTimeButton = document.getElementById("editor_testTime");
-function editor_testTime(event) {
-    editor_priming_testing_time = true;
-    editor_testing_time = false;
-    editor_track["state"] = STATE_BUILDING;
-    editor_track["player"].seekTo(editor_time - EDITOR_TEST_TIME_WARMUP_SECONDS, true);
-    editor_track["player"].playVideo();
-}
-editor_testTimeButton.addEventListener("click", editor_testTime);
-
 // While editor_testing_time is true, this is called on every update interval to see if we should pause/unpause
 function updateEditorTestingTime() {
-    // TODO - Add "test build" and "test drop" buttons that uses crossfade settings
     let current_player_time = editor_track["player"].getCurrentTime();
-    // let lerp_build = 1 - ((current_player_time - editor_time) / CROSSFADE_BUILD_DURATION_SECONDS);
-    // let lerp_drop = (current_player_time - editor_time) / CROSSFADE_DROP_DURATION_SECONDS;
-    // lerp_build = clamp(lerp_build, 0, 1);
-    // lerp_drop = clamp(lerp_drop, 0, 1);
     if (editor_track["state"] == STATE_BUILDING) {
-        // editor_track["player"].setVolume(lerp_build * volume);
-        if (current_player_time >= editor_time) {
+        if (current_player_time >= editor_savedTime) {
             editor_resumeTestTime = false;
             setTimeout(() => { editor_resumeTestTime = true; }, EDITOR_TEST_HANGTIME_SECONDS * 1000);
             editor_track["player"].pauseVideo();
@@ -631,8 +694,6 @@ function updateEditorTestingTime() {
             editor_testing_time = false;
             editor_track["state"] = STATE_DROPPING;
         }
-    } else if (editor_track["state"] == STATE_DROPPING) {
-        // editor_track["player"].setVolume(lerp_drop * volume);
     }
 }
 
@@ -655,8 +716,8 @@ function importSongList() {
     }
 }
 
-// Called when the user clicks the button to download the current song list
-function downloadSongList() {
+// Called when the user clicks the button to export the current song list
+function exportSongList() {
     let new_songs_obj = { "songsList": songs };
     let element = document.createElement('a');
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(new_songs_obj)));
@@ -666,6 +727,13 @@ function downloadSongList() {
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
+}
+
+// Called when the user clicks the scary red button
+function resetToEmptySongList() {
+    if (confirm("Are you SURE you want to reset to an empty song list? If you have any songs you want to save, export them first! The currently playing list will not reset automatically.")) {
+        songs = [];
+    }
 }
 
 

@@ -11,8 +11,9 @@ var pivot_same_song_drop_to_build_odds = 0.9; // 0 to 1
 
 
 // ----- INTERNAL SYSTEM TUNING -----
-const CROSSFADE_BUILD_DURATION_SECONDS = 0.2; // Amount of time during which the build fades out
+const CROSSFADE_BUILD_DURATION_SECONDS = 0.1; // Amount of time during which the build fades out
 const CROSSFADE_DROP_DURATION_SECONDS = 0.02; // Amount of time during which the drop fades in
+const CROSSFADE_DROP_LEAD_TIME = 0.25; // Amount of time before the build ends that the drop will be scheduled to start
 
 const CROSSFADE_PRIMING_WINDOW_SECONDS = 3;
 const PIVOT_SAME_SONG_DROP_TO_BUILD_MINIMUM_GAP_SECONDS = 5;
@@ -314,7 +315,7 @@ function checkForTrackSwap() {
     if (!current_track || !current_track["song"] || !current_track["player"]) return;
     if (current_track["state"] == STATE_BUILDING) {
         let next_track = getNextTrack();
-        if (current_track["player"].getCurrentTime() > current_track["build"]["buildEnd"] - getNextCrossfadePrimingWindow(next_track)) {
+        if (current_track["player"].getCurrentTime() > current_track["build"]["buildEnd"] - getNextCrossfadePrimingWindow(next_track) - CROSSFADE_DROP_LEAD_TIME) {
             // Prime the crossfade by starting the drop track early (at 0 volume) so that it can be faded in at the right time
             current_track["state"] = STATE_PHASING_OUT_OF_BUILD;
             next_track["state"] = STATE_PHASING_INTO_DROP;
@@ -377,14 +378,17 @@ function generateAvailableSongs() {
 // Pops an available song from the corresponding build or drop list, and removes it from the other list too
 function popAvailableSong(list_index) {
     let song = available_songs[list_index].pop();
-    for (let i=0; i <= 2; i++) {
-        if (i != list_index) {
-            available_songs[i] = available_songs[i].filter(s => {
-                return s != song;
-            });
-        }
-    }
+    removeSongFromAvailableSongLists(song);
     return song;
+}
+
+// Removes the given song from all available songs lists (but not the main song list, for use when restarted or exported)
+function removeSongFromAvailableSongLists(song) {
+    for (let i=0; i <= 2; i++) {
+        available_songs[i] = available_songs[i].filter(s => {
+            return s != song;
+        });
+    }
 }
 
 // After a drop or fullplay song is over, start the next totally new song
@@ -624,9 +628,11 @@ var editor_testTimeAsDropButton = document.getElementById("editor_testAsDrop");
 function editor_testTimeAsBuild(event) {
     editor_track["state"] = STATE_PAUSED;
     editor_track["player"].pauseVideo();
-    generateAvailableSongs();
     let track = tracks[0];
-    track["song"] = editor_track["song"];
+    let song = editor_track["song"];
+    generateAvailableSongs();
+    removeSongFromAvailableSongLists(song);
+    track["song"] = song;
     track["build"] = { "buildEnd": editor_savedTime };
     track["drop"] = null;
     track["state"] = STATE_WAITING_TO_BUILD;
@@ -636,9 +642,11 @@ function editor_testTimeAsBuild(event) {
 function editor_testTimeAsDrop(event) {
     editor_track["state"] = STATE_PAUSED;
     editor_track["player"].pauseVideo();
-    generateAvailableSongs();
     let track = tracks[1];
-    track["song"] = editor_track["song"];
+    let song = editor_track["song"];
+    generateAvailableSongs();
+    removeSongFromAvailableSongLists(song);
+    track["song"] = song;
     track["build"] = null;
     track["drop"] = { "dropStart": editor_savedTime };
     track["state"] = STATE_WAITING_TO_DROP;

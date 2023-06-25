@@ -5,16 +5,6 @@ var songs_obj = {
     ],
     "songsList": [
         {
-            "name": "AHHHHH",
-            "videoId": "yBLdQ1a4-JI",
-            "builds": [
-                {
-                    "buildEnd": 12.9
-                }
-            ],
-            "drops": []
-        },
-        {
             "name": "Trance - 009 Sound System Dreamscape (HD)",
             "videoId": "TKfS5zVfGBc",
             "builds": [],
@@ -72,18 +62,18 @@ var songs_obj = {
             "videoId": "WsPg4ZRA_Us",
             "builds": [
                 {
-                    "buildEnd": 53.0
+                    "buildEnd": 52.954
                 },
                 {
-                    "buildEnd": 132.40
+                    "buildEnd": 132.367
                 }
             ],
             "drops": [
                 {
-                    "dropStart": 53.0
+                    "dropStart": 52.954
                 },
                 {
-                    "dropStart": 132.40
+                    "dropStart": 132.367
                 }
             ]
         },
@@ -108,6 +98,108 @@ var songs_obj = {
                 {
                     "dropStart": 223.0,
                     "silentStart": false
+                }
+            ]
+        },
+        {
+            "name": "Sad Machine",
+            "artist": "Porter Robinson",
+            "videoId": "HAIDqt2aUek",
+            "builds": [
+                {
+                    "buildEnd": 114.016
+                },
+                {
+                    "buildEnd": 211.606
+                }
+            ],
+            "drops": [
+                {
+                    "dropStart": 114.016
+                },
+                {
+                    "dropStart": 211.606
+                }
+            ]
+        },
+        {
+            "name": "The Thrill (Porter Robinson Remix)",
+            "artist": "Nero",
+            "videoId": "UCJHMT0JFnQ",
+            "builds": [
+                {
+                    "buildEnd": 73.149
+                },
+                {
+                    "buildEnd": 193.181
+                }
+            ],
+            "drops": [
+                {
+                    "dropStart": 73.149
+                },
+                {
+                    "dropStart": 193.181
+                }
+            ]
+        },
+        {
+            "name": "Somewhere Far Away From Here ft. Lolaby",
+            "artist": "k?d",
+            "videoId": "J3NL-sp_w34",
+            "builds": [
+                {
+                    "buildEnd": 106.961
+                }
+            ],
+            "drops": [
+                {
+                    "dropStart": 106.961
+                },
+                {
+                    "dropStart": 237.425
+                }
+            ]
+        },
+        {
+            "name": "Anti-Hero (ILLENIUM Remix)",
+            "artist": "Taylor Swift",
+            "videoId": "nF4Jc9sPPug",
+            "builds": [
+                {
+                    "buildEnd": 99.182
+                },
+                {
+                    "buildEnd": 222.98
+                }
+            ],
+            "drops": [
+                {
+                    "dropStart": 99.182
+                },
+                {
+                    "dropStart": 222.98
+                }
+            ]
+        },
+        {
+            "name": "Flicker",
+            "artist": "Porter Robinson",
+            "videoId": "D1sZ_vwqwcE",
+            "builds": [
+                {
+                    "buildEnd": 93.939
+                },
+                {
+                    "buildEnd": 161.751
+                }
+            ],
+            "drops": [
+                {
+                    "dropStart": 93.939
+                },
+                {
+                    "dropStart": 161.751
                 }
             ]
         }

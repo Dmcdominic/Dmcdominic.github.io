@@ -5,12 +5,13 @@ var songs_obj = {
     ],
     "songsList": [
         {
-            "name": "Trance - 009 Sound System Dreamscape (HD)",
+            "name": "009 Sound System Dreamscape (HD)",
+            "artist": "Trance",
             "videoId": "TKfS5zVfGBc",
             "builds": [],
             "drops": [
                 {
-                    "dropStart": 3.5
+                    "dropStart": 3.511
                 }
             ]
         },
@@ -20,18 +21,18 @@ var songs_obj = {
             "videoId": "q-7w-iRQpTQ",
             "builds": [
                 {
-                    "buildEnd": 25.20
+                    "buildEnd": 25.592
                 },
                 {
-                    "buildEnd": 115.0
+                    "buildEnd": 115.176
                 }
             ],
             "drops": [
                 {
-                    "dropStart": 25.70
+                    "dropStart": 25.592
                 },
                 {
-                    "dropStart": 115.20
+                    "dropStart": 115.176
                 }
             ]
         },
@@ -41,18 +42,18 @@ var songs_obj = {
             "videoId": "dmXgDVEhC1U",
             "builds": [
                 {
-                    "buildEnd": 49.25
+                    "buildEnd": 49.342
                 },
                 {
-                    "buildEnd": 135.3
+                    "buildEnd": 135.499
                 }
             ],
             "drops": [
                 {
-                    "dropStart": 49.40
+                    "dropStart": 49.342
                 },
                 {
-                    "dropStart": 135.50
+                    "dropStart": 135.499
                 }
             ]
         },
@@ -83,20 +84,22 @@ var songs_obj = {
             "videoId": "luJJBeCFeM0",
             "builds": [
                 {
-                    "buildEnd": 223.0
+                    "buildEnd": 108.484
+                },
+                {
+                    "buildEnd": 110.576
+                },
+                {
+                    "buildEnd": 223.042
                 }
             ],
             "drops": [
                 {
-                    "dropStart": 104.0,
-                    "silentStart": true
-                },
-                {
-                    "dropStart": 110.5,
+                    "dropStart": 110.576,
                     "silentStart": false
                 },
                 {
-                    "dropStart": 223.0,
+                    "dropStart": 223.042,
                     "silentStart": false
                 }
             ]

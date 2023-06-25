@@ -11,11 +11,11 @@ var pivot_same_song_drop_to_build_odds = 0.9; // 0 to 1
 
 
 // ----- INTERNAL SYSTEM TUNING -----
-const CROSSFADE_BUILD_DURATION_SECONDS = 0.25; // Amount of time during which the build fades out. Consider in tandem with CROSSFADE_BUILD_FADE_LEAD_TIME
+const CROSSFADE_BUILD_DURATION_SECONDS = 0.15; // Amount of time during which the build fades out. Consider in tandem with CROSSFADE_BUILD_FADE_LEAD_TIME
 const CROSSFADE_DROP_DURATION_SECONDS = 0.02; // Amount of time during which the drop fades in
 
-const CROSSFADE_BUILD_FADE_LEAD_TIME = 0.2; // How far in advance of the actual build ending should it start fading out. Should always be less than CROSSFADE_BUILD_DURATION_SECONDS
-const CROSSFADE_DROP_LEAD_TIME = 0.25; // Amount of time before the build ends that the drop will be scheduled to start
+const CROSSFADE_BUILD_FADE_LEAD_TIME = 0.1; // How far in advance of the actual build ending should it start fading out. Should always be less than CROSSFADE_BUILD_DURATION_SECONDS
+const CROSSFADE_DROP_LEAD_TIME = 0.3; // Amount of time before the build ends that the drop will be scheduled to start
 
 const CROSSFADE_PRIMING_WINDOW_SECONDS = 3;
 const PIVOT_SAME_SONG_DROP_TO_BUILD_MINIMUM_GAP_SECONDS = 5;
@@ -24,7 +24,7 @@ const SKIP_TO_CHANGEUP_GAP_SECONDS = 4; // NOTE - this should probably stay abov
 const EDITOR_TEST_TIME_WARMUP_SECONDS = 3; // For an editor test time, this is how far before the build/drop it will start
 const EDITOR_TEST_HANGTIME_SECONDS = 1.5; // While doing an editor test time, this is the duration which it will pause between build and drop
 
-const CHECK_FOR_UPDATES_INTERVAL_MS = 10; // With limited testing, this seems to have a minimum of ~5ms
+const CHECK_FOR_UPDATES_INTERVAL_MS = 5; // With limited testing, this seems to have a minimum of ~5ms
 
 
 // ----- Constants -----
@@ -585,6 +585,7 @@ function editor_SubmitNewSong(event){
     editor_track["song"] = new_song;
     editor_track["player"].loadVideoById(editor_track["song"]["videoId"], 0);
     // editor_track["player"].setPlaybackRate(0.5);
+    editor_updateSavedTime(0);
 }
 editor_new_song_form.addEventListener('submit', editor_SubmitNewSong);
 
@@ -603,6 +604,7 @@ document.getElementById("editor_timeUpNudge").addEventListener("click", () => { 
 document.getElementById("editor_timeUp").addEventListener("click", () => { editor_updateSavedTime(editor_savedTime + 0.5); });
 
 function editor_updateSavedTime(new_time) {
+    new_time = Math.max(0, new_time);
     editor_savedTime = new_time;
     let pct_minutes = Math.floor(editor_savedTime / 60);
     let pct_seconds = Math.floor(editor_savedTime % 60);

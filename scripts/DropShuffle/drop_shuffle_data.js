@@ -1,4 +1,8 @@
 var songs_obj = {
+    "Strategies for song choices and timings": [
+        "Builds - When they're strongly telegraphed, like if they're long or have a clear peak",
+        "Drops - When they're punchy/powerful"
+    ],
     "sources": [
         "https://www.youtube.com/watch?v=SBI4H0Allz8",
         "https://www.youtube.com/watch?v=JQ1txLdu6qg"

@@ -364,10 +364,10 @@ function setTrackToRandomSong(track, build_or_drop, play_immediately = false) {
 function generateAvailableSongs() {
     available_songs = [[], [], []];
     songs.forEach(song => {
-        if (song["builds"].length > 0) {
+        if (song["builds"] && song["builds"].length > 0) {
             available_songs[0].push(song);
         }
-        if (song["drops"].length > 0) {
+        if (song["drops"] && song["drops"].length > 0) {
             available_songs[1].push(song);
         }
         available_songs[2].push(song);

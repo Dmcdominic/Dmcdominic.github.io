@@ -205,6 +205,190 @@ var songs_obj = {
                     "dropStart": 161.751
                 }
             ]
+        },
+        {
+            "name": "flusterfuck",
+            "artist": "isqa",
+            "videoId": "t_KQtp8Gcbw",
+            "builds": [
+                {
+                    "buildEnd": 54.791
+                },
+                {
+                    "buildEnd": 164.411
+                }
+            ],
+            "drops": [
+                {
+                    "dropStart": 54.791
+                },
+                {
+                    "dropStart": 164.411
+                }
+            ]
+        },
+        {
+            "name": "Ding Dong",
+            "artist": "Crankdat",
+            "videoId": "f5C2z9IzFAM",
+            "builds": [
+                {
+                    "buildEnd": 33.241
+                },
+                {
+                    "buildEnd": 78.217
+                },
+                {
+                    "buildEnd": 138.227
+                }
+            ],
+            "drops": [
+                {
+                    "dropStart": 33.241
+                },
+                {
+                    "dropStart": 78.217
+                },
+                {
+                    "dropStart": 138.227
+                }
+            ]
+        },
+        {
+            "name": "Point",
+            "artist": "Nitepunk ft. Habstrakt",
+            "videoId": "CEOcMVonjpM",
+            "builds": [
+                {
+                    "buildEnd": 39.289
+                },
+                {
+                    "buildEnd": 148.149
+                }
+            ],
+            "drops": [
+                {
+                    "dropStart": 39.289
+                },
+                {
+                    "dropStart": 151.807
+                }
+            ]
+        },
+        {
+            "name": "Spider",
+            "artist": "Nitepunk ft Tida",
+            "videoId": "1rtfOKMhops",
+            "builds": [
+                {
+                    "buildEnd": 54.108
+                }
+            ],
+            "drops": []
+        },
+        {
+            "name": "Spider Tank",
+            "artist": "onumi",
+            "videoId": "bLPvVMnYFYw",
+            "builds": [
+                {
+                    "buildEnd": 60.588
+                },
+                {
+                    "buildEnd": 148.979
+                }
+            ],
+            "drops": [
+                {
+                    "dropStart": 60.588
+                },
+                {
+                    "dropStart": 148.979
+                }
+            ]
+        },
+        {
+            "name": "Everything",
+            "artist": "Darby",
+            "videoId": "PNQxc5p2ukQ",
+            "builds": [
+                {
+                    "buildEnd": 30.799
+                },
+                {
+                    "buildEnd": 99.446
+                }
+            ]
+        },
+        {
+            "name": "ORIGIN SYSTEM",
+            "artist": "Water Spirit",
+            "videoId": "C0gk4cJvvZA",
+            "builds": [
+                {
+                    "buildEnd": 53.138
+                },
+                {
+                    "buildEnd": 161.92
+                }
+            ]
+        },
+        {
+            "name": "Ice",
+            "artist": "Corporate",
+            "videoId": "8w86PuumbbA",
+            "builds": [
+                {
+                    "buildEnd": 40.315
+                }
+            ]
         }
+
+    ],
+
+    "extraSongs": [
+        {
+            "name": "TOO BIZARRE (juked)",
+            "artist": "Skrillex, Swae Lee, Siiickbrain, & Posij",
+            "videoId": "3Qs7IM9nZxc",
+            "builds": [
+                {
+                    "buildEnd": 73.241
+                },
+                {
+                    "buildEnd": 145.376
+                }
+            ],
+            "drops": [
+                {
+                    "dropStart": 73.241
+                },
+                {
+                    "dropStart": 145.376
+                }
+            ]
+        },
+        {
+            "name": "Monolithic Reflections",
+            "artist": "BVSSIC",
+            "videoId": "tKirXBERxeE",
+            "builds": [
+                {
+                    "buildEnd": 66.138
+                },
+                {
+                    "buildEnd": 176.46
+                }
+            ],
+            "drops": [
+                {
+                    "dropStart": 66.138
+                },
+                {
+                    "dropStart": 176.46
+                }
+            ]
+        },
+
     ]
 }

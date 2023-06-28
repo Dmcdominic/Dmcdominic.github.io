@@ -31,14 +31,7 @@ var songs_obj = {
                     "buildEnd": 115.176
                 }
             ],
-            "drops": [
-                {
-                    "dropStart": 25.592
-                },
-                {
-                    "dropStart": 115.176
-                }
-            ]
+            "drops": []
         },
         {
             "name": "Easy Go",
@@ -159,14 +152,7 @@ var songs_obj = {
                     "buildEnd": 106.961
                 }
             ],
-            "drops": [
-                {
-                    "dropStart": 106.961
-                },
-                {
-                    "dropStart": 237.425
-                }
-            ]
+            "drops": []
         },
         {
             "name": "Anti-Hero (ILLENIUM Remix)",
@@ -246,17 +232,7 @@ var songs_obj = {
                     "buildEnd": 138.227
                 }
             ],
-            "drops": [
-                {
-                    "dropStart": 33.241
-                },
-                {
-                    "dropStart": 78.217
-                },
-                {
-                    "dropStart": 138.227
-                }
-            ]
+            "drops": []
         },
         {
             "name": "Point",
@@ -346,7 +322,321 @@ var songs_obj = {
                     "buildEnd": 40.315
                 }
             ]
-        }
+        },
+        {
+            "name": "Language",
+            "artist": "Porter Robinson",
+            "videoId": "Vsy1URDYK88",
+            "builds": [
+                {
+                    "buildEnd": 120.14
+                },
+                {
+                    "buildEnd": 270.178
+                }
+            ],
+            "drops": [
+                {
+                    "dropStart": 120.14
+                },
+                {
+                    "dropStart": 270.178
+                }
+            ]
+        },
+        {
+            "name": "Shelter",
+            "artist": "Porter Robinson & Madeon",
+            "videoId": "fzQ6gRAEoy0",
+            "builds": [
+                {
+                    "buildEnd": 68.678
+                },
+                {
+                    "buildEnd": 222.29
+                }
+            ],
+            "drops": [
+                {
+                    "dropStart": 68.678
+                },
+                {
+                    "dropStart": 126.276
+                },
+                {
+                    "dropStart": 222.29
+                }
+            ]
+        },
+        {
+            "name": "Nepenthe",
+            "artist": "Seven Lions",
+            "videoId": "dsmDSSB9b50",
+            "builds": [
+                {
+                    "buildEnd": 110.963
+                },
+                {
+                    "buildEnd": 220.69
+                }
+            ],
+            "drops": [
+                {
+                    "dropStart": 110.963
+                },
+                {
+                    "dropStart": 220.69
+                }
+            ]
+        },
+        {
+            "name": "Strident",
+            "artist": "KOAN Sound",
+            "videoId": "3BnvHrt1b2g",
+            "builds": [
+                {
+                    "buildEnd": 103.132
+                }
+            ],
+            "drops": []
+        },
+        {
+            "name": "Chronos",
+            "artist": "KOAN Sound",
+            "videoId": "1jiraksqP_k",
+            "builds": [
+                {
+                    "buildEnd": 57.3
+                },
+                {
+                    "buildEnd": 153.047
+                }
+            ],
+            "drops": []
+        },
+        {
+            "name": "Through the Storm",
+            "artist": "Animadrop",
+            "videoId": "t6Y6SuPSG2Q",
+            "builds": [
+                {
+                    "buildEnd": 355.761
+                }
+            ],
+            "drops": [
+                {
+                    "dropStart": 269.392
+                },
+                {
+                    "dropStart": 355.761
+                }
+            ]
+        },
+        {
+            "name": "Paradise Lost",
+            "artist": "Delta Heavy",
+            "videoId": "fsdwJljVkVA",
+            "builds": [
+                {
+                    "buildEnd": 111.976
+                }
+            ],
+            "drops": [
+                {
+                    "dropStart": 111.976
+                }
+            ]
+        },
+        {
+            "name": "Warsongs: Piercing Light",
+            "artist": "League of Legends & Mako",
+            "videoId": "Nqqc2FHf9Ug",
+            "builds": [
+                {
+                    "buildEnd": 130.107
+                },
+                {
+                    "buildEnd": 245.171
+                }
+            ],
+            "drops": [
+                {
+                    "dropStart": 130.525
+                },
+                {
+                    "dropStart": 245.621
+                }
+            ]
+        },
+        {
+            "name": "Ocean",
+            "artist": "Seven Lions, Jason Ross, & Jonathan Mendelsohn",
+            "videoId": "SyN8bxFwuq4",
+            "builds": [],
+            "drops": [
+                {
+                    "dropStart": 100.826
+                },
+                {
+                    "dropStart": 177.608
+                }
+            ]
+        },
+        {
+            "name": "Sojourn",
+            "artist": "Seven Lions & Crystal Skies",
+            "videoId": "D4uvKDq5x9o",
+            "builds": [
+                {
+                    "buildEnd": 78.618
+                },
+                {
+                    "buildEnd": 168.184
+                }
+            ],
+            "drops": []
+        },
+        {
+            "name": "Pray",
+            "artist": "ILLENIUM ft. Kameron Alexander",
+            "videoId": "i4njyKs6bMs",
+            "builds": [
+                {
+                    "buildEnd": 105.558
+                },
+                {
+                    "buildEnd": 250.234
+                }
+            ],
+            "drops": [
+                {
+                    "dropStart": 105.558
+                },
+                {
+                    "dropStart": 250.234
+                }
+            ]
+        },
+        {
+            "name": "Become God",
+            "artist": "GHOST DATA",
+            "videoId": "SYDY7xuhwDU",
+            "builds": [
+                {
+                    "buildEnd": 79.414
+                },
+                {
+                    "buildEnd": 190.696
+                }
+            ],
+            "drops": [
+                {
+                    "dropStart": 191.914
+                }
+            ]
+        },
+        {
+            "name": "Hit Me Harder",
+            "artist": "The Bad Dreamers",
+            "videoId": "WcP9IWmP0FQ",
+            "builds": [
+                {
+                    "buildEnd": 144.095
+                }
+            ],
+            "drops": []
+        },
+        {
+            "name": "Siren's Call",
+            "artist": "GHOST DATA",
+            "videoId": "8nseKw-I3Ds",
+            "builds": [
+                {
+                    "buildEnd": 105.314
+                },
+                {
+                    "buildEnd": 222.574
+                }
+            ],
+            "drops": [
+                {
+                    "dropStart": 106.47
+                },
+                {
+                    "dropStart": 223.961
+                }
+            ]
+        },
+        {
+            "name": "Pandemonium",
+            "artist": "Arkasia",
+            "videoId": "bw_GhedOX70",
+            "builds": [
+                {
+                    "buildEnd": 177.7
+                }
+            ],
+            "drops": [
+                {
+                    "dropStart": 89.132
+                },
+                {
+                    "dropStart": 177.7
+                }
+            ]
+        },
+        {
+            "name": "RISE",
+            "artist": "League of Legends ft. The Glitch Mob, Mako, and The Word Alive",
+            "videoId": "fB8TyLTD7EE",
+            "builds": [
+                {
+                    "buildEnd": 49.76
+                },
+                {
+                    "buildEnd": 93.104
+                },
+                {
+                    "buildEnd": 148.69
+                }
+            ],
+            "drops": []
+        },
+        {
+            "name": "Silent Skies",
+            "artist": "Seven Lions (Feat. Karra)",
+            "videoId": "bi7-VsGyZiU",
+            "builds": [
+                {
+                    "buildEnd": 96.011
+                },
+                {
+                    "buildEnd": 164.69
+                }
+            ],
+            "drops": [
+                {
+                    "dropStart": 95.961
+                },
+                {
+                    "dropStart": 164.59
+                }
+            ]
+        },
+        {
+            "name": "Hellwalker",
+            "artist": "Mick Gordon",
+            "videoId": "3EPeyOiicvU",
+            "builds": [],
+            "drops": [
+                {
+                    "dropStart": 124.715
+                },
+                {
+                    "dropStart": 240.14
+                }
+            ]
+        },
 
     ],
 

@@ -60,12 +60,24 @@ title: Drop Shuffle
 				<input id="settings_pivotSameSongOdds" type="range" min="0" max="100" value="50" class="slider">
 			</div>
 		</div>
+
+		<!-- Show/hide Editor/Song List -->
+		<div class="col-lg-3 col-md-4 col-sm-8 col-8 mb-2">
+			<form>
+				<input type="checkbox" class="abstract_checkbox" onchange="toggleShowEditor(event)" data-toggle="toggle" data-on="Show Editor" data-off="Hide Editor" data-onstyle="success" data-offstyle="warning"><br>
+			</form>
+			<form>
+				<input type="checkbox" class="abstract_checkbox" onchange="toggleShowSongList(event)" data-toggle="toggle" data-on="Show Song List" data-off="Hide Song List" data-onstyle="success" data-offstyle="warning"><br>
+			</form>
+		</div>
 	</div>
 
 	
 	<!-- Editor -->
-	<h2><u>Editor</u></h2>
 	<div id="editor_section" class="row mb-2">
+		<div class="col-12">
+			<h2><u>Editor</u></h2>
+		</div>
 		<!-- Player -->
 		<div class="col-sm-6">
 			<div class="container-fluid mt-4 mb-4">
@@ -100,10 +112,6 @@ title: Drop Shuffle
 				<input type="submit" value="Add Song">
 			</form>
 			<br>
-
-			<!-- <form id="editor_build_drop_form">
-				<input type="checkbox" class="abstract_checkbox" data-toggle="toggle" data-on="Build" data-off="Drop" data-onstyle="success" data-offstyle="warning"><br>
-			</form> -->
 			
 			<!-- Button that updates the build/drop time to save to whatever time the video is at -->
 			<button id="editor_syncTime">Sync Time</button>
@@ -122,9 +130,11 @@ title: Drop Shuffle
 
 	
 	<!-- Song List Display -->
-	<h2><u>Song List</u></h2>
 	<div id="song_list_section" class="row mb-2">
-		<div class="col-sm-12">
+		<div class="col-12">
+			<h2><u>Song List</u></h2>
+		</div>
+		<div class="col-12">
 			<div class="container-fluid mt-2 mb-4">
 				<div id="song_list_row" class="row mt-2"></div>
 				<div id="song_list_template_col" class="song_list_col col-lg-5 col-12 mb-2 mr-2" hidden>

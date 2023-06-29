@@ -579,6 +579,24 @@ function getNextCrossfadePrimingWindow(track) {
 }
 
 
+// ------------ SETTINGS -------------
+function toggleShowEditor(event) {
+    if (event.target.checked) {
+        $("#editor_section").attr("hidden", "");
+    } else {
+        $("#editor_section").removeAttr("hidden");
+    }
+}
+
+function toggleShowSongList(event) {
+    if (event.target.checked) {
+        $("#song_list_section").attr("hidden", "");
+    } else {
+        $("#song_list_section").removeAttr("hidden");
+    }
+}
+
+
 // ------------ EDITOR -------------
 function onEditorPlayerStateChange(event) {
     switch (event.data) {

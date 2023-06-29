@@ -22,7 +22,7 @@
 /* ----- Slider ----- */
 /* https://www.w3schools.com/howto/howto_js_rangeslider.asp */
 .slidecontainer {
-    width: 25%; /* Width of the outside container */
+    width: 80%; /* Width of the outside container */
 }
 
 /* The slider itself */

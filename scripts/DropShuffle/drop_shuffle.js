@@ -126,8 +126,8 @@ refreshSongList();
 // Create an <iframe> (and YouTube player) after the API code downloads.
 function onYouTubeIframeAPIReady() {
     tracks[0]["player"] = new YT.Player('player_0', {
-        height: '390',
-        width: '640',
+        height: '450',
+        width: '800',
         videoId: tracks[0]["song"]["videoId"],
         playerVars: {
             'playsinline': 1
@@ -139,8 +139,8 @@ function onYouTubeIframeAPIReady() {
     });
     
     tracks[1]["player"] = new YT.Player('player_1', {
-        height: '390',
-        width: '640',
+        height: '450',
+        width: '800',
         videoId: tracks[1]["song"]["videoId"],
         playerVars: {
             'playsinline': 1

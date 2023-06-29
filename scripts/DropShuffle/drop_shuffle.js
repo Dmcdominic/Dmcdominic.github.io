@@ -6,8 +6,8 @@
 // ----- USER FACING SETTINGS -----
 var volume = 30; // Out of 100
 
-var shuffle_drop_odds = 0.9; // 0 to 1
-var pivot_same_song_drop_to_build_odds = 0.9; // 0 to 1
+var shuffle_drop_odds = 0.6; // 0 to 1
+var pivot_same_song_drop_to_build_odds = 0.7; // 0 to 1
 
 
 // ----- INTERNAL SYSTEM TUNING -----
@@ -15,7 +15,7 @@ const CROSSFADE_BUILD_DURATION_SECONDS = 0.15; // Amount of time during which th
 const CROSSFADE_DROP_DURATION_SECONDS = 0.02; // Amount of time during which the drop fades in
 
 const CROSSFADE_BUILD_FADE_LEAD_TIME = 0.1; // How far in advance of the actual build ending should it start fading out. Should always be less than CROSSFADE_BUILD_DURATION_SECONDS
-const CROSSFADE_DROP_LEAD_TIME = 0.3; // Amount of time before the build ends that the drop will be scheduled to start
+const CROSSFADE_DROP_LEAD_TIME = 0.25; // Amount of time before the build ends that the drop will be scheduled to start
 
 const CROSSFADE_PRIMING_WINDOW_SECONDS = 3;
 const PIVOT_SAME_SONG_DROP_TO_BUILD_MINIMUM_GAP_SECONDS = 5;
@@ -49,6 +49,8 @@ const STATE_ENDED = 10;
 // default songs list is defined in drop_shuffle_data.js
 var songs = songs_obj["songsList"];
 var available_songs = [[], [], []]; // available_songs[0] == Builds, [1] == Drops, [2] == All songs
+var song_history = [];
+var song_priority_queue = [];
 
 var tracks = [
     {
@@ -116,6 +118,7 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 restartSongs();
 setInterval(checkForUpdatesOnInterval, CHECK_FOR_UPDATES_INTERVAL_MS);
+refreshSongList();
 
 
 // ----- Functions -----
@@ -175,6 +178,7 @@ function loadTrackVideo(track, play_immediately = false) {
     } else {
         track["player"].cueVideoById(track["song"]["videoId"], startSeconds);
     }
+    song_history.push(track["song"]);
 }
 
 // The API will call this function when the video player is ready (meaning only the first video).
@@ -189,6 +193,7 @@ function onPlayerReady(track) {
             event.target.seekTo(track["drop"]["dropStart"] - getNextCrossfadePrimingWindow(track), true);
             event.target.pauseVideo();
         }
+        song_history.push(track["song"]);
     };
 }
 
@@ -330,11 +335,6 @@ function checkForTrackSwap() {
 
 // Sets the specified track to a random build song
 function setTrackToRandomSong(track, build_or_drop, play_immediately = false) {
-    if (available_songs[build_or_drop].length == 0) {
-        console.log("Ran out of available " + BoDToString(build_or_drop) + ". Regenerating all lists of all available songs!");
-        generateAvailableSongs();
-    }
-
     let song = popAvailableSong(build_or_drop);
     track["song"] = song;
 
@@ -364,6 +364,10 @@ function setTrackToRandomSong(track, build_or_drop, play_immediately = false) {
 function generateAvailableSongs() {
     available_songs = [[], [], []];
     songs.forEach(song => {
+        // If this song is in the priority queue, skip it
+        for (let i=0; i < song_priority_queue.length; i++) {
+            if (song_priority_queue[i]["videoId"] == song["videoId"]) return;
+        }
         if (song["builds"] && song["builds"].length > 0) {
             available_songs[0].push(song);
         }
@@ -378,19 +382,32 @@ function generateAvailableSongs() {
 }
 
 // Pops an available song from the corresponding build or drop list, and removes it from the other list too
-function popAvailableSong(list_index) {
-    let song = available_songs[list_index].pop();
+function popAvailableSong(build_or_drop) {
+    // First check for valid priority queue options
+    for (let i=0; i < song_priority_queue.length; i++) {
+        let song = song_priority_queue[i];
+        if (build_or_drop == BoD_ANY ||
+            build_or_drop == BUILD && song["builds"].length > 0 ||
+            build_or_drop == DROP && song["drops"].length > 0) {
+            song_priority_queue = getArrayWithItemRemoved(song_priority_queue, song);
+            return song;
+        } 
+    }
+    if (available_songs[build_or_drop].length == 0) {
+        console.log("Ran out of available " + BoDToString(build_or_drop) + ". Regenerating all lists of all available songs!");
+        generateAvailableSongs();
+    }
+    let song = available_songs[build_or_drop].pop();
     removeSongFromAvailableSongLists(song);
     return song;
 }
 
-// Removes the given song from all available songs lists (but not the main song list, for use when restarted or exported)
+// Removes the given song from all available songs lists, and the priority queue (but not the main song list, for use when restarted or exported)
 function removeSongFromAvailableSongLists(song) {
     for (let i=0; i <= 2; i++) {
-        available_songs[i] = available_songs[i].filter(s => {
-            return s != song;
-        });
+        available_songs[i] = getArrayWithItemRemoved(available_songs[i], song);
     }
+    song_priority_queue = getArrayWithItemRemoved(song_priority_queue, song);
 }
 
 // After a drop or fullplay song is over, start the next totally new song
@@ -459,6 +476,30 @@ function skipToChangeup() {
 
 
 // ------------ YOUTUBE PLAYER UTILITY -------------
+// Pauses all players and sets their states to STATE_PAUSED, which might lose some info relevant for resuming.
+function pauseAllPlayersRough() {
+    tracks.forEach(track => {
+        if (track["player"]) {
+            track["player"].pauseVideo();
+            track["state"] = STATE_PAUSED;
+        }
+    });
+    if (editor_track && editor_track["player"]) {
+        editor_track["player"].pauseVideo();
+        editor_track["state"] = STATE_PAUSED;
+    }
+}
+
+// Takes in a videoId and returns the song with that ID, or null if it isn't in the song list
+function tryGetSongByVideoId(videoId) {
+    for (let i=0; i < songs.length; i++) {
+        if (songs[i]["videoId"] == videoId) {
+            return songs[i];
+        }
+    }
+    return null;
+}
+
 // Returns the track that is currently playing, or null if neither are.
 function getCurrentTrack() {
     let current_track_index = getCurrentTrackIndex();
@@ -573,6 +614,8 @@ var editor_new_song_form = document.getElementById("editor_new_song_form");
 function editor_SubmitNewSong(event){
     //Preventing page refresh - https://www.tutorialspoint.com/how-to-stop-refreshing-the-page-on-submit-in-javascript
     event.preventDefault();
+    // Pause all players first
+    pauseAllPlayersRough();
     // Polish - Could check if song is already in the list?
     let new_song = {
         "name": editor_songName.value,
@@ -581,13 +624,26 @@ function editor_SubmitNewSong(event){
         "builds": [],
         "drops": []
     }
+    let dup_song = tryFindDuplicateSong(new_song);
+    if (dup_song != null) {
+        if (!confirm("WARNING - This song may be a duplicate of the existing song: \"" + dup_song["name"] + "\" by " + dup_song["artist"] + " [Video ID: " + dup_song["videoId"] + "]. Press \"OK\" to add anyway.")) {
+            return;
+        }
+    }
     songs.push(new_song);
-    editor_track["song"] = new_song;
-    editor_track["player"].loadVideoById(editor_track["song"]["videoId"], 0);
+    editor_load_song(new_song);
+    refreshSongList();
+}
+editor_new_song_form.addEventListener('submit', editor_SubmitNewSong);
+
+// Sets the editor track to the song, loads the video into the player, and resets the saved time
+function editor_load_song(song) {
+    editor_track["song"] = song;
+    editor_track["player"].loadVideoById(song["videoId"], 0);
     // editor_track["player"].setPlaybackRate(0.5);
     editor_updateSavedTime(0);
 }
-editor_new_song_form.addEventListener('submit', editor_SubmitNewSong);
+
 
 // Sync & display time
 var editor_savedTimeDisplay = document.getElementById("editor_savedTimeDisplay");
@@ -617,6 +673,8 @@ function editor_updateSavedTime(new_time) {
 // Test time with pause - Directly in the editor player
 var editor_testTimeWithPauseButton = document.getElementById("editor_testTimeWithPause");
 function editor_testTimeWithPause(event) {
+    // Pause all players first
+    pauseAllPlayersRough();
     editor_priming_testing_time = true;
     editor_testing_time = false;
     editor_track["state"] = STATE_BUILDING;
@@ -634,7 +692,6 @@ function editor_testTimeAsBuild(event) {
     editor_track["player"].pauseVideo();
     let track = tracks[0];
     let song = editor_track["song"];
-    generateAvailableSongs();
     removeSongFromAvailableSongLists(song);
     track["song"] = song;
     track["build"] = { "buildEnd": editor_savedTime };
@@ -648,7 +705,6 @@ function editor_testTimeAsDrop(event) {
     editor_track["player"].pauseVideo();
     let track = tracks[1];
     let song = editor_track["song"];
-    generateAvailableSongs();
     removeSongFromAvailableSongLists(song);
     track["song"] = song;
     track["build"] = null;
@@ -709,6 +765,17 @@ function updateEditorTestingTime() {
     }
 }
 
+// If one exists, returns a song with the same name or video ID. Otherwise, returns null.
+function tryFindDuplicateSong(song_to_check) {
+    for (let i=0; i < songs.length; i++) {
+        song = songs[i];
+        if (song["name"] == song_to_check["name"] || song["videoId"] == song_to_check["videoId"]) {
+            return song;
+        }
+    }
+    return null;
+}
+
 
 // ------------ SONG LIST IMPORT/EXPORT ------------
 var UI_Songlist_Import = document.getElementById("songListImport");
@@ -733,6 +800,7 @@ function importSongList() {
                 }
                 console.log("New song list:");
                 console.log(songs);
+                UI_Songlist_Import.value = null;
             });
             file_reader.readAsText(UI_Songlist_Import.files[0]);
         }
@@ -762,7 +830,83 @@ function resetToEmptySongList() {
 }
 
 
+// ------------ Song List Display ------------
+// Clears the current song list and then populates it with every song in songs
+function refreshSongList() {
+    // Empty the current list
+    let song_list_row = $("#song_list_row");
+    song_list_row.empty();
+    // Sort the songs list
+    songs.sort((a, b) => {
+        return a["name"].localeCompare(b["name"]);
+    });
+    // Create an item for each song
+    songs.forEach(song => {
+        // Clone the template column
+        let song_list_template_col = $("#song_list_template_col");
+        new_song_list_col = song_list_template_col.clone();
+        // Set up the title, artist, & buttons
+        new_song_list_col.find(".song_list_title").html("<b>" + song["name"] + "</b> - <i>" + song["artist"] + "</i>");
+        new_song_list_col.find(".song_list_addToQueue").attr("videoId", song["videoId"]);
+        new_song_list_col.find(".song_list_removeFromCurrentPlaythrough").attr("videoId", song["videoId"]);
+        new_song_list_col.find(".song_list_removeFromSongs").attr("videoId", song["videoId"]);
+        new_song_list_col.find(".song_list_openInEditor").attr("videoId", song["videoId"]);
+        // Append it to the song list row and reveal it
+        new_song_list_col.appendTo(song_list_row);
+        new_song_list_col.removeAttr("hidden");
+    });
+}
+
+// Adds the song to the front of the queue which prioritizes songs for upcoming plays
+function songListAddToQueue(event) {
+    let videoId = event.target.getAttribute("videoId");
+    let song = tryGetSongByVideoId(videoId);
+    if (song) {
+        removeSongFromAvailableSongLists(song);
+        song_priority_queue.unshift(song);
+    }
+}
+
+// Removes the song from the queue (and from all the available songs lists)
+function songListRemoveFromQueue(event) {
+    let videoId = event.target.getAttribute("videoId");
+    let song = tryGetSongByVideoId(videoId);
+    if (song) {
+        removeSongFromAvailableSongLists(song);
+    }
+}
+
+// Removes the song from the songs list entirely
+function songListRemoveFromSongs(event) {
+    let videoId = event.target.getAttribute("videoId");
+    let song = tryGetSongByVideoId(videoId);
+    if (song) {
+        if (confirm("Are you sure you want to remove this song from the full songs list? Make sure to export first if you need it saved.")) {
+            removeSongFromAvailableSongLists(song);
+            songs = getArrayWithItemRemoved(songs, song);
+            refreshSongList();
+        }
+    }
+}
+
+// Opens the song in the editor
+function songListOpenInEditor(event) {
+    let videoId = event.target.getAttribute("videoId");
+    let song = tryGetSongByVideoId(videoId);
+    if (song) {
+        pauseAllPlayersRough();
+        editor_load_song(song);
+    }
+}
+
+
 // ------------ ARRAY UTILITY ------------
+function getArrayWithItemRemoved(array, item) {
+    return array.filter(i => {
+        return i != item;
+    });
+}
+
 function getRandomItemFromArray(array) {
     return array[Math.floor(Math.random()*array.length)];
 }
@@ -789,6 +933,11 @@ function clamp(x, min, max) {
 
 
 // ------------ DEBUG UTILITY -------------
+function dumpSongHistory() {
+    console.log("------------------ SONG HISTORY ------------------");
+    console.log(song_history);
+}
+
 function dumpStatus() {
     console.log("------------------ STATUS DUMP ------------------");
     let today = new Date();

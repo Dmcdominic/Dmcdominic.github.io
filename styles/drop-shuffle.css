@@ -1,6 +1,24 @@
 /* Drop Shuffle styling (Drop-Shuffle.html) */
 
 
+/* ----- Song List ----- */
+.song_list_col {
+    background-color: lightgray;
+}
+
+.song_list_addToQueue {
+    background-color: green;
+}
+
+.song_list_removeFromCurrentPlaythrough {
+    background-color: red;
+}
+
+.song_list_removeFromSongs {
+    background-color: red;
+}
+
+
 /* ----- Slider ----- */
 /* https://www.w3schools.com/howto/howto_js_rangeslider.asp */
 .slidecontainer {

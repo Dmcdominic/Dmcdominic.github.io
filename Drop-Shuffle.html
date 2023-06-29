@@ -78,7 +78,8 @@ title: Drop Shuffle
 
 	
 	<!-- Editor -->
-	<div class="row mb-2">
+	<h2><u>Editor</u></h2>
+	<div id="editor_section" class="row mb-2">
 		<!-- Player -->
 		<div class="col-sm-6">
 			<div class="container-fluid mt-4 mb-4">
@@ -94,7 +95,6 @@ title: Drop Shuffle
 
 		<!-- Editor Interface -->
 		<div class="col-sm-6 mb-2">
-			<h2><u>Editor</u></h2>
 			<!-- Song JSON import/export -->
 			<h4>Custom song list:</h4>
 			<input id="songListImport" type="file">
@@ -133,9 +133,29 @@ title: Drop Shuffle
 			<button id="editor_addAsDrop" style="background-color: green;">Add as Drop</button>
 		</div>
 	</div>
+
+	
+	<!-- Song List Display -->
+	<h2><u>Song List</u></h2>
+	<div id="song_list_section" class="row mb-2">
+		<div class="col-sm-12">
+			<div class="container-fluid mt-2 mb-4">
+				<div id="song_list_row" class="row mt-2"></div>
+				<div id="song_list_template_col" class="song_list_col col-lg-5 col-12 mb-2 mr-2" hidden>
+					<p class="song_list_title">Torque - Space Laces</p>
+					<button class="song_list_addToQueue" onclick="songListAddToQueue(event)" videoId="WsPg4ZRA_Us">Front of Queue</button>
+					<button class="song_list_removeFromCurrentPlaythrough" onclick="songListRemoveFromQueue(event)" videoId="WsPg4ZRA_Us">Remove from Queue</button>
+					<button class="song_list_removeFromSongs" onclick="songListRemoveFromSongs(event)" videoId="WsPg4ZRA_Us">Remove from Songs</button>
+					<button class="song_list_openInEditor" onclick="songListOpenInEditor(event)" videoId="WsPg4ZRA_Us">Open in Editor</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 
 <!-- Page-specific script dependencies -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script type="text/javascript" src="/scripts/DropShuffle/drop_shuffle_data.js"></script>
 <script type="text/javascript" src="/scripts/DropShuffle/drop_shuffle.js"></script>

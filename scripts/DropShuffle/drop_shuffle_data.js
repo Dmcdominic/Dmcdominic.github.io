@@ -34,27 +34,6 @@ var songs_obj = {
             "drops": []
         },
         {
-            "name": "Easy Go",
-            "artist": "Grandtheft & Delaney Jane",
-            "videoId": "dmXgDVEhC1U",
-            "builds": [
-                {
-                    "buildEnd": 49.342
-                },
-                {
-                    "buildEnd": 135.499
-                }
-            ],
-            "drops": [
-                {
-                    "dropStart": 49.342
-                },
-                {
-                    "dropStart": 135.499
-                }
-            ]
-        },
-        {
             "name": "Torque",
             "artist": "Space Laces",
             "videoId": "WsPg4ZRA_Us",
@@ -144,8 +123,8 @@ var songs_obj = {
             ]
         },
         {
-            "name": "Somewhere Far Away From Here ft. Lolaby",
-            "artist": "k?d",
+            "name": "Somewhere Far Away From Here",
+            "artist": "k?d ft. Lolaby",
             "videoId": "J3NL-sp_w34",
             "builds": [
                 {
@@ -257,7 +236,7 @@ var songs_obj = {
         },
         {
             "name": "Spider",
-            "artist": "Nitepunk ft Tida",
+            "artist": "Nitepunk ft. Tida",
             "videoId": "1rtfOKMhops",
             "builds": [
                 {
@@ -604,7 +583,7 @@ var songs_obj = {
         },
         {
             "name": "Silent Skies",
-            "artist": "Seven Lions (Feat. Karra)",
+            "artist": "Seven Lions ft. Karra",
             "videoId": "bi7-VsGyZiU",
             "builds": [
                 {
@@ -634,6 +613,38 @@ var songs_obj = {
                 },
                 {
                     "dropStart": 240.14
+                }
+            ]
+        },
+        {
+            "name": "Pop Culture",
+            "artist": "Madeon",
+            "videoId": "lTx3G6h2xyA",
+            "builds": [
+                {
+                    "buildEnd": 151.774
+                }
+            ],
+            "drops": []
+        },
+        {
+            "name": "Shadow (helloworld Remix)",
+            "artist": "Boombox Cartel & Moody Good ft. Calivania",
+            "videoId": "iuG3GPH-GR8",
+            "builds": [
+                {
+                    "buildEnd": 61.472
+                },
+                {
+                    "buildEnd": 168.93
+                }
+            ],
+            "drops": [
+                {
+                    "dropStart": 168.93
+                },
+                {
+                    "dropStart": 61.343
                 }
             ]
         },

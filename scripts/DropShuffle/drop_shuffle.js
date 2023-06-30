@@ -487,6 +487,8 @@ function pauseAllPlayersRough() {
     if (editor_track && editor_track["player"]) {
         editor_track["player"].pauseVideo();
         editor_track["state"] = STATE_PAUSED;
+        editor_priming_testing_time = false;
+        editor_testing_time = false;
     }
 }
 
@@ -655,11 +657,11 @@ function editor_SubmitNewSong(event){
 editor_new_song_form.addEventListener('submit', editor_SubmitNewSong);
 
 // Sets the editor track to the song, loads the video into the player, and resets the saved time
-function editor_load_song(song) {
+function editor_load_song(song, set_saved_time = 0) {
     editor_track["song"] = song;
     editor_track["player"].loadVideoById(song["videoId"], 0);
     // editor_track["player"].setPlaybackRate(0.5);
-    editor_updateSavedTime(0);
+    editor_updateSavedTime(set_saved_time);
 }
 
 
@@ -708,6 +710,8 @@ var editor_testTimeAsDropButton = document.getElementById("editor_testAsDrop");
 function editor_testTimeAsBuild(event) {
     editor_track["state"] = STATE_PAUSED;
     editor_track["player"].pauseVideo();
+    editor_priming_testing_time = false;
+    editor_testing_time = false;
     let track = tracks[0];
     let song = editor_track["song"];
     removeSongFromAvailableSongLists(song);
@@ -721,6 +725,8 @@ function editor_testTimeAsBuild(event) {
 function editor_testTimeAsDrop(event) {
     editor_track["state"] = STATE_PAUSED;
     editor_track["player"].pauseVideo();
+    editor_priming_testing_time = false;
+    editor_testing_time = false;
     let track = tracks[1];
     let song = editor_track["song"];
     removeSongFromAvailableSongLists(song);
@@ -855,11 +861,11 @@ function refreshSongList() {
     let song_list_row = $("#song_list_row");
     song_list_row.empty();
     // Sort the songs list
-    songs.sort((a, b) => {
+    let sorted_songs = [...songs].sort((a, b) => {
         return a["name"].localeCompare(b["name"]);
     });
     // Create an item for each song
-    songs.forEach(song => {
+    sorted_songs.forEach(song => {
         // Clone the template column
         let song_list_template_col = $("#song_list_template_col");
         new_song_list_col = song_list_template_col.clone();
@@ -913,7 +919,22 @@ function songListOpenInEditor(event) {
     let song = tryGetSongByVideoId(videoId);
     if (song) {
         pauseAllPlayersRough();
-        editor_load_song(song);
+        // TODO - improve this.
+        let possible_times = [];
+        if (song["builds"]) {
+            song["builds"].forEach(build => {
+                possible_times.push(build["buildEnd"]);
+            });
+        }
+        if (song["drops"]) {
+            song["drops"].forEach(drop => {
+                possible_times.push(drop["dropStart"]);
+            });
+        }
+        if (possible_times.length == 0) {
+            possible_times.push(0);
+        }
+        editor_load_song(song, getRandomItemFromArray(possible_times));
     }
 }
 

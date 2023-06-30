@@ -172,24 +172,6 @@ var songs_obj = {
             "drops": []
         },
         {
-            "name": "Point",
-            "artist": "Nitepunk ft. Habstrakt",
-            "videoId": "CEOcMVonjpM",
-            "builds": [
-                {
-                    "buildEnd": 39.385
-                }
-            ],
-            "drops": [
-                {
-                    "dropStart": 39.289
-                },
-                {
-                    "dropStart": 151.807
-                }
-            ]
-        },
-        {
             "name": "Spider",
             "artist": "Nitepunk ft. Tida",
             "videoId": "1rtfOKMhops",
@@ -387,10 +369,10 @@ var songs_obj = {
             "videoId": "D4uvKDq5x9o",
             "builds": [
                 {
-                    "buildEnd": 78.618
+                    "buildEnd": 80.283
                 },
                 {
-                    "buildEnd": 168.184
+                    "buildEnd": 169.834
                 }
             ],
             "drops": []
@@ -401,15 +383,15 @@ var songs_obj = {
             "videoId": "i4njyKs6bMs",
             "builds": [
                 {
-                    "buildEnd": 105.558
+                    "buildEnd": 105.708
                 },
                 {
-                    "buildEnd": 250.234
+                    "buildEnd": 250.401
                 }
             ],
             "drops": [
                 {
-                    "dropStart": 105.558
+                    "dropStart": 105.608
                 },
                 {
                     "dropStart": 250.234
@@ -422,7 +404,7 @@ var songs_obj = {
             "videoId": "SYDY7xuhwDU",
             "builds": [
                 {
-                    "buildEnd": 79.414
+                    "buildEnd": 79.424
                 },
                 {
                     "buildEnd": 190.696
@@ -430,7 +412,7 @@ var songs_obj = {
             ],
             "drops": [
                 {
-                    "dropStart": 191.914
+                    "dropStart": 191.935
                 }
             ]
         },
@@ -451,10 +433,7 @@ var songs_obj = {
             "videoId": "8nseKw-I3Ds",
             "builds": [
                 {
-                    "buildEnd": 105.314
-                },
-                {
-                    "buildEnd": 222.574
+                    "buildEnd": 222.624
                 }
             ],
             "drops": []
@@ -465,7 +444,7 @@ var songs_obj = {
             "videoId": "bw_GhedOX70",
             "builds": [
                 {
-                    "buildEnd": 177.7
+                    "buildEnd": 177.8
                 }
             ],
             "drops": [
@@ -486,7 +465,7 @@ var songs_obj = {
                     "buildEnd": 49.76
                 },
                 {
-                    "buildEnd": 93.104
+                    "buildEnd": 93.094
                 },
                 {
                     "buildEnd": 148.69
@@ -535,7 +514,7 @@ var songs_obj = {
             "videoId": "lTx3G6h2xyA",
             "builds": [
                 {
-                    "buildEnd": 151.774
+                    "buildEnd": 151.814
                 }
             ],
             "drops": []
@@ -578,7 +557,7 @@ var songs_obj = {
             "videoId": "PfmUdCsr1nw",
             "builds": [
                 {
-                    "buildEnd": 70.586
+                    "buildEnd": 70.626
                 }
             ],
             "drops": [
@@ -593,7 +572,7 @@ var songs_obj = {
             "videoId": "XDwJQUA_G0w",
             "builds": [
                 {
-                    "buildEnd": 90.485
+                    "buildEnd": 90.535
                 }
             ],
             "drops": [
@@ -608,10 +587,10 @@ var songs_obj = {
             "videoId": "b0_foT9xyzQ",
             "builds": [
                 {
-                    "buildEnd": 18.649
+                    "buildEnd": 18.799
                 },
                 {
-                    "buildEnd": 78.687
+                    "buildEnd": 78.786
                 }
             ],
             "drops": [
@@ -626,7 +605,7 @@ var songs_obj = {
             "videoId": "C8U1vfigGxI",
             "builds": [
                 {
-                    "buildEnd": 60.019
+                    "buildEnd": 60.119
                 }
             ],
             "drops": []
@@ -648,7 +627,7 @@ var songs_obj = {
             "videoId": "sw70hBAYA44",
             "builds": [
                 {
-                    "buildEnd": 107.058
+                    "buildEnd": 213.838
                 }
             ],
             "drops": []
@@ -836,6 +815,54 @@ var songs_obj = {
                 }
             ]
         },
+        {
+            "name": "Vaultage 001",
+            "artist": "Space Laces",
+            "videoId": "-b7Ugf2R8eE",
+            "builds": [
+                {
+                    "buildEnd": 755.935
+                }
+            ],
+            "drops": [
+                {
+                    "dropStart": 44.956
+                }
+            ]
+        },
+        {
+            "name": "Vaultage 002",
+            "artist": "Space Laces",
+            "videoId": "skmLvMxPqFQ",
+            "builds": [
+                {
+                    "buildEnd": 862.096
+                }
+            ],
+            "drops": [
+                {
+                    "dropStart": 65.685
+                }
+            ]
+        },
+        {
+            "name": "Vaultage 003",
+            "artist": "Space Laces",
+            "videoId": "A1ZHScEzyTY",
+            "builds": [
+                {
+                    "buildEnd": 1126.559
+                }
+            ],
+            "drops": [
+                {
+                    "dropStart": 94.006
+                },
+                {
+                    "dropStart": 97.728
+                }
+            ]
+        },
 
     ],
 
@@ -844,6 +871,7 @@ var songs_obj = {
             "name": "TOO BIZARRE (juked)",
             "artist": "Skrillex, Swae Lee, Siiickbrain, & Posij",
             "videoId": "3Qs7IM9nZxc",
+            "cutBecause": "just ok synergy with rest of mix",
             "builds": [
                 {
                     "buildEnd": 73.241
@@ -865,6 +893,7 @@ var songs_obj = {
             "name": "Monolithic Reflections",
             "artist": "BVSSIC",
             "videoId": "tKirXBERxeE",
+            "cutBecause": "just ok synergy with rest of mix",
             "builds": [
                 {
                     "buildEnd": 66.138
@@ -879,6 +908,25 @@ var songs_obj = {
                 },
                 {
                     "dropStart": 176.46
+                }
+            ]
+        },
+        {
+            "name": "Point",
+            "artist": "Nitepunk ft. Habstrakt",
+            "videoId": "CEOcMVonjpM",
+            "cutBecause": "just ok synergy with rest of mix",
+            "builds": [
+                {
+                    "buildEnd": 39.385
+                }
+            ],
+            "drops": [
+                {
+                    "dropStart": 39.289
+                },
+                {
+                    "dropStart": 151.857
                 }
             ]
         },

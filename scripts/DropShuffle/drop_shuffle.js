@@ -246,6 +246,27 @@ function restartSongs() {
     setTrackToRandomSong(tracks[1], getInverseBoD(first_BoD));
 }
 
+// If no video is playing, start the appropriate player. If any player is playing, pause it.
+function playOrPause() {
+    // TODO - Check if we need to pause
+    let paused = false;
+    if (editor_track && editor_track["player"]) {
+        // editor_track["player"]
+    }
+    // TODO - If we didn't pause, pick the right track to play
+    if (!paused) {
+
+    }
+    updatePlayOrPauseButton();
+}
+
+// Updates the play_or_pause_button to display "Play" or "Pause" according to the current state of the players
+function updatePlayOrPauseButton() {
+    // TODO
+    // id: play_or_pause_button
+    // btn-danger
+}
+
 // Called at frequent intervals to check for updates such as crossfading and track swap
 function checkForUpdatesOnInterval() {
     checkForTrackSwap();

@@ -144,7 +144,7 @@ var VERBOSITY = 0;
 // Enabling this macro will run verifications throughout the code, such as assertOptimalStrategy()
 var VERIFY = false;
 // Enabling this macro will allow format settings to be constructed which give players excess decks.
-var ALLOW_EXCESS_DECKS = false;
+var ALLOW_EXCESS_DECKS = true;
 // ==== Constants ====
 var P0 = 0;
 var P1 = 1;

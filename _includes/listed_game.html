@@ -34,7 +34,8 @@
 <a class="listed-game-preview listed_game ml-2 mr-2
 {% for tag in game.tags %} {{ tag }}_game-tag {% endfor %}
 {% if game.awards and game.awards.size > 0 %} Award-Winning_game-tag {% endif %}"
-    id="{{ game.title | slugify }}-preview" href="{{ url }}">
+    id="{{ game.title | slugify }}-preview" href="{{ url }}"
+    {% if game.open_in_new_tab %} target="_blank" {% endif %}>
     <div id="{{ game.title | slugify }}-preview-child" class="listed-game-preview-img" style="background-image: url('{{ background_image }}')"></div>
     <div style="display:none"><img id="{{ game.title | slugify }}_hover_preload" src="{{hover_img}}"></div>
     <div id="{{ game.title | slugify }}_div" class="listed-game-preview-overlay">
